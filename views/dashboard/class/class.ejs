@@ -1,0 +1,151 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Classes</h1><a class="badge bg-primary ms-2" href="/dashboard/all-classes">All Classes <i class="fas fa-fw fa-external-link-alt"></i></a>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Add new class</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=add">
+              <% if(alert.status === "error" && alert.section === "add") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "add") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="addClass">Class</label>
+                  <input type="text" class="form-control" id="addClass" placeholder="Class" name="class" value="<%- formSection === "add" ? form.class : "" %>">
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Add class</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Rename class</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=update">
+              <% if(alert.status === "error" && alert.section === "update") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "update") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editClass">Class</label>
+                  <select class="form-control" id="editClass" name="class" <%= classes.length <= 0 ? "disabled" : "" %>>
+                    <% if(classes.length > 0) { %>
+                    <option disabled selected hidden>Select class</option>
+                    <% classes.map((classItem) => { %>
+                    <option value="<%= classItem.id %>" <%- formSection === "update" && form.class === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No classes found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editClass">New class name</label>
+                  <input value="<%= formSection === "update" ? form.newClass : "" %>" type="text" class="form-control" id="editClass" placeholder="Type new name" name="newClass">
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-secondary">Update class</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Delete class</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=delete">
+              <% if(alert.status === "error" && alert.section === "delete") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "delete") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="deleteClass">Class</label>
+                  <select class="form-control" id="deleteClass" name="class" <%= classes.length <= 0 ? "disabled" : "" %>>
+                    <% if(classes.length > 0) { %>
+                    <option disabled selected hidden>Select class</option>
+                    <% classes.map((classItem) => { %>
+                    <option value="<%= classItem.id %>" <%- formSection === "delete" && form.class === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No classes found</option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-danger">Delete class</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+<%- include("../../partials/footer") %>

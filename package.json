@@ -1,0 +1,62 @@
+{
+  "name": "diamondschools-admin",
+  "version": "1.0.0",
+  "description": "A comprehensive admin dashboard for Diamond Schools",
+  "main": "server.js",
+  "scripts": {
+    "build:css": "npx postcss ./public/css/style.css -o ./public/dist/output.css",
+    "watch:css": "npx postcss ./public/css/style.css -o ./public/dist/output.css --watch",
+    "start": "concurrently \"npm run build:css\" \"node server.js\"",
+    "dev": "concurrently \"npm:watch:css\" \"nodemon server.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chisom-Joseph/diamondschools-admin.git"
+  },
+  "keywords": [
+    "School",
+    "diamond",
+    "dashboard",
+    "admin",
+    "template",
+    "website",
+    "ejs",
+    "nodejs",
+    "js",
+    "html",
+    "css",
+    "theme",
+    "aceternityui",
+    "shadcnui",
+    "tailwindcss"
+  ],
+  "author": "Smikedigital limited",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chisom-Joseph/diamondschools-admin/issues"
+  },
+  "homepage": "https://github.com/Chisom-Joseph/diamondschools-admin#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.12.0",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.0",
+    "cssnano": "^7.0.6",
+    "daisyui": "^4.12.22",
+    "postcss": "^8.4.49",
+    "postcss-cli": "^11.0.0",
+    "postcss-nested": "^7.0.2",
+    "sequelize-cli": "^6.6.2",
+    "tailwindcss": "^3.4.17"
+  }
+}

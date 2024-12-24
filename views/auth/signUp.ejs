@@ -1,0 +1,66 @@
+<%- include("../partials/headerAuth") %>
+<main class="d-flex w-100">
+  <div class="container d-flex flex-column">
+    <div class="row vh-100">
+      <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
+        <div class="d-table-cell align-middle">
+
+          <div class="text-center mt-4">
+            <h1 class="h2">Get started</h1>
+            <p class="lead">
+              Start creating the best possible user experience for you customers.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <% if(error) { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- error.message %>
+                </div>
+              </div>
+              <% } %>
+              <div class="m-sm-3">
+                <form method="POST">
+                  <div class="mb-3">
+                    <label class="form-label">FirstName</label>
+                    <input class="form-control form-control-lg" type="text" name="name" placeholder="Enter your name" value="<%- form.firstName %>" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">MiddleName</label>
+                    <input class="form-control form-control-lg" type="text" name="name" placeholder="Enter your name" value="<%- form.middleName %>" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">LastName</label>
+                    <input class="form-control form-control-lg" type="text" name="name" placeholder="Enter your name" value="<%- form.lastName %>" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" value="<%- form.email %>" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input class="form-control form-control-lg" type="password" name="password" placeholder="Enter password" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Re-type Password</label>
+                    <input class="form-control form-control-lg" type="password" name="passwordConfirm" placeholder="Re-type password" />
+                  </div>
+                  <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-lg btn-primary">Sign up</button=>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mb-3">
+            Already have account? <a href="/auth/sign-in">Log In</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include("../partials/footerAuth") %>

@@ -1,0 +1,244 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Add Student</h1><a class="badge bg-primary ms-2" href="/dashboard/all-students">All Students <i class="fas fa-fw fa-external-link-alt"></i></a>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Student Registration Form</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="?action=add">
+              <% if(alert.status === "error") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <h4 class="mt-3">Personal Information</h4>
+              <div class="row">
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="firstName">First Name</label>
+                  <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" value="<%= form.firstName %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="middleName">Middle Name</label>
+                  <input type="text" class="form-control" id="middleName" placeholder="Middle Name" name="middleName" value="<%= form.middleName %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="lastName">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" value="<%= form.lastName %>">
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                  <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" value="<%= form.dateOfBirth %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="gender">Gender</label>
+                  <select class="form-control" id="gender" name="gender" value="<%= form.gender %>">
+                    <option selected disabled hidden>Select Gender</option>
+                    <option value="male" <%= form.gender === "male" ? "selected" : "" %>>Male</option>
+                    <option value="female" <%= form.gender === "female" ? "selected" : "" %>>Female</option>
+                    <option value="other" <%= form.gender === "other" ? "selected" : "" %>>Other</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="email">Email</label>
+                  <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="<%= form.email %>">
+                </div>
+              </div>
+
+              <!-- Academic Information -->
+              <h4 class="mt-3">Academic Information</h4>
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="class">Class</label>
+                  <select class="form-control" id="class" name="class" <%= classes.length <= 0 ? "disabled" : "" %>>
+                    <% if(classes.length > 0) { %>
+                    <option disabled selected hidden>Select class</option>
+                    <% classes.map((classItem) => { %>
+                    <option value="<%= classItem.id %>" <%= form.class === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No classes found</option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Guardian Information -->
+              <h4 class="mt-3">Guardian Information</h4>
+              <div class="row">
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="guardianFirstName">Guardian's First Name</label>
+                  <input type="text" class="form-control" id="guardianFirstName" placeholder="First Name" name="guardianFirstName" value="<%= form.guardianFirstName %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="guardianMiddleName">Guardian's Middle Name</label>
+                  <input type="text" class="form-control" id="guardianMiddleName" placeholder="Middle Name" name="guardianMiddleName" value="<%= form.guardianMiddleName %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="guardianLastName">Guardian's Last Name</label>
+                  <input type="text" class="form-control" id="guardianLastName" placeholder="Last Name" name="guardianLastName" value="<%= form.guardianLastName %>">
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="guardianEmail">Guardian's Email</label>
+                  <input type="email" class="form-control" id="guardianEmail" placeholder="Email" name="guardianEmail" value="<%= form.guardianEmail %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="guardianPhone">Guardian's Phone Number</label>
+                  <input type="tel" class="form-control" id="guardianPhone" placeholder="Phone Number" name="guardianPhone" value="<%= form.guardianPhone %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="guardianRelationship">Relationship to Student</label>
+                  <select class="form-control" id="guardianRelationship" name="guardianRelationship" value="<%= form.guardianRelationship %>">
+                    <option selected disabled hidden>Select Relationship</option>
+                    <option value="father" <%= form.guardianRelationship === "father" ? "selected" : "" %>>Father</option>
+                    <option value="mother" <%= form.guardianRelationship === "moder" ? "selected" : "" %>>Mother</option>
+                    <option value="guardian" <%= form.guardianRelationship === "guardian" ? "selected" : "" %>>Guardian</option>
+                    <option value="brother" <%= form.guardianRelationship === "brother" ? "selected" : "" %>>brother</option>
+                    <option value="sister" <%= form.guardianRelationship === "sister" ? "selected" : "" %>>Sister</option>
+                    <option value="uncle" <%= form.guardianRelationship === "uncle" ? "selected" : "" %>>Uncle</option>
+                    <option value="aunt" <%= form.guardianRelationship === "aunt" ? "selected" : "" %>>Aunt</option>
+                    <option value="cousin" <%= form.guardianRelationship === "cousin" ? "selected" : "" %>>Cousin</option>
+                    <option value="nephew" <%= form.guardianRelationship === "nephew" ? "selected" : "" %>>Nephew</option>
+                    <option value="niece" <%= form.guardianRelationship === "niece" ? "selected" : "" %>>Niece</option>
+                    <option value="other" <%= form.guardianRelationship === "other" ? "selected" : "" %>>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="guardianOcupation">Ocupation</label>
+                  <select class="form-control" id="guardianOcupation" name="guardianOcupation" value="<%= form.guardianOcupation %>">
+                    <option selected disabled hidden>Select Occupation</option>
+                    <option value="teacher" <%= form.guardianOcupation === "Teacher" ? "selected" : "" %>>Teacher</option>
+                    <option value="doctor" <%= form.guardianOcupation === "doctor" ? "selected" : "" %>>Doctor</option>
+                    <option value="engineer" <%= form.guardianOcupation === "engineer" ? "selected" : "" %>>Engineer</option>
+                    <option value="nurse" <%= form.guardianOcupation === "nurse" ? "selected" : "" %>>Nurse</option>
+                    <option value="lawyer" <%= form.guardianOcupation === "lawyer" ? "selected" : "" %>>Lawyer</option>
+                    <option value="accountant" <%= form.guardianOcupation === "accountant" ? "selected" : "" %>>Accountant</option>
+                    <option value="farmer" <%= form.guardianOcupation === "farmer" ? "selected" : "" %>>Farmer</option>
+                    <option value="businessperson" <%= form.guardianOcupation === "businessperson" ? "selected" : "" %>>Businessperson</option>
+                    <option value="policeOfficer" <%= form.guardianOcupation === "policeOfficer" ? "selected" : "" %>>Police Officer</option>
+                    <option value="softwareDeveloper" <%= form.guardianOcupation === "softwareDeveloper" ? "selected" : "" %>>Software Developer</option>
+                    <option value="civilServant" <%= form.guardianOcupation === "civilServant" ? "selected" : "" %>>Civil Servant</option>
+                    <option value="electrician" <%= form.guardianOcupation === "electrician" ? "selected" : "" %>>Electrician</option>
+                    <option value="mechanic" <%= form.guardianOcupation === "mechanic" ? "selected" : "" %>>Mechanic</option>
+                    <option value="pilot" <%= form.guardianOcupation === "pilot" ? "selected" : "" %>>Pilot</option>
+                    <option value="chef" <%= form.guardianOcupation === "chef" ? "selected" : "" %>>Chef</option>
+                    <option value="artist" <%= form.guardianOcupation === "artist" ? "selected" : "" %>>Artist</option>
+                    <option value="driver" <%= form.guardianOcupation === "driver" ? "selected" : "" %>>Driver</option>
+                    <option value="student" <%= form.guardianOcupation === "student" ? "selected" : "" %>>Student</option>
+                    <option value="retired" <%= form.guardianOcupation === "retired" ? "selected" : "" %>>Retired</option>
+                    <option value="other" <%= form.guardianOcupation === "other" ? "selected" : "" %>>Other</option>
+                  </select>
+
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="guardianAddress">Guardian's Address</label>
+                <textarea class="form-control" id="guardianAddress" placeholder="Guardian's Address" name="guardianAddress"><%= form.guardianAddress %></textarea>
+              </div>
+
+              <!-- Medical Information -->
+              <h4 class="mt-3">Medical Information</h4>
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="bloodGroup">Blood Group</label>
+                  <select class="form-control" id="bloodGroup" name="bloodGroup" value="<%= form.bloodGroup %>">
+                    <option selected disabled hidden>Select Blood Group</option>
+                    <option value="A+" <%= form.bloodGroup === "A+" ? "selected" : "" %>>A+</option>
+                    <option value="A-" <%= form.bloodGroup === "A-" ? "selected" : "" %>>A-</option>
+                    <option value="B+" <%= form.bloodGroup === "B+" ? "selected" : "" %>>B+</option>
+                    <option value="B-" <%= form.bloodGroup === "B-" ? "selected" : "" %>>B-</option>
+                    <option value="O+" <%= form.bloodGroup === "O+" ? "selected" : "" %>>O+</option>
+                    <option value="O-" <%= form.bloodGroup === "O-" ? "selected" : "" %>>O-</option>
+                    <option value="AB+" <%= form.bloodGroup === "AB+" ? "selected" : "" %>>AB+</option>
+                    <option value="AB-" <%= form.bloodGroup === "AB-" ? "selected" : "" %>>AB-</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="genotype">Genotype</label>
+                  <select class="form-control" id="genotype" name="genotype" value="<%= form.genotype %>">
+                    <option selected disabled hidden>Select Genotype</option>
+                    <option value="AA" <%= form.genotype === "AA" ? "selected" : "" %>>AA</option>
+                    <option value="AS" <%= form.genotype === "AS" ? "selected" : "" %>>AS</option>
+                    <option value="SS" <%= form.genotype === "SS" ? "selected" : "" %>>SS</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Address -->
+              <h4 class="mt-3">Address</h4>
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="address">Address</label>
+                  <textarea class="form-control" id="address" placeholder="1234 Main St" name="address"><%= form.address %></textarea>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="address2">Address 2</label>
+                  <textarea class="form-control" id="address2" placeholder="Apartment, studio, or floor" name="address2"><%= form.address2 %></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="state">State</label>
+                  <select id="state" class="form-control" name="state" value="<%= form.state %>">
+                    <option selected>Choose...</option>
+                    <option>...</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="city">City</label>
+                  <select id="city" class="form-control" name="city" value="<%= form.city %>" disabled>
+                    <option selected disabled hidden>Select a city</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="localGovernment">Local Government</label>
+                  <select id="localGovernment" class="form-control" name="localGovernment" value="<%= form.localGovernment %>" disabled>
+                    <option selected disabled hidden>Select a local government</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+<script>
+  const form = JSON.parse('<%- JSON.stringify(form) %>');
+  console.log(form);
+</script>
+
+<%- include("../../partials/footer") %>
