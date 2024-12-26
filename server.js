@@ -6,6 +6,7 @@ const PORT = 2395 || process.env.PORT;
 const db = require("./models");
 const session = require("express-session");
 const flash = require("connect-flash");
+const cookieParser = require("cookie-parser");
 
 app.use(
   session({
@@ -14,6 +15,7 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(cookieParser());
 app.use(flash());
 app.set("view engine", "ejs");
 app.use(express.static("public"));

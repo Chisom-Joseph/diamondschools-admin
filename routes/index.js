@@ -1,10 +1,15 @@
 const router = require("express").Router();
 
-router.use("/dashboard", require("./dashboard"));
-router.use("/auth", require("./auth"));
+const loginVerifier = require("../middlewares/loginVerifire");
+
+router.use(require("../middlewares/adminAvailable"));
+router.use(require("../middlewares/setCurrentPath"));
+router.use("/dashboard", loginVerifier, require("./dashboard"));
+router.use("/auth", loginVerifier, require("./auth"));
 
 router.get("/", (req, res) => {
-  res.redirect("/dashboard");
+  // res.redirect("/dashboard");
+  res.redirect("/dashboard/all-students");
 });
 
 router.get("*", (req, res) => {

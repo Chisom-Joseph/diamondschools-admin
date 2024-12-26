@@ -1,20 +1,15 @@
 const { Class } = require("../models");
 
-module.exports = async () => {
+module.exports = async (id) => {
   try {
-    const classesFromDb = await Class.findAll();
+    if (!id) return {};
 
-    const classes = Promise.all(
-      classesFromDb.map(async (classFromDb) => {
-        return classFromDb.dataValues;
-      })
-    );
+    const classFromDb = await Class.findOne({ where: { id } });
+    if (!classFromDb) return {};
 
-    return classes;
+    return classFromDb.dataValues;
   } catch (error) {
-    console.log(error);
-    return [];
+    console.log(`ERROR GETTING CLASS: ${error}`);
+    return {};
   }
 };
-
-// 2022

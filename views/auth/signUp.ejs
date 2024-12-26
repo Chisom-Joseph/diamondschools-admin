@@ -14,39 +14,51 @@
 
           <div class="card">
             <div class="card-body">
-              <% if(error) { %>
-              <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <div class="alert-message">
-                  <strong>Error!</strong> <%- error.message %>
-                </div>
-              </div>
-              <% } %>
               <div class="m-sm-3">
                 <form method="POST">
+                  <% if(alert.status === "error") { %>
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert-message">
+                      <strong>Error!</strong> <%- alert.message %>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% if(alert.status === "success") { %>
+                  <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert-message pr-5">
+                      <strong>Sucess!</strong> <%- alert.message %>
+                    </div>
+                  </div>
+                  <% } %>
                   <div class="mb-3">
-                    <label class="form-label">FirstName</label>
-                    <input class="form-control form-control-lg" type="text" name="name" placeholder="Enter your name" value="<%- form.firstName %>" />
+                    <label for="firstName" class="form-label">FirstName</label>
+                    <input id="firstName" class="form-control form-control-lg" type="text" name="firstName" placeholder="Enter your FirstName" value="<%- form.firstName %>" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">MiddleName</label>
-                    <input class="form-control form-control-lg" type="text" name="name" placeholder="Enter your name" value="<%- form.middleName %>" />
+                    <label for="middleName" class="form-label">MiddleName</label>
+                    <input id="middleName" class="form-control form-control-lg" type="text" name="middleName" placeholder="Enter your MiddleName" value="<%- form.middleName %>" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">LastName</label>
-                    <input class="form-control form-control-lg" type="text" name="name" placeholder="Enter your name" value="<%- form.lastName %>" />
+                    <label for="lastName" class="form-label">LastName</label>
+                    <input id="lastName" class="form-control form-control-lg" type="text" name="lastName" placeholder="Enter your LastName" value="<%- form.lastName %>" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" value="<%- form.email %>" />
+                    <label for="username" class="form-label">Username</label>
+                    <input id="username" class="form-control form-control-lg" type="text" name="username" placeholder="Enter your Username" value="<%- form.username %>" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input class="form-control form-control-lg" type="password" name="password" placeholder="Enter password" />
+                    <label for="email" class="form-label">email</label>
+                    <input id="email" class="form-control form-control-lg" type="eamil" name="email" placeholder="Enter your email" value="<%- form.email %>" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Re-type Password</label>
-                    <input class="form-control form-control-lg" type="password" name="passwordConfirm" placeholder="Re-type password" />
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" class="form-control form-control-lg" type="password" name="password" placeholder="Enter password" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="passwordConfirm" class="form-label">Re-type Password</label>
+                    <input id="passwordConfirm" class=" form-control form-control-lg" type="password" name="passwordConfirm" placeholder="Re-type password" />
                   </div>
                   <div class="d-grid gap-2 mt-3">
                     <button class="btn btn-lg btn-primary">Sign up</button=>

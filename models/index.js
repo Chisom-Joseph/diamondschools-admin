@@ -1,6 +1,7 @@
 const dbConfig = require("../config/db.config");
 const { Sequelize, DataTypes } = require("sequelize");
 
+const Admin = require("./Admin");
 const Student = require("./Student");
 const Class = require("./Class");
 const Guardian = require("./Guardian");
@@ -25,6 +26,7 @@ db.sequelize = sequelize;
 db.Student = Student(sequelize, DataTypes);
 db.Class = Class(sequelize, DataTypes);
 db.Guardian = Guardian(sequelize, DataTypes);
+db.Admin = Admin(sequelize, DataTypes);
 
 // Relations
 db.Student.belongsTo(db.Class);

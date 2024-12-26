@@ -4,15 +4,33 @@ router.get("/", (req, res) => {
   res.render("dashboard/dashboard.ejs");
 });
 
+// All students
+router.get("/all-students", async (req, res) => {
+  res.render("dashboard/student/allStudents.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    students: await require("../utils/getStudents")(),
+  });
+});
+
 // Add student
 router.get("/add-student", async (req, res) => {
   res.render("dashboard/student/addStudent.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
-    classes: await require("../utils/getClass")(),
+    classes: await require("../utils/getClasses")(),
   });
 });
 router.post("/add-student", require("../controllers/dashboard/student"));
+
+// Site settings
+router.get("/site-settings", async (req, res) => {
+  res.render("dashboard/siteSettings.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    classes: await require("../utils/getClasses")(),
+  });
+});
 
 // class
 router.get("/class", async (req, res) => {
@@ -22,7 +40,7 @@ router.get("/class", async (req, res) => {
       alert: req.flash("alert")[0] || "",
       form: req.flash("form")[0] || "",
       formSection: req.flash("formSection")[0] || "",
-      classes: await require("../utils/genRegNumber")(),
+      classes: await require("../utils/getClasses")(),
     });
 });
 router.post("/class", require("../controllers/dashboard/class"));

@@ -9,14 +9,17 @@
   <meta name="author" content="AdminKit">
   <meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="/DataTables/datatables.min.css" rel="stylesheet">
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="shortcut icon" href="/img/icons/icon-48x48.png" />
 
   <link rel="canonical" href="https://demo-basic.adminkit.io/" />
 
-  <title>AdminKit Demo - Bootstrap 5 Admin Template</title>
+  <title>Diamond Schools Admin</title>
 
   <link class="js-stylesheet" href="/css/light.css" rel="stylesheet">
   <link href="/css/app.css" rel="stylesheet">
@@ -36,101 +39,49 @@
 
         <ul class="sidebar-nav">
           <li class="sidebar-header">
-            Pages
+            Students
           </li>
 
-          <li class="sidebar-item active">
-            <a class="sidebar-link" href="index.html">
-              <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+          <li class="sidebar-item <%= currentPath === '/dashboard/all-students' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/all-students">
+              <i class="align-middle" data-feather="users"></i>
+              <span class="align-middle">All Students</span>
             </a>
           </li>
 
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="pages-profile.html">
-              <i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
-            </a>
-          </li>
-
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="pages-sign-in.html">
-              <i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Sign In</span>
-            </a>
-          </li>
-
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="pages-sign-up.html">
-              <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Sign Up</span>
-            </a>
-          </li>
-
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="pages-blank.html">
-              <i class="align-middle" data-feather="book"></i> <span class="align-middle">Blank</span>
+          <li class="sidebar-item <%= currentPath === '/dashboard/add-student' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/add-student">
+              <i class="align-middle" data-feather="user-plus"></i>
+              <span class="align-middle">Add Student</span>
             </a>
           </li>
 
           <li class="sidebar-header">
-            Tools & Components
+            Settings
           </li>
 
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="ui-buttons.html">
-              <i class="align-middle" data-feather="square"></i> <span class="align-middle">Buttons</span>
+          <li class="sidebar-item <%= currentPath === '/dashboard/class' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/class">
+              <i class="align-middle" data-feather="book"></i>
+              <span class="align-middle">Class</span>
+            </a>
+          </li>
+
+          <li class="sidebar-item <%= currentPath === '/dashboard/site-settings' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/site-settings">
+              <i class="align-middle" data-feather="settings"></i>
+              <span class="align-middle">Site Settings</span>
             </a>
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="ui-forms.html">
-              <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Forms</span>
+            <a class="sidebar-link" href="/auth/logout">
+              <i class="align-middle" data-feather="log-out"></i>
+              <span class="align-middle">Logout</span>
             </a>
           </li>
 
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="ui-cards.html">
-              <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Cards</span>
-            </a>
-          </li>
 
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="ui-typography.html">
-              <i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Typography</span>
-            </a>
-          </li>
-
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="icons-feather.html">
-              <i class="align-middle" data-feather="coffee"></i> <span class="align-middle">Icons</span>
-            </a>
-          </li>
-
-          <li class="sidebar-header">
-            Plugins & Addons
-          </li>
-
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="charts-chartjs.html">
-              <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Charts</span>
-            </a>
-          </li>
-
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="maps-google.html">
-              <i class="align-middle" data-feather="map"></i> <span class="align-middle">Maps</span>
-            </a>
-          </li>
-        </ul>
-
-        <div class="sidebar-cta">
-          <div class="sidebar-cta-content">
-            <strong class="d-inline-block mb-2">Upgrade to Pro</strong>
-            <div class="mb-3 text-sm">
-              Are you looking for more components? Check out our premium version.
-            </div>
-            <div class="d-grid">
-              <a href="upgrade-to-pro.html" class="btn btn-primary">Upgrade to Pro</a>
-            </div>
-          </div>
-        </div>
       </div>
     </nav>
 
@@ -223,7 +174,7 @@
                   <a href="#" class="list-group-item">
                     <div class="row g-0 align-items-center">
                       <div class="col-2">
-                        <img src="/img/avatars/avatar-5.jpg" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
+                        <img src="/img/avatars/default.png" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
                       </div>
                       <div class="col-10 ps-2">
                         <div class="text-dark">Vanessa Tucker</div>
@@ -235,7 +186,7 @@
                   <a href="#" class="list-group-item">
                     <div class="row g-0 align-items-center">
                       <div class="col-2">
-                        <img src="/img/avatars/avatar-2.jpg" class="avatar img-fluid rounded-circle" alt="William Harris">
+                        <img src="/img/avatars/default.png" class="avatar img-fluid rounded-circle" alt="William Harris">
                       </div>
                       <div class="col-10 ps-2">
                         <div class="text-dark">William Harris</div>
@@ -247,7 +198,7 @@
                   <a href="#" class="list-group-item">
                     <div class="row g-0 align-items-center">
                       <div class="col-2">
-                        <img src="/img/avatars/avatar-4.jpg" class="avatar img-fluid rounded-circle" alt="Christina Mason">
+                        <img src="/img/avatars/default.png" class="avatar img-fluid rounded-circle" alt="Christina Mason">
                       </div>
                       <div class="col-10 ps-2">
                         <div class="text-dark">Christina Mason</div>
@@ -259,7 +210,7 @@
                   <a href="#" class="list-group-item">
                     <div class="row g-0 align-items-center">
                       <div class="col-2">
-                        <img src="/img/avatars/avatar-3.jpg" class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
+                        <img src="/img/avatars/default.png" class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
                       </div>
                       <div class="col-10 ps-2">
                         <div class="text-dark">Sharon Lessman</div>
@@ -280,7 +231,7 @@
               </a>
 
               <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                <img src="/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span class="text-dark">Charles Hall</span>
+                <img src="/img/avatars/default.png" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span class="text-dark">@<%= admin.username %></span>
               </a>
               <div class="dropdown-menu dropdown-menu-end">
                 <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>

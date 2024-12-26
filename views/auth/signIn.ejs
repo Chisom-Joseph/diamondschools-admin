@@ -15,19 +15,35 @@
           <div class="card">
             <div class="card-body">
               <div class="m-sm-3">
-                <form>
+                <form method="POST">
+                  <% if(alert.status === "error") { %>
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert-message">
+                      <strong>Error!</strong> <%- alert.message %>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% if(alert.status === "success") { %>
+                  <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert-message pr-5">
+                      <strong>Sucess!</strong> <%- alert.message %>
+                    </div>
+                  </div>
+                  <% } %>
                   <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" />
+                    <label for="username" class="form-label">Username or Email</label>
+                    <input id="username" class="form-control form-control-lg" type="username" name="username" placeholder="Enter your Username or email" value="<%- form.username %>" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
                   </div>
                   <div>
                     <div class="form-check align-items-center">
-                      <input id="customControlInline" type="checkbox" class="form-check-input" value="remember-me" name="remember-me" checked>
-                      <label class="form-check-label text-small" for="customControlInline">Remember me</label>
+                      <input id="rememberMe" type="checkbox" class="form-check-input" name="rememberMe" checked>
+                      <label class="form-check-label text-small" for="rememberMe">Remember me</label>
                     </div>
                   </div>
                   <div class="d-grid gap-2 mt-3">

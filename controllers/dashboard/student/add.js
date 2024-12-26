@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const addStudentSchema = require("../../../validation/student/add");
-const { Student, Guardian } = require("../../../models");
+const { Student, Guardian, sequelize } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -56,32 +56,42 @@ module.exports = async (req, res) => {
       salt
     );
 
+    const transaction = await sequelize.transaction();
+
     // Create Guardian
-    const newGuardian = await Guardian.create({
-      firstName: req.body.guardianFirstName,
-      middleName: req.body.guardianMiddleName,
-      lastName: req.body.guardianLastName,
-      email: req.body.guardianEmail,
-      phoneNumber: req.body.guardianPhone,
-      relationshipToStudent: req.body.guardianRelationship,
-      address: req.body.guardianAddress,
-      occupation: req.body.guardianOcupation,
-    });
-    console.log(newGuardian);
+    const newGuardian = await Guardian.create(
+      {
+        firstName: req.body.guardianFirstName,
+        middleName: req.body.guardianMiddleName,
+        lastName: req.body.guardianLastName,
+        email: req.body.guardianEmail,
+        phoneNumber: req.body.guardianPhone,
+        relationshipToStudent: req.body.guardianRelationship,
+        address: req.body.guardianAddress,
+        occupation: req.body.guardianOcupation,
+      },
+      { transaction }
+    );
 
     // Create student
-    const newStudent = await Student.create({
-      firstName: req.body.firstName,
-      middleName: req.body.middleName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      registrationNumber: require("../../../utils/genRegNumber")(),
-      password: hashedPassword,
-      gender: req.body.gender,
-      dateOfBirth: req.body.dateOfBirth,
-      GuardianId: newGuardian.dataValues.id,
-    });
+    const newStudent = await Student.create(
+      {
+        firstName: req.body.firstName,
+        middleName: req.body.middleName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        registrationNumber: require("../../../utils/genRegNumber")(),
+        password: hashedPassword,
+        gender: req.body.gender,
+        dateOfBirth: req.body.dateOfBirth,
+        ClassId: req.body.class,
+        GuardianId: newGuardian.dataValues.id,
+      },
+      { transaction }
+    );
     console.log(newStudent);
+
+    await transaction.commit();
 
     // Send email
 
@@ -96,6 +106,7 @@ module.exports = async (req, res) => {
     res.redirect("/dashboard/add-student");
   } catch (error) {
     console.log(error);
+    await transaction.rollback();
     req.flash("alert", {
       status: "error",
       section: "add",
