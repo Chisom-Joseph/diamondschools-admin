@@ -4,6 +4,15 @@ router.get("/", (req, res) => {
   res.render("dashboard/dashboard.ejs");
 });
 
+// All aspirants
+router.get("/all-aspirants", async (req, res) => {
+  res.render("dashboard/aspirant/allAspirants.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    aspirants: await require("../utils/getAspirants")(),
+  });
+});
+
 // All students
 router.get("/all-students", async (req, res) => {
   res.render("dashboard/student/allStudents.ejs", {

@@ -41,23 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
-        is: /^[+]?[0-9()\-]+$/,
       },
     },
     relationshipToStudent: {
-      type: DataTypes.ENUM(
-        "father",
-        "mother",
-        "guardian",
-        "broder",
-        "sister",
-        "uncle",
-        "aunt",
-        "cousin",
-        "nephew",
-        "niece",
-        "other"
-      ),
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,

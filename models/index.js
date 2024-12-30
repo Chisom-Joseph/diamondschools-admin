@@ -6,6 +6,7 @@ const Student = require("./Student");
 const Class = require("./Class");
 const Guardian = require("./Guardian");
 const Religion = require("./Religion");
+const Aspirant = require("./Aspirant");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -29,6 +30,7 @@ db.Class = Class(sequelize, DataTypes);
 db.Guardian = Guardian(sequelize, DataTypes);
 db.Admin = Admin(sequelize, DataTypes);
 db.Religion = Religion(sequelize, DataTypes);
+db.Aspirant = Aspirant(sequelize, DataTypes);
 
 // Relations
 db.Student.belongsTo(db.Class);
@@ -39,5 +41,11 @@ db.Guardian.hasMany(db.Student);
 
 db.Student.belongsTo(db.Religion);
 db.Religion.hasMany(db.Student);
+
+db.Aspirant.belongsTo(db.Guardian);
+db.Guardian.hasMany(db.Aspirant);
+
+db.Aspirant.belongsTo(db.Class);
+db.Class.hasMany(db.Aspirant);
 
 module.exports = db;
