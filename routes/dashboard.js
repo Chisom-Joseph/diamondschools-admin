@@ -45,4 +45,17 @@ router.get("/class", async (req, res) => {
 });
 router.post("/class", require("../controllers/dashboard/class"));
 
+// class
+router.get("/religion", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  console.log(await require("../utils/genRegNumber")()),
+    res.status(status).render("dashboard/religion/religion.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      formSection: req.flash("formSection")[0] || "",
+      religions: await require("../utils/getReligions")(),
+    });
+});
+router.post("/religion", require("../controllers/dashboard/religion"));
+
 module.exports = router;

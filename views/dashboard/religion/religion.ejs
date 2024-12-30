@@ -1,0 +1,151 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Religions</h1><a class="badge bg-primary ms-2" href="/dashboard/all-religions">All Relitions <i class="fas fa-fw fa-external-link-alt"></i></a>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Add new Religions</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=add">
+              <% if(alert.status === "error" && alert.section === "add") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "add") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="addReligion">Religion</label>
+                  <input type="text" class="form-control" id="addReligion" placeholder="Religion" name="religion" value="<%- formSection === "add" ? form.religion : "" %>">
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Add Religion</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Rename Religion</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=update">
+              <% if(alert.status === "error" && alert.section === "update") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "update") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editReligion">Religions</label>
+                  <select class="form-control" id="editReligion" name="religion" <%= religions.length <= 0 ? "disabled" : "" %>>
+                    <% if(religions.length > 0) { %>
+                    <option disabled selected hidden>Select religion</option>
+                    <% religions.map((religion) => { %>
+                    <option value="<%= religion.id %>" <%- formSection === "update" && form.religion === religion.id ? "selected" : "" %>><%= religion.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No Religions found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editReligion">New Religion name</label>
+                  <input value="<%= formSection === "update" ? form.newReligion : "" %>" type="text" class="form-control" id="editReligion" placeholder="Type new name" name="newReligion">
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-secondary">Update Religion</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Delete Religion</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=delete">
+              <% if(alert.status === "error" && alert.section === "delete") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "delete") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="deleteReligion">Religion</label>
+                  <select class="form-control" id="deleteReligion" name="religion" <%= religions.length <= 0 ? "disabled" : "" %>>
+                    <% if(religions.length > 0) { %>
+                    <option disabled selected hidden>Select Religion</option>
+                    <% religions.map((religion) => { %>
+                    <option value="<%= religion.id %>" <%- formSection === "delete" && form.religion === religion.id ? "selected" : "" %>><%= religion.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No Religions found</option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-danger">Delete Religion</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+<%- include("../../partials/footer") %>
