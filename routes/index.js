@@ -8,7 +8,6 @@ router.use("/dashboard", loginVerifier, require("./dashboard"));
 router.use("/auth", loginVerifier, require("./auth"));
 
 router.get("/", (req, res) => {
-  // res.redirect("/dashboard");
   res.redirect("/dashboard/all-students");
 });
 

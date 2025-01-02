@@ -1,16 +1,33 @@
-module.exports = (prefix = "REG", year = new Date().getFullYear()) => {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const numbers = "0123456789";
+const { Student } = require("../models");
 
-  let randomLetters = "";
-  for (let i = 0; i < 3; i++) {
-    randomLetters += letters[Math.floor(Math.random() * letters.length)];
-  }
+module.exports = async () => {
+  let count = 1;
+  const genRegNumber = async () => {
+    const prefix = "DNPSS";
+    const year = new Date().getFullYear();
 
-  let randomNumbers = "";
-  for (let i = 0; i < 3; i++) {
-    randomNumbers += numbers[Math.floor(Math.random() * numbers.length)];
-  }
+    const studentsCount = await Student.count();
+    const studentsNumber = studentsCount + count;
 
-  return `${prefix}-${year}-${randomLetters}${randomNumbers}`;
+    const padRegistrationNumber = (number) => {
+      return String(number).padStart(3, "0");
+    };
+
+    const registrationNumber = `${prefix}-${year}-${padRegistrationNumber(
+      studentsNumber
+    )}`;
+
+    const studentsNumberExsits = await Student.findOne({
+      where: {
+        registrationNumber,
+      },
+    });
+    if (studentsNumberExsits) {
+      count++;
+      return await genRegNumber();
+    }
+
+    return registrationNumber;
+  };
+  return await genRegNumber();
 };

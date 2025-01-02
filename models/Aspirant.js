@@ -79,6 +79,13 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
+    religion: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     gender: {
       type: DataTypes.ENUM("male", "female", "other"),
       allowNull: false,

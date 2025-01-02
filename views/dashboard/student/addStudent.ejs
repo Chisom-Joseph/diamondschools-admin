@@ -13,7 +13,7 @@
             <h5 class="card-title">Student Registration Form</h5>
           </div>
           <div class="card-body">
-            <form method="POST" action="?action=add">
+            <form method="POST" action="?action=add" enctype="multipart/form-data">
               <% if(alert.status === "error") { %>
               <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -63,6 +63,10 @@
                 <div class="mb-3 col-md-4">
                   <label class="form-label" for="email">Email</label>
                   <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="<%= form.email %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="profilePhoto">Profile Photo</label>
+                  <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo" name="profilePhoto">
                 </div>
               </div>
 

@@ -30,13 +30,6 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
     registrationNumber: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -51,9 +44,37 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    stateOfOrigin: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     profileImageUrl: {
       type: DataTypes.STRING,
       allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    religion: {
+      type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
       },

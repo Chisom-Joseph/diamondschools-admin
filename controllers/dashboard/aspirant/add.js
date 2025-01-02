@@ -79,6 +79,7 @@ module.exports = async (req, res) => {
         firstName: req.body.firstName,
         middleName: req.body.middleName,
         lastName: req.body.lastName,
+        email: req.body.email,
         registrationNumber: require("../../../utils/genRegNumber")(),
         password: hashedPassword,
         gender: req.body.gender,
@@ -91,7 +92,6 @@ module.exports = async (req, res) => {
     console.log(newStudent);
 
     await transaction.commit();
-    // await transaction.rollback();
 
     // Send email
 
@@ -106,6 +106,7 @@ module.exports = async (req, res) => {
     res.redirect("/dashboard/add-student");
   } catch (error) {
     console.log(error);
+    await transaction.rollback();
     req.flash("alert", {
       status: "error",
       section: "add",

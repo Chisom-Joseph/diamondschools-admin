@@ -20,6 +20,7 @@ app.use(flash());
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(require("./routes"));
 
 console.log("Waiting for database connection...");

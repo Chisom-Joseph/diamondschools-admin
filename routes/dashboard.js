@@ -12,6 +12,19 @@ router.get("/all-aspirants", async (req, res) => {
     aspirants: await require("../utils/getAspirants")(),
   });
 });
+// All aspirants
+router.get("/aspirant/:id", async (req, res) => {
+  res.render("dashboard/aspirant/aspirant.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    aspirant: await require("../utils/getAspirant")(req.params.id),
+    user: "",
+  });
+});
+router.post(
+  "/aspirant/:id",
+  require("../controllers/dashboard/aspirant/makeStudent")
+);
 
 // All students
 router.get("/all-students", async (req, res) => {

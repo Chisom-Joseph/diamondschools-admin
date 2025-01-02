@@ -25,7 +25,7 @@
                 <% if(aspirants.length > 0) { %>
                 <% aspirants.map(aspirant => { %>
                 <tr>
-                  <td><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></td>
+                  <td><a href="/dashboard/aspirant/<%= aspirant.id %>"><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></a></td>
                   <td><%= aspirant.class.name %></td>
                   <td><%= aspirant.examinationNumber %></td>
                   <td><%= aspirant.gender %></td>
@@ -35,7 +35,6 @@
                 <% } else { %>
                 <tr>
                   <td>No aspirants available</td>
-                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
