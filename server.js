@@ -50,10 +50,6 @@ db.sequelize
       database_protocol: config.protocol,
       database_port: config.port,
     });
-    // (async () => {
-    //   await sessionStore.sync(); // Synchronize the session table with the database
-    //   console.log("Session store synced!");
-    // })();
     app.listen(PORT, () => {
       console.log(`Server is Up and Running on http://localhost:${PORT}/`);
     });
