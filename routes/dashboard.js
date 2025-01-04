@@ -37,10 +37,16 @@ router.get("/all-students", async (req, res) => {
 
 // Add student
 router.get("/add-student", async (req, res) => {
+  const { Country, State } = require("country-state-city");
   res.render("dashboard/student/addStudent.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     classes: await require("../utils/getClasses")(),
+    religions: await require("../utils/getReligions")(),
+    examinationDate: await require("../utils/getExaminationDate")(),
+    academicYears: await require("../utils/getAcademicYears")(),
+    countries: Country.getAllCountries(),
+    states: State.getAllStates(),
   });
 });
 router.post("/add-student", require("../controllers/dashboard/student"));

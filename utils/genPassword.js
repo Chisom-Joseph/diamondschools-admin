@@ -2,10 +2,9 @@ module.exports = (length = 12) => {
   const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const lowercase = "abcdefghijklmnopqrstuvwxyz";
   const numbers = "0123456789";
-  const symbols = "!@#$%^&*()_+[]{}|;:,.<>?";
 
   // Combine all characters into a single string
-  const allCharacters = uppercase + lowercase + numbers + symbols;
+  const allCharacters = uppercase + lowercase + numbers;
 
   let password = "";
 
@@ -13,7 +12,6 @@ module.exports = (length = 12) => {
   password += uppercase[Math.floor(Math.random() * uppercase.length)];
   password += lowercase[Math.floor(Math.random() * lowercase.length)];
   password += numbers[Math.floor(Math.random() * numbers.length)];
-  password += symbols[Math.floor(Math.random() * symbols.length)];
 
   // Fill the rest of the password length with random characters
   for (let i = password.length; i < length; i++) {
@@ -26,6 +24,5 @@ module.exports = (length = 12) => {
     .sort(() => Math.random() - 0.5)
     .join("");
 
-  return "1111111111";
   return password;
 };

@@ -14,11 +14,11 @@
             <table id="example" class="table table-striped" style="width:100%">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>Full Name</th>
                   <th>Class</th>
                   <th>Reg Number</th>
                   <th>Gender</th>
-                  <th>Email</th>
                   <th>Guardian</th>
                 </tr>
               </thead>
@@ -26,18 +26,17 @@
                 <% if(students.length > 0) { %>
                 <% students.map(student => { %>
                 <tr>
+                  <td><img src="<%= student.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" alt="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>"></td>
                   <td><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></td>
                   <td><%= student.class.name %></td>
                   <td><%= student.registrationNumber %></td>
                   <td><%= student.gender %></td>
-                  <td><%= student.email %></td>
                   <td><%= student.guardian.firstName %> <%= student.guardian.middleName %> <%= student.guardian.lastName %></td>
                 </tr>
                 <% }) %>
                 <% } else { %>
                 <tr>
                   <td>No students available</td>
-                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -51,7 +50,6 @@
                   <th>Class</th>
                   <th>Reg Number</th>
                   <th>Gender</th>
-                  <th>Email</th>
                   <th>Guardian</th>
                 </tr>
               </tfoot>

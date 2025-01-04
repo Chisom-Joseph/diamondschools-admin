@@ -14,6 +14,7 @@
             <table id="example" class="table table-striped" style="width:100%">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>Full Name</th>
                   <th>Class</th>
                   <th>Exam Number</th>
@@ -25,6 +26,7 @@
                 <% if(aspirants.length > 0) { %>
                 <% aspirants.map(aspirant => { %>
                 <tr>
+                  <td><img src="<%= aspirant.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" alt="<%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %>"></td>
                   <td><a href="/dashboard/aspirant/<%= aspirant.id %>"><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></a></td>
                   <td><%= aspirant.class.name %></td>
                   <td><%= aspirant.examinationNumber %></td>
@@ -39,11 +41,13 @@
                   <td></td>
                   <td></td>
                   <td></td>
+                  <td></td>
                 </tr>
                 <% } %>
               </tbody>
               <tfoot>
                 <tr>
+                  <th>#</th>
                   <th>Full Name</th>
                   <th>Class</th>
                   <th>Reg Number</th>

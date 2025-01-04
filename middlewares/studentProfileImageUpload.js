@@ -2,10 +2,7 @@ const multer = require("multer");
 const path = require("path");
 
 // Set storage engine
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/img/temp");
-  },
+const storage = multer.memoryStorage({
   filename: function (req, file, cb) {
     cb(
       null,
@@ -21,7 +18,7 @@ const upload = multer({
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   },
-}).single("ProfilePhoto");
+}).single("profilePhoto");
 
 // Check File Type
 function checkFileType(file, cb) {
