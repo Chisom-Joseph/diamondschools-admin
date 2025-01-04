@@ -33,7 +33,6 @@ module.exports = async (req, res) => {
           message: "Guardian email already in use.",
         });
         req.flash("form", req.body);
-        req.flash("formSection", "add");
         req.flash("status", 400);
         return res.redirect("/dashboard/add-student");
       }
@@ -162,7 +161,7 @@ module.exports = async (req, res) => {
         message: `Student created successfully. REG NUMBER: ${registrationNumber} PASSWORD: ${password}`,
       });
       req.flash("form", "");
-      req.flash("formSection", "");
+      req.flash("newStudentId", newStudent.dataValues.id);
       req.flash("status", 200);
       res.redirect("/dashboard/add-student");
     });
@@ -174,7 +173,6 @@ module.exports = async (req, res) => {
       message: "An unexpected error occured",
     });
     req.flash("form", req.body);
-    req.flash("formSection", "add");
     req.flash("status", 400);
     return res.redirect("/dashboard/add-student");
   }

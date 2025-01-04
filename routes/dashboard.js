@@ -12,19 +12,32 @@ router.get("/all-aspirants", async (req, res) => {
     aspirants: await require("../utils/getAspirants")(),
   });
 });
-// All aspirants
+// Add aspirant
+router.get("/add-aspirant", async (req, res) => {
+  const { Country, State } = require("country-state-city");
+  res.render("dashboard/aspirant/addStudent.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    classes: await require("../utils/getClasses")(),
+    religions: await require("../utils/getReligions")(),
+    examinationDate: await require("../utils/getExaminationDate")(),
+    academicYears: await require("../utils/getAcademicYears")(),
+    countries: Country.getAllCountries(),
+    states: State.getAllStates(),
+  });
+});
+router.post("/add-aspirant", require("../controllers/dashboard/aspirant"));
+// Aspirant
 router.get("/aspirant/:id", async (req, res) => {
   res.render("dashboard/aspirant/aspirant.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
+    newStudentId: req.flash("newStudentId")[0] || "",
     aspirant: await require("../utils/getAspirant")(req.params.id),
     user: "",
   });
 });
-router.post(
-  "/aspirant/:id",
-  require("../controllers/dashboard/aspirant/makeStudent")
-);
+router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 
 // All students
 router.get("/all-students", async (req, res) => {
@@ -41,6 +54,7 @@ router.get("/add-student", async (req, res) => {
   res.render("dashboard/student/addStudent.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
+    newStudentId: req.flash("newStudentId")[0] || "",
     classes: await require("../utils/getClasses")(),
     religions: await require("../utils/getReligions")(),
     examinationDate: await require("../utils/getExaminationDate")(),
@@ -50,6 +64,33 @@ router.get("/add-student", async (req, res) => {
   });
 });
 router.post("/add-student", require("../controllers/dashboard/student"));
+router.get("/student/:id", async (req, res) => {
+  res.render("dashboard/student/student.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    student: await require("../utils/getStudent")(req.params.id),
+    user: "",
+  });
+});
+router.post("/student/:id", require("../controllers/dashboard/student/"));
+
+// Guardian
+router.get("/all-guardians", async (req, res) => {
+  res.render("dashboard/guardian/allGuardians.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    guardians: await require("../utils/getGuardians")(),
+  });
+});
+router.get("/guardian/:id", async (req, res) => {
+  res.render("dashboard/guardian/guardian.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    newStudentId: req.flash("newStudentId")[0] || "",
+    guardian: await require("../utils/getGuardian")(req.params.id),
+    user: "",
+  });
+});
 
 // Site settings
 router.get("/site-settings", async (req, res) => {

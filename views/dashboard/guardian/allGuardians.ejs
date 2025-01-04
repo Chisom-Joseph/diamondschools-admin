@@ -1,0 +1,58 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <h1 class="h3 mb-3">All Guardians</h1>
+
+    <div class="row">
+      <div class="col-12 col-xl-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Striped Rows</h5>
+          </div>
+          <div class="card-body">
+            <table id="example" class="table table-striped" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone Number</th>
+                  <th>Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if(guardians.length > 0) { %>
+                <% guardians.map(guardian => { %>
+                <tr>
+                  <td><a href="/dashboard/guardian/<%= guardian.id %>"><%= guardian.firstName %> <%= guardian.middleName %> <%= guardian.lastName %></a></td>
+                  <td><%= guardian.email %></td>
+                  <td><%= guardian.phoneNumber %></td>
+                  <td><%= guardian.address %></td>
+                </tr>
+                <% }) %>
+                <% } else { %>
+                <tr>
+                  <td>No guardians available</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <% } %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone Number</th>
+                  <th>Address</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<%- include("../../partials/footer") %>

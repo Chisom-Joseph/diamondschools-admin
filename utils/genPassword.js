@@ -1,4 +1,4 @@
-module.exports = (length = 12) => {
+module.exports = (length = 6) => {
   const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const lowercase = "abcdefghijklmnopqrstuvwxyz";
   const numbers = "0123456789";

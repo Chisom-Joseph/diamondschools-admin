@@ -27,11 +27,11 @@
                 <% students.map(student => { %>
                 <tr>
                   <td><img src="<%= student.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" alt="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>"></td>
-                  <td><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></td>
+                  <td><a href="/dashboard/student/<%= student.id %>"><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></a></td>
                   <td><%= student.class.name %></td>
                   <td><%= student.registrationNumber %></td>
                   <td><%= student.gender %></td>
-                  <td><%= student.guardian.firstName %> <%= student.guardian.middleName %> <%= student.guardian.lastName %></td>
+                  <td><a href="/dashboard/guardian/<%= student.guardian.id %>"><%= student.guardian.firstName %> <%= student.guardian.middleName %> <%= student.guardian.lastName %></a></td>
                 </tr>
                 <% }) %>
                 <% } else { %>

@@ -31,7 +31,7 @@
                   <td><%= aspirant.class.name %></td>
                   <td><%= aspirant.examinationNumber %></td>
                   <td><%= aspirant.gender %></td>
-                  <td><%= aspirant.guardian.firstName %> <%= aspirant.guardian.middleName %> <%= aspirant.guardian.lastName %></td>
+                  <td><a href="/dashboard/guardian/<%= aspirant.guardian.id %>"><%= aspirant.guardian.firstName %> <%= aspirant.guardian.middleName %> <%= aspirant.guardian.lastName %></a></td>
                 </tr>
                 <% }) %>
                 <% } else { %>

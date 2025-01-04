@@ -7,14 +7,6 @@ module.exports = async (id) => {
 
     const aspirant = aspirantFromDb.dataValues;
 
-    aspirant.profileImageUrl = aspirant.profileImageUrl
-      ? `http://localhost:4728${aspirant.profileImageUrl}`
-      : "https://via.placeholder.com/150";
-
-    aspirant.paymentProofUrl = aspirant.paymentProofUrl
-      ? `http://localhost:4728${aspirant.paymentProofUrl}`
-      : "https://via.placeholder.com/150";
-
     aspirant.guardian = await require("../utils/getGuardian")(
       aspirant.GuardianId
     );

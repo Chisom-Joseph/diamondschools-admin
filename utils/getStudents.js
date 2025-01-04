@@ -1,4 +1,4 @@
-const { Student, Guardian } = require("../models");
+const { Student } = require("../models");
 
 module.exports = async () => {
   try {

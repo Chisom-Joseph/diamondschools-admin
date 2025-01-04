@@ -3,7 +3,7 @@
   <div class="container-fluid p-0">
 
     <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Aspirant</h1><a class="badge bg-primary ms-2" href="/dashboard/all-aspirants">All Aspirants <i class="fas fa-fw fa-external-link-alt"></i></a>
+      <h1 class="h3 d-inline align-middle">Student</h1><a class="badge bg-primary ms-2" href="/dashboard/all-students">All Students <i class="fas fa-fw fa-external-link-alt"></i></a>
     </div>
 
     <div class="row">
@@ -26,10 +26,9 @@
             </div>
             <h5 class="card-title mb-3">Aspitan details</h5>
             <div class="mb-0 d-flex gap-2 flex-wrap">
-              <button class="btn btn-primary" disabled><i class="far fa-smile"></i> Approve Aspirant</button>
-              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary"><i class="fas fa-check"></i> Make Student</button>
+              <button class="btn btn-primary" disabled><i class="far fa-smile"></i> Approve Student</button>
               <button class="btn btn-warning" disabled><i class="fas fa-ban"></i> Block</button>
-              <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
+              <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Student</button>
             </div>
           </div>
           <div class="card-body">
@@ -50,70 +49,57 @@
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   <div class="alert-message pr-5">
                     <strong>Sucess!</strong> <%- alert.message %>
-                    <a href="/dashboard/student/<%= newStudentId %>">View New Student</a>
                   </div>
                 </div>
               </div>
               <% } %>
-              <div class="col-sm-12 col-lg-6 col-xl-6 col-xxl-6">
-                <div class="row g-0">
-                  <div class="col-sm-3 col-lg-2 col-xxl-1 text-center">
-                    <img src="<%= aspirant.profileImageUrl %>" width="64" height="64" class="rounded-circle mt-2" style="object-fit: cover;" alt="Angelica Ramos">
-                  </div>
-                  <div class="col-sm-9 col-lg-10 col-xxl-11">
-                    <strong><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></strong>
-                  </div>
-                </div>
+              <div class="col-sm-12 col-lg-7">
                 <table class="table table-sm mt-2 mb-4">
                   <tbody>
                     <tr>
                       <th>First Name</th>
-                      <td><%= aspirant.firstName %></td>
+                      <td><%= student.firstName %></td>
                     </tr>
                     <tr>
                       <th>Middle Name</th>
-                      <td><%= aspirant.middleName %></td>
+                      <td><%= student.middleName %></td>
                     </tr>
                     <tr>
                       <th>Last Name</th>
-                      <td><%= aspirant.lastName %></td>
+                      <td><%= student.lastName %></td>
                     </tr>
                     <tr>
                       <th>Gender</th>
-                      <td><%= aspirant.gender %></td>
+                      <td><%= student.gender %></td>
                     </tr>
                     <tr>
                       <th>Religion</th>
-                      <td><%= aspirant.religion %></td>
+                      <td><%= student.religion %></td>
                     </tr>
                     <tr>
                       <th>Nationality</th>
-                      <td><%= aspirant.country %></td>
+                      <td><%= student.country %></td>
                     </tr>
                     <tr>
                       <th>State Of Origin</th>
-                      <td><%= aspirant.stateOfOrigin %></td>
+                      <td><%= student.stateOfOrigin %></td>
                     </tr>
                     <tr>
                       <th>Address</th>
-                      <td><%= aspirant.address %></td>
+                      <td><%= student.address %></td>
                     </tr>
                     <tr>
                       <th>Date Of Birth</th>
-                      <td><%= aspirant.dateOfBirth %></td>
-                    </tr>
-                    <tr>
-                      <th>Examination Date</th>
-                      <td><%= aspirant.examinationDate %></td>
+                      <td><%= student.dateOfBirth %></td>
                     </tr>
                     <tr>
                       <th>Guardian Full Name</th>
-                      <td><a href="/dashboard/guardian/<%= aspirant.guardian.id %>"><%= aspirant.guardian.firstName %> <%= aspirant.guardian.middleName %> <%= aspirant.guardian.lastName %></a></td>
+                      <td><a href="/dashboard/guardian/<%= student.guardian.id %>"><%= student.guardian.firstName %> <%= student.guardian.middleName %> <%= student.guardian.lastName %></a></td>
                     </tr>
                     <tr>
                       <th>Status</th>
                       <td>
-                        <% if(aspirant.status === true) { %>
+                        <% if(student.status === true) { %>
                         <span class="badge bg-success">Active</span>
                         <% } else { %>
                         <span class="badge bg-danger">Not active</span>
@@ -124,9 +110,9 @@
                 </table>
               </div>
 
-              <div class="col-sm-12 col-lg-6 col-xl-6 col-xxl-6">
-                <strong class="mb-2 d-block">Payment Proof</strong>
-                <img class="img-fluid" src="<%= aspirant.paymentProofUrl %>" alt="">
+              <div class="col-sm-12 col-lg-5">
+                <strong class="mb-2 d-block">Profile image</strong>
+                <img class="img-fluid" src="<%= student.profileImageUrl %>" alt="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>">
               </div>
             </div>
 
@@ -147,7 +133,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body m-3">
-          <p class="mb-0">Are you sure you want to make <b><%- aspirant.firstName %> <%- aspirant.middleName %> <%- aspirant.lastName %></b> a student?</p>
+          <p class="mb-0">Are you sure you want to make <b><%- student.firstName %> <%- student.middleName %> <%- student.lastName %></b> a student?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

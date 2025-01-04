@@ -55,6 +55,14 @@
               <span class="align-middle">Add Student</span>
             </a>
           </li>
+          <% if(currentPath.startsWith("/dashboard/student/")) { %>
+          <li class="sidebar-item <%= currentPath === `/dashboard/student/${student.id}` ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/student/<%= student.id %>">
+              <i class="align-middle" data-feather="user"></i>
+              <span class="align-middle"><%= student.registrationNumber %></span>
+            </a>
+          </li>
+          <% } %>
 
           <li class="sidebar-header">
             Aspirants
@@ -66,6 +74,33 @@
               <span class="align-middle">All Aspirants</span>
             </a>
           </li>
+          <% if(currentPath.startsWith("/dashboard/aspirant/")) { %>
+          <li class="sidebar-item <%= currentPath === `/dashboard/aspirant/${aspirant.id}` ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/aspirant/<%= aspirant.id %>">
+              <i class="align-middle" data-feather="user"></i>
+              <span class="align-middle"><%= aspirant.examinationNumber %></span>
+            </a>
+          </li>
+          <% } %>
+
+          <li class="sidebar-header">
+            Guardians
+          </li>
+
+          <li class="sidebar-item <%= currentPath === '/dashboard/all-guardians' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/all-guardians">
+              <i class="align-middle" data-feather="file-text"></i>
+              <span class="align-middle">All Guardians</span>
+            </a>
+          </li>
+          <% if(currentPath.startsWith("/dashboard/guardian/")) { %>
+          <li class="sidebar-item <%= currentPath === `/dashboard/guardian/${guardian.id}` ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/guardian/<%= guardian.id %>">
+              <i class="align-middle" data-feather="user"></i>
+              <span class="align-middle"><%= guardian.email %></span>
+            </a>
+          </li>
+          <% } %>
 
           <li class="sidebar-header">
             Settings

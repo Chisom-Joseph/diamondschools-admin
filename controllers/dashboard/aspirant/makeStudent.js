@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
       message: `Student created successfully. REG NUMBER: ${registrationNumber} PASSWORD: ${password}`,
     });
     req.flash("form", "");
-    req.flash("formSection", "");
+    req.flash("newStudentId", newStudent.dataValues.id);
     req.flash("status", 200);
     return res.redirect(`/dashboard/aspirant/${req.params.id}`);
   } catch (error) {
