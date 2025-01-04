@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
       let profileImageUrl;
       try {
         const response = await axios.post(
-          `${process.env.MAIN_WEBSITE_URL}api/addStudentPhoto`,
+          `${process.env.MAIN_WEBSITE_URL}/api/addStudentPhoto`,
           formData,
           {
             headers: {
