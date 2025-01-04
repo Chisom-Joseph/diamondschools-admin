@@ -126,7 +126,11 @@
 
               <div class="col-sm-12 col-lg-6 col-xl-6 col-xxl-6">
                 <strong class="mb-2 d-block">Payment Proof</strong>
+                <% if(aspirant.paymentProofUrl){ %>
                 <img class="img-fluid" src="<%= aspirant.paymentProofUrl %>" alt="">
+                <% } else { %>
+                <p class="text-mute">No payment proof available</p>
+                <% } %>
               </div>
             </div>
 

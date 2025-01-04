@@ -15,9 +15,10 @@ router.get("/all-aspirants", async (req, res) => {
 // Add aspirant
 router.get("/add-aspirant", async (req, res) => {
   const { Country, State } = require("country-state-city");
-  res.render("dashboard/aspirant/addStudent.ejs", {
+  res.render("dashboard/aspirant/addAspirant.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
+    newAspirantId: req.flash("newAspirantId")[0] || "",
     classes: await require("../utils/getClasses")(),
     religions: await require("../utils/getReligions")(),
     examinationDate: await require("../utils/getExaminationDate")(),
@@ -32,7 +33,7 @@ router.get("/aspirant/:id", async (req, res) => {
   res.render("dashboard/aspirant/aspirant.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
-    newStudentId: req.flash("newStudentId")[0] || "",
+    newAspirantId: req.flash("newAspirantId")[0] || "",
     aspirant: await require("../utils/getAspirant")(req.params.id),
     user: "",
   });

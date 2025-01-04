@@ -48,7 +48,6 @@
               <span class="align-middle">All Students</span>
             </a>
           </li>
-
           <li class="sidebar-item <%= currentPath === '/dashboard/add-student' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/add-student">
               <i class="align-middle" data-feather="user-plus"></i>
@@ -72,6 +71,12 @@
             <a class="sidebar-link" href="/dashboard/all-aspirants">
               <i class="align-middle" data-feather="file-text"></i>
               <span class="align-middle">All Aspirants</span>
+            </a>
+          </li>
+          <li class="sidebar-item <%= currentPath === '/dashboard/add-aspirant' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/add-aspirant">
+              <i class="align-middle" data-feather="user-plus"></i>
+              <span class="align-middle">Add Aspirant</span>
             </a>
           </li>
           <% if(currentPath.startsWith("/dashboard/aspirant/")) { %>

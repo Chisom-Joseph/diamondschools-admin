@@ -27,6 +27,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message pr-5">
                   <strong>Sucess!</strong> <%- alert.message %>
+                  <a href="/dashboard/aspirant/<%= newAspirantId %>">View New Aspirant</a>
                 </div>
               </div>
               <% } %>
@@ -158,20 +159,20 @@
                   <input type="tel" class="form-control" id="guardianPhoneNumber" placeholder="Phone Number" name="guardianPhoneNumber" value="<%= form.guardianPhoneNumber %>">
                 </div>
                 <div class="mb-3 col-md-4">
-                  <label class="form-label" for="relationshipToAspirant">Relationship to Aspirant</label>
-                  <select class="form-control" id="relationshipToAspirant" name="relationshipToAspirant">
+                  <label class="form-label" for="relationshipToStudent">Relationship to Aspirant</label>
+                  <select class="form-control" id="relationshipToStudent" name="relationshipToStudent">
                     <option selected disabled hidden>Select Relationship</option>
-                    <option value="father" <%= form.relationshipToAspirant === "father" ? "selected" : "" %>>Father</option>
-                    <option value="mother" <%= form.relationshipToAspirant === "moder" ? "selected" : "" %>>Mother</option>
-                    <option value="guardian" <%= form.relationshipToAspirant === "guardian" ? "selected" : "" %>>Guardian</option>
-                    <option value="brother" <%= form.relationshipToAspirant === "brother" ? "selected" : "" %>>brother</option>
-                    <option value="sister" <%= form.relationshipToAspirant === "sister" ? "selected" : "" %>>Sister</option>
-                    <option value="uncle" <%= form.relationshipToAspirant === "uncle" ? "selected" : "" %>>Uncle</option>
-                    <option value="aunt" <%= form.relationshipToAspirant === "aunt" ? "selected" : "" %>>Aunt</option>
-                    <option value="cousin" <%= form.relationshipToAspirant === "cousin" ? "selected" : "" %>>Cousin</option>
-                    <option value="nephew" <%= form.relationshipToAspirant === "nephew" ? "selected" : "" %>>Nephew</option>
-                    <option value="niece" <%= form.relationshipToAspirant === "niece" ? "selected" : "" %>>Niece</option>
-                    <option value="other" <%= form.relationshipToAspirant === "other" ? "selected" : "" %>>Other</option>
+                    <option value="father" <%= form.relationshipToStudent === "father" ? "selected" : "" %>>Father</option>
+                    <option value="mother" <%= form.relationshipToStudent === "moder" ? "selected" : "" %>>Mother</option>
+                    <option value="guardian" <%= form.relationshipToStudent === "guardian" ? "selected" : "" %>>Guardian</option>
+                    <option value="brother" <%= form.relationshipToStudent === "brother" ? "selected" : "" %>>brother</option>
+                    <option value="sister" <%= form.relationshipToStudent === "sister" ? "selected" : "" %>>Sister</option>
+                    <option value="uncle" <%= form.relationshipToStudent === "uncle" ? "selected" : "" %>>Uncle</option>
+                    <option value="aunt" <%= form.relationshipToStudent === "aunt" ? "selected" : "" %>>Aunt</option>
+                    <option value="cousin" <%= form.relationshipToStudent === "cousin" ? "selected" : "" %>>Cousin</option>
+                    <option value="nephew" <%= form.relationshipToStudent === "nephew" ? "selected" : "" %>>Nephew</option>
+                    <option value="niece" <%= form.relationshipToStudent === "niece" ? "selected" : "" %>>Niece</option>
+                    <option value="other" <%= form.relationshipToStudent === "other" ? "selected" : "" %>>Other</option>
                   </select>
                 </div>
               </div>
