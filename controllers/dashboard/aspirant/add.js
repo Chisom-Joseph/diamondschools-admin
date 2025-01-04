@@ -93,16 +93,13 @@ module.exports = async (req, res) => {
         console.log(response.data);
       } catch (error) {
         // Handle Axios errors
-        console.log(error.response);
-        if (error.response) {
-          req.flash("alert", {
-            status: "error",
-            message: "Error uploading profile image",
-          });
-          req.flash("form", req.body);
-          req.flash("status", 400);
-          return res.redirect("/dashboard/add-aspirant");
-        }
+        req.flash("alert", {
+          status: "error",
+          message: "Error uploading profile image",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-aspirant");
       }
 
       const country = Country.getCountryByCode(req.body.country).name;

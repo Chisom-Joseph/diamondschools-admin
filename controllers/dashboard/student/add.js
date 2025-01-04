@@ -93,15 +93,13 @@ module.exports = async (req, res) => {
         console.log(response.data);
       } catch (error) {
         // Handle Axios errors
-        if (error.response) {
-          req.flash("alert", {
-            status: "error",
-            message: "Error uploading profile image",
-          });
-          req.flash("form", req.body);
-          req.flash("status", 400);
-          return res.redirect("/dashboard/add-student");
-        }
+        req.flash("alert", {
+          status: "error",
+          message: "Error uploading profile image",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-student");
       }
 
       const registrationNumber = await require("../../../utils/genRegNumber")();
