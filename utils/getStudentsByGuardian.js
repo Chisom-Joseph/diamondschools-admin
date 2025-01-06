@@ -31,7 +31,6 @@ module.exports = async (
       })
     );
 
-    console.log(await students);
     return students;
   } catch (error) {
     console.log(`ERROR GETTING STUDENTS: ${error}`);

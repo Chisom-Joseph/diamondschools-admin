@@ -11,41 +11,8 @@
             <h5 class="card-title">Striped Rows</h5>
           </div>
           <div class="card-body">
-            <table id="example" class="table table-striped" style="width:100%">
+            <table id="example" class="datatable" style="width:100%">
               <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Full Name</th>
-                  <th>Class</th>
-                  <th>Exam Number</th>
-                  <th>Gender</th>
-                  <th>Guardian</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if(aspirants.length > 0) { %>
-                <% aspirants.map(aspirant => { %>
-                <tr>
-                  <td><img src="<%= aspirant.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" alt="<%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %>"></td>
-                  <td><a href="/dashboard/aspirant/<%= aspirant.id %>"><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></a></td>
-                  <td><%= aspirant.class.name %></td>
-                  <td><%= aspirant.examinationNumber %></td>
-                  <td><%= aspirant.gender %></td>
-                  <td><a href="/dashboard/guardian/<%= aspirant.guardian.id %>"><%= aspirant.guardian.firstName %> <%= aspirant.guardian.middleName %> <%= aspirant.guardian.lastName %></a></td>
-                </tr>
-                <% }) %>
-                <% } else { %>
-                <tr>
-                  <td>No aspirants available</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <% } %>
-              </tbody>
-              <tfoot>
                 <tr>
                   <th>#</th>
                   <th>Full Name</th>
@@ -54,7 +21,7 @@
                   <th>Gender</th>
                   <th>Guardian</th>
                 </tr>
-              </tfoot>
+              </thead>
             </table>
           </div>
         </div>
@@ -63,5 +30,55 @@
 
   </div>
 </main>
+
+<script src="/DataTables/datatables.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new DataTable('#example', {
+      serverSide: true,
+      ajax: '/api/get-aspirants',
+      columns: [{
+          data: 'profileImageUrl', // Column containing the image URL
+          render: (data, type, row) => {
+            if (type === 'display' && data) {
+              return `<img src="${data}" width="32" height="32" class="rounded-circle my-n1" />`;
+            }
+            return '<img src="/img/profileImage/default.png" width="32" height="32" class="rounded-circle my-n1" />';
+          },
+        },
+        {
+          data: null,
+          render: (data, type, row) => {
+            const fullName = [row.firstName, row.middleName, row.lastName]
+              .filter(name => name)
+              .join(' ');
+            return fullName ? `<a href="/dashboard/aspirant/${row.id}">${fullName}</a>` : 'No Name';
+          },
+        },
+        {
+          data: "class",
+          render: (data, type, row) => {
+            return classItem = data.name || "No class"
+          }
+        },
+        {
+          data: 'examinationNumber'
+        },
+        {
+          data: "gender"
+        },
+        {
+          data: "guardian",
+          render: (data, type, row) => {
+            const fullName = [data.firstName, data.middleName, data.lastName]
+              .filter(name => name)
+              .join(' ');
+            return fullName ? `<a href="/dashboard/guardian/${data.id}">${fullName}</a>` : 'No Name';
+          }
+        }
+      ],
+    });
+  });
+</script>
 
 <%- include("../../partials/footer") %>

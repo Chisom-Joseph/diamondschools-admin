@@ -6,13 +6,14 @@ router.use(require("../middlewares/adminAvailable"));
 router.use(require("../middlewares/setCurrentPath"));
 router.use("/dashboard", loginVerifier, require("./dashboard"));
 router.use("/auth", loginVerifier, require("./auth"));
+router.use("/api", loginVerifier, require("./api"));
 
 router.get("/", (req, res) => {
   res.redirect("/dashboard/all-students");
 });
 
 router.get("*", (req, res) => {
-  res.render("error.ejs");
+  res.status(404).render("error.ejs");
 });
 
 module.exports = router;

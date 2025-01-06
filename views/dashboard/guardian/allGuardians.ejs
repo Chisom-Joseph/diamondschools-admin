@@ -11,7 +11,7 @@
             <h5 class="card-title">Striped Rows</h5>
           </div>
           <div class="card-body">
-            <table id="example" class="table table-striped" style="width:100%">
+            <table id="example" class="datatable" style="width:100%">
               <thead>
                 <tr>
                   <th>Full Name</th>
@@ -20,32 +20,6 @@
                   <th>Address</th>
                 </tr>
               </thead>
-              <tbody>
-                <% if(guardians.length > 0) { %>
-                <% guardians.map(guardian => { %>
-                <tr>
-                  <td><a href="/dashboard/guardian/<%= guardian.id %>"><%= guardian.firstName %> <%= guardian.middleName %> <%= guardian.lastName %></a></td>
-                  <td><%= guardian.email %></td>
-                  <td><%= guardian.phoneNumber %></td>
-                  <td><%= guardian.address %></td>
-                </tr>
-                <% }) %>
-                <% } else { %>
-                <tr>
-                  <td>No guardians available</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <% } %>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Email</th>
-                  <th>Phone Number</th>
-                  <th>Address</th>
-                </tr>
-              </tfoot>
             </table>
           </div>
         </div>
@@ -54,5 +28,34 @@
 
   </div>
 </main>
+
+<script src="/DataTables/datatables.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new DataTable('#example', {
+      serverSide: true,
+      ajax: '/api/get-guardians',
+      columns: [{
+          data: null,
+          render: (data, type, row) => {
+            const fullName = [row.firstName, row.middleName, row.lastName]
+              .filter(name => name)
+              .join(' ');
+            return fullName ? `<a href="/dashboard/guardian/${row.id}">${fullName}</a>` : 'No Name';
+          },
+        },
+        {
+          data: 'email'
+        },
+        {
+          data: 'phoneNumber'
+        },
+        {
+          data: 'address'
+        },
+      ],
+    });
+  });
+</script>
 
 <%- include("../../partials/footer") %>

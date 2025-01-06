@@ -11,42 +11,15 @@
             <h5 class="card-title">Striped Rows</h5>
           </div>
           <div class="card-body">
-            <table id="example" class="table table-striped" style="width:100%">
+            <table id="example" class="datatable" style="width:100%">
               <thead>
                 <tr>
                   <th>#</th>
                   <th>Full Name</th>
-                  <th>Email</th>
+                  <th>email</th>
                   <th>Gender</th>
                 </tr>
               </thead>
-              <tbody>
-                <% if(teachers.length > 0) { %>
-                <% teachers.map(teacher => { %>
-                <tr>
-                  <td><img src="<%= teacher.profileImageUrl %>" onerror="this.onerror=null;this.src='<%= teacher.defaultProfileImageUrl %>';" width="32" height="32" class="rounded-circle my-n1" alt="<%= teacher.firstName %> <%= teacher.middleName %> <%= teacher.lastName %>"></td>
-                  <td><a href="/dashboard/teacher/<%= teacher.id %>"><%= teacher.firstName %> <%= teacher.middleName %> <%= teacher.lastName %></a></td>
-                  <td><%= teacher.email %></td>
-                  <td><%= teacher.gender %></td>
-                </tr>
-                <% }) %>
-                <% } else { %>
-                <tr>
-                  <td>No teachers available</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <% } %>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>#</th>
-                  <th>Full Name</th>
-                  <th>Email</th>
-                  <th>Gender</th>
-                </tr>
-              </tfoot>
             </table>
           </div>
         </div>
@@ -55,5 +28,40 @@
 
   </div>
 </main>
+
+<script src="/DataTables/datatables.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new DataTable('#example', {
+      serverSide: true,
+      ajax: '/api/get-teachers',
+      columns: [{
+          data: 'profileImageUrl', // Column containing the image URL
+          render: (data, type, row) => {
+            if (type === 'display' && data) {
+              return `<img src="${data}" width="32" height="32" class="rounded-circle my-n1" />`;
+            }
+            return '<img src="/img/profileImage/default.png" width="32" height="32" class="rounded-circle my-n1" />';
+          },
+        },
+        {
+          data: null,
+          render: (data, type, row) => {
+            const fullName = [row.firstName, row.middleName, row.lastName]
+              .filter(name => name)
+              .join(' ');
+            return fullName ? `<a href="/dashboard/teacher/${row.id}">${fullName}</a>` : 'No Name';
+          },
+        },
+        {
+          data: "email"
+        },
+        {
+          data: "gender"
+        },
+      ],
+    });
+  });
+</script>
 
 <%- include("../../partials/footer") %>

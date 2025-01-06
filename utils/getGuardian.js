@@ -21,8 +21,6 @@ module.exports = async (id) => {
     });
     guardian.students = students;
 
-    console.log("GUARDIAN");
-    console.log(guardian);
     return guardian;
   } catch (error) {
     console.log(`ERROR GETTING GUARDIAN: ${error}`);
