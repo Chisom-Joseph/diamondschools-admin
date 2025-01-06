@@ -29,7 +29,6 @@ module.exports = async (req, res, next) => {
     }
 
     const admin = await require("../utils/getAdmin")(tokenVerified.id);
-    console.log(admin);
 
     if (Object.keys(admin).length === 0) {
       res.clearCookie("aToken");
@@ -41,6 +40,7 @@ module.exports = async (req, res, next) => {
     res.locals.isLoggedin = true;
     return next();
   } catch (error) {
-    console.error(`ERROR VERIFING LOGIN: ${error}`);
+    console.error(`ERROR VERIFING LOGIN`);
+    console.error(error);
   }
 };
