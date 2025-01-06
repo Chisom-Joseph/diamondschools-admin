@@ -29,6 +29,20 @@ module.exports = async (req, res) => {
       return res.redirect(`/dashboard/aspirant/${req.params.id}`);
     }
 
+    // Check if aspirant is already a student
+    const aspirantIsStudent = await Aspirant.findOne({
+      where: { isStudent: id },
+    });
+    if (aspirantIsStudent) {
+      req.flash("alert", {
+        status: "error",
+        message: "Aspirant is already a student",
+      });
+      req.flash("form", req.body);
+      req.flash("status", 400);
+      return res.redirect(`/dashboard/aspirant/${req.params.id}`);
+    }
+
     // Genetate Registration Number
     const registrationNumber = await require("../../../utils/genRegNumber")();
 
@@ -77,8 +91,14 @@ module.exports = async (req, res) => {
       GuardianId,
       ClassId,
     });
-
     console.log(newStudent);
+
+    // Update aspirant
+    const updatedAspirant = await Aspirant.update(
+      { isStudent: newStudent.id },
+      { where: { id } }
+    );
+    console.log(updatedAspirant);
 
     req.flash("alert", {
       status: "success",
