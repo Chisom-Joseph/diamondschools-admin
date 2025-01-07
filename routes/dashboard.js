@@ -1,21 +1,20 @@
 const router = require("express").Router();
 
 router.get("/", (req, res) => {
-  res.render("dashboard/dashboard.ejs");
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/dashboard.ejs");
 });
 
 // All aspirants
 router.get("/all-aspirants", async (req, res) => {
-  res.render("dashboard/aspirant/allAspirants.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    aspirants: await require("../utils/getAspirants")(),
-  });
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/aspirant/allAspirants.ejs");
 });
 // Add aspirant
 router.get("/add-aspirant", async (req, res) => {
   const { Country, State } = require("country-state-city");
-  res.render("dashboard/aspirant/addAspirant.ejs", {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/aspirant/addAspirant.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     newAspirantId: req.flash("newAspirantId")[0] || "",
@@ -30,10 +29,16 @@ router.get("/add-aspirant", async (req, res) => {
 router.post("/add-aspirant", require("../controllers/dashboard/aspirant"));
 // Aspirant
 router.get("/aspirant/:id", async (req, res) => {
-  res.render("dashboard/aspirant/aspirant.ejs", {
+  const aspirant = await require("../utils/getAspirant")(req.params.id);
+  if (Object.keys(aspirant).length === 0) {
+    return res.status(404).render("error.ejs");
+  }
+
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/aspirant/aspirant.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
-    newAspirantId: req.flash("newAspirantId")[0] || "",
+    newStudentId: req.flash("newStudentId")[0] || "",
     aspirant: await require("../utils/getAspirant")(req.params.id),
     user: "",
   });
@@ -42,16 +47,14 @@ router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 
 // All students
 router.get("/all-students", async (req, res) => {
-  res.render("dashboard/student/allStudents.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    students: await require("../utils/getStudents")(),
-  });
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/student/allStudents.ejs");
 });
 // Add student
 router.get("/add-student", async (req, res) => {
   const { Country, State } = require("country-state-city");
-  res.render("dashboard/student/addStudent.ejs", {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/student/addStudent.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     newStudentId: req.flash("newStudentId")[0] || "",
@@ -65,7 +68,13 @@ router.get("/add-student", async (req, res) => {
 });
 router.post("/add-student", require("../controllers/dashboard/student"));
 router.get("/student/:id", async (req, res) => {
-  res.render("dashboard/student/student.ejs", {
+  const student = await require("../utils/getStudent")(req.params.id);
+  if (Object.keys(student).length === 0) {
+    return res.status(404).render("error.ejs");
+  }
+
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/student/student.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     student: await require("../utils/getStudent")(req.params.id),
@@ -76,14 +85,17 @@ router.post("/student/:id", require("../controllers/dashboard/student/"));
 
 // Guardian
 router.get("/all-guardians", async (req, res) => {
-  res.render("dashboard/guardian/allGuardians.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    guardians: await require("../utils/getGuardians")(),
-  });
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/guardian/allGuardians.ejs");
 });
 router.get("/guardian/:id", async (req, res) => {
-  res.render("dashboard/guardian/guardian.ejs", {
+  const guardian = await require("../utils/getGuardian")(req.params.id);
+  if (Object.keys(guardian).length === 0) {
+    return res.status(404).render("error.ejs");
+  }
+
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/guardian/guardian.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     newStudentId: req.flash("newStudentId")[0] || "",
@@ -94,7 +106,8 @@ router.get("/guardian/:id", async (req, res) => {
 
 // Add teacher
 router.get("/all-teachers", async (req, res) => {
-  res.render("dashboard/teacher/allTeachers.ejs", {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/teacher/allTeachers.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     teachers: await require("../utils/getTeachers")(),
@@ -102,7 +115,8 @@ router.get("/all-teachers", async (req, res) => {
 });
 router.get("/add-teacher", async (req, res) => {
   const { Country, State } = require("country-state-city");
-  res.render("dashboard/teacher/addTeacher.ejs", {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/teacher/addTeacher.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     newTeacherId: req.flash("newTeacherId")[0] || "",
@@ -112,7 +126,13 @@ router.get("/add-teacher", async (req, res) => {
   });
 });
 router.get("/teacher/:id", async (req, res) => {
-  res.render("dashboard/teacher/teacher.ejs", {
+  const teacher = await require("../utils/getTeacher")(req.params.id);
+  if (Object.keys(teacher).length === 0) {
+    return res.status(404).render("error.ejs");
+  }
+
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/teacher/teacher.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     teacher: await require("../utils/getTeacher")(req.params.id),
@@ -123,7 +143,8 @@ router.post("/add-teacher", require("../controllers/dashboard/teacher"));
 
 // Site settings
 router.get("/site-settings", async (req, res) => {
-  res.render("dashboard/siteSettings.ejs", {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/siteSettings.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
   });
@@ -132,27 +153,34 @@ router.get("/site-settings", async (req, res) => {
 // class
 router.get("/class", async (req, res) => {
   const status = req.flash("status")[0] || 200;
-  console.log(await require("../utils/genRegNumber")()),
-    res.status(status).render("dashboard/class/class.ejs", {
-      alert: req.flash("alert")[0] || "",
-      form: req.flash("form")[0] || "",
-      formSection: req.flash("formSection")[0] || "",
-      classes: await require("../utils/getClasses")(),
-    });
+  res.status(status).render("dashboard/class/class.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    formSection: req.flash("formSection")[0] || "",
+    classes: await require("../utils/getClasses")(),
+  });
 });
 router.post("/class", require("../controllers/dashboard/class"));
 
 // class
 router.get("/religion", async (req, res) => {
   const status = req.flash("status")[0] || 200;
-  console.log(await require("../utils/genRegNumber")()),
-    res.status(status).render("dashboard/religion/religion.ejs", {
-      alert: req.flash("alert")[0] || "",
-      form: req.flash("form")[0] || "",
-      formSection: req.flash("formSection")[0] || "",
-      religions: await require("../utils/getReligions")(),
-    });
+  res.status(status).render("dashboard/religion/religion.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    formSection: req.flash("formSection")[0] || "",
+    religions: await require("../utils/getReligions")(),
+  });
 });
 router.post("/religion", require("../controllers/dashboard/religion"));
+
+// Disabled features
+router.get("/disabled-features", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/disabledFeature/disabledFeatures.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+  });
+});
 
 module.exports = router;
