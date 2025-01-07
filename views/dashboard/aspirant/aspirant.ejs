@@ -30,6 +30,9 @@
               <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary"><i class="fas fa-check"></i> Make Student</button>
               <button class="btn btn-warning" disabled><i class="fas fa-ban"></i> Block</button>
               <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
+              <% if(aspirant.isStudent !== null) { %>
+              <a href="/dashboard/student/<%= aspirant.isStudent %>" disabled>View Student <i class="fas fa-arrow-right"></i></a>
+              <% } %>
             </div>
           </div>
           <div class="card-body">
@@ -50,7 +53,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   <div class="alert-message pr-5">
                     <strong>Sucess!</strong> <%- alert.message %>
-                    <a href="/dashboard/student/<%= newAspirantId %>">View New Student</a>
+                    <a href="/dashboard/student/<%= newStudentId %>">View New Student</a>
                   </div>
                 </div>
               </div>
@@ -101,6 +104,10 @@
                     <tr>
                       <th>Date Of Birth</th>
                       <td><%= aspirant.dateOfBirth %></td>
+                    </tr>
+                    <tr>
+                      <th>Examination Number</th>
+                      <td><%= aspirant.examinationNumber %></td>
                     </tr>
                     <tr>
                       <th>Examination Date</th>
