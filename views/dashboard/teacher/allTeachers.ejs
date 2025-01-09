@@ -1,0 +1,59 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <h1 class="h3 mb-3">All Teachers</h1>
+
+    <div class="row">
+      <div class="col-12 col-xl-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Striped Rows</h5>
+          </div>
+          <div class="card-body">
+            <table id="example" class="table table-striped" style="width:100%">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Gender</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if(teachers.length > 0) { %>
+                <% teachers.map(teacher => { %>
+                <tr>
+                  <td><img src="<%= teacher.profileImageUrl %>" onerror="this.onerror=null;this.src='<%= teacher.defaultProfileImageUrl %>';" width="32" height="32" class="rounded-circle my-n1" alt="<%= teacher.firstName %> <%= teacher.middleName %> <%= teacher.lastName %>"></td>
+                  <td><a href="/dashboard/teacher/<%= teacher.id %>"><%= teacher.firstName %> <%= teacher.middleName %> <%= teacher.lastName %></a></td>
+                  <td><%= teacher.email %></td>
+                  <td><%= teacher.gender %></td>
+                </tr>
+                <% }) %>
+                <% } else { %>
+                <tr>
+                  <td>No teachers available</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <% } %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>#</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Gender</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<%- include("../../partials/footer") %>

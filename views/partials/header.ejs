@@ -108,6 +108,30 @@
           <% } %>
 
           <li class="sidebar-header">
+            Teachers
+          </li>
+          <li class="sidebar-item <%= currentPath === '/dashboard/all-teachers' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/all-teachers">
+              <i class="align-middle" data-feather="file-text"></i>
+              <span class="align-middle">All Teachers</span>
+            </a>
+          </li>
+          <li class="sidebar-item <%= currentPath === '/dashboard/add-teacher' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/add-teacher">
+              <i class="align-middle" data-feather="file-text"></i>
+              <span class="align-middle">Add Teachers</span>
+            </a>
+          </li>
+          <% if(currentPath.startsWith("/dashboard/teacher/")) { %>
+          <li class="sidebar-item <%= currentPath === `/dashboard/teacher/${teacher.id}` ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/teacher/<%= teacher.id %>">
+              <i class="align-middle" data-feather="user"></i>
+              <span class="align-middle"><%= teacher.email %></span>
+            </a>
+          </li>
+          <% } %>
+
+          <li class="sidebar-header">
             Settings
           </li>
 

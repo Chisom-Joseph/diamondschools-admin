@@ -48,7 +48,6 @@ router.get("/all-students", async (req, res) => {
     students: await require("../utils/getStudents")(),
   });
 });
-
 // Add student
 router.get("/add-student", async (req, res) => {
   const { Country, State } = require("country-state-city");
@@ -93,12 +92,40 @@ router.get("/guardian/:id", async (req, res) => {
   });
 });
 
+// Add teacher
+router.get("/all-teachers", async (req, res) => {
+  res.render("dashboard/teacher/allTeachers.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    teachers: await require("../utils/getTeachers")(),
+  });
+});
+router.get("/add-teacher", async (req, res) => {
+  const { Country, State } = require("country-state-city");
+  res.render("dashboard/teacher/addTeacher.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    newTeacherId: req.flash("newTeacherId")[0] || "",
+    religions: await require("../utils/getReligions")(),
+    countries: Country.getAllCountries(),
+    states: State.getAllStates(),
+  });
+});
+router.get("/teacher/:id", async (req, res) => {
+  res.render("dashboard/teacher/teacher.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    teacher: await require("../utils/getTeacher")(req.params.id),
+    user: "",
+  });
+});
+router.post("/add-teacher", require("../controllers/dashboard/teacher"));
+
 // Site settings
 router.get("/site-settings", async (req, res) => {
   res.render("dashboard/siteSettings.ejs", {
     alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
-    classes: await require("../utils/getClasses")(),
   });
 });
 
