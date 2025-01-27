@@ -9,7 +9,12 @@ const Timetable = require("./Timetable");
 const Guardian = require("./Guardian");
 const Religion = require("./Religion");
 const Aspirant = require("./Aspirant");
+const Subject = require("./Subject");
 const DisabledFeatures = require("./DisabledFeature");
+const AttemptedSubject = require("./AttemptedSubject");
+const Question = require("./Question");
+const Option = require("./Option");
+const OptionName = require("./OptionName");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -42,7 +47,12 @@ db.Timetable = Timetable(sequelize, DataTypes);
 db.Guardian = Guardian(sequelize, DataTypes);
 db.Religion = Religion(sequelize, DataTypes);
 db.Aspirant = Aspirant(sequelize, DataTypes);
+db.Subject = Subject(sequelize, DataTypes);
 db.DisabledFeatures = DisabledFeatures(sequelize, DataTypes);
+db.AttemptedSubject = AttemptedSubject(sequelize, DataTypes);
+db.Question = Question(sequelize, DataTypes);
+db.Option = Option(sequelize, DataTypes);
+db.OptionName = OptionName(sequelize, DataTypes);
 
 // Relations
 db.Student.belongsTo(db.Class);
@@ -62,5 +72,23 @@ db.Class.hasMany(db.Aspirant);
 
 db.Timetable.belongsTo(db.Class);
 db.Class.hasMany(db.Timetable);
+
+db.Subject.belongsTo(db.Class);
+db.Class.hasMany(db.Subject);
+
+db.AttemptedSubject.belongsTo(db.Subject);
+db.Subject.hasMany(db.AttemptedSubject);
+
+db.AttemptedSubject.belongsTo(db.Aspirant);
+db.Aspirant.hasMany(db.AttemptedSubject);
+
+db.AttemptedSubject.belongsTo(db.Student);
+db.Student.hasMany(db.AttemptedSubject);
+
+db.Question.belongsTo(db.Subject);
+db.Subject.hasMany(db.Question);
+
+db.Option.belongsTo(db.Question);
+db.Question.hasMany(db.Option);
 
 module.exports = db;
