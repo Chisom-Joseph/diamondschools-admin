@@ -162,7 +162,7 @@ router.get("/class", async (req, res) => {
 });
 router.post("/class", require("../controllers/dashboard/class"));
 
-// class
+// religion
 router.get("/religion", async (req, res) => {
   const status = req.flash("status")[0] || 200;
   res.status(status).render("dashboard/religion/religion.ejs", {
@@ -182,5 +182,17 @@ router.get("/disabled-features", async (req, res) => {
     form: req.flash("form")[0] || "",
   });
 });
+
+// Exam
+router.get("/exam", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/exam/exam.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    subjects: await require("../utils/getSubjects")(false),
+    formSection: req.flash("formSection")[0] || "",
+  });
+});
+router.post("/exam", require("../controllers/dashboard/exam"));
 
 module.exports = router;
