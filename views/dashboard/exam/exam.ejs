@@ -1,0 +1,113 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Exam</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Exam information</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="?action=add">
+              <% if(alert.status === "error") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <h4 class="mt-3">Site settings and meta data</h4>
+              <div class="row">
+                <div class="mb-2 col-md-6">
+                  <label class="form-label" for="addSubject">Subject</label>
+                  <select class="form-control" id="addSubject" name="subject" <%= subjects.length <= 0 ? "disabled" : "" %>>
+                    <% if(subjects.length > 0) { %>
+                    <option disabled selected hidden>Select Subject</option>
+                    <% subjects.map((subject) => { %>
+                    <option value="<%= subject.id %>" <%- formSection === "delete" && form.subject === subject.id ? "selected" : "" %>><%= subject.name %> <% if(Object.keys(subject.class).length > 0) { %>(<%= subject.class.name %>)<% } %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No Subjects found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="question">Question image (Optional)</label>
+                  <input type="file" class="form-control" placeholder="Input">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="question">Question</label>
+                  <textarea class="form-control" id="question" name="question"><%= form.question %></textarea>
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="option1">Option 1</label>
+                  <div class="input-group">
+                    <div class="input-group-text">
+                      <input name="correctOption" value="option1" type="radio">
+                    </div>
+                    <input name="option1" type="text" class="form-control" placeholder="Radio">
+                  </div>
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="option2">Option 4</label>
+                  <div class="input-group">
+                    <div class="input-group-text">
+                      <input name="correctOption" value="option2" type="radio">
+                    </div>
+                    <input name="option2" type="text" class="form-control" placeholder="Radio">
+                  </div>
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="option3">Option 3</label>
+                  <div class="input-group">
+                    <div class="input-group-text">
+                      <input name="correctOption" value="option3" type="radio">
+                    </div>
+                    <input name="option3" type="text" class="form-control" placeholder="Radio">
+                  </div>
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="option4">Option 4</label>
+                  <div class="input-group">
+                    <div class="input-group-text">
+                      <input name="correctOption" value="option4" type="radio">
+                    </div>
+                    <input name="option4" type="text" class="form-control" placeholder="Radio">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+<script>
+  const form = JSON.parse('<%- JSON.stringify(form) %>');
+  console.log(form);
+</script>
+
+<%- include("../../partials/footer") %>
