@@ -9,21 +9,18 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
 
-const sessionStore =
-  process.env.NODE_ENV === "production"
-    ? new SequelizeStore({
-        db: db.sequelize,
-      })
-    : new session.MemoryStore();
+const isProduction = process.env.NODE_ENV === "production";
+
+const sessionStore = new SequelizeStore({ db: db.sequelize });
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    store: process.env.ENV === "Production" && sessionStore,
+    store: isProduction ? sessionStore : undefined, // Use undefined instead of MemoryStore
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: isProduction,
     cookie: {
-      secure: false,
+      secure: isProduction, // Secure cookies in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
@@ -50,6 +47,9 @@ db.sequelize
       database_protocol: config.protocol,
       database_port: config.port,
     });
+    if (isProduction) {
+      sessionStore.sync().then(() => console.log("Session store synced!"));
+    }
     app.listen(PORT, () => {
       console.log(`Server is Up and Running on http://localhost:${PORT}/`);
     });
