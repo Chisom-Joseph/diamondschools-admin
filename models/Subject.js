@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     instructions: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true,
       },
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     duration: {
       type: DataTypes.FLOAT,
       defaultValue: 30,
-      allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true,
       },
