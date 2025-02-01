@@ -15,6 +15,8 @@ const AttemptedSubject = require("./AttemptedSubject");
 const Question = require("./Question");
 const Option = require("./Option");
 const OptionName = require("./OptionName");
+const Notification = require("./Notification");
+const UserNotification = require("./UserNotification");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -53,6 +55,8 @@ db.AttemptedSubject = AttemptedSubject(sequelize, DataTypes);
 db.Question = Question(sequelize, DataTypes);
 db.Option = Option(sequelize, DataTypes);
 db.OptionName = OptionName(sequelize, DataTypes);
+db.Notification = Notification(sequelize, DataTypes);
+db.UserNotification = UserNotification(sequelize, DataTypes);
 
 // Relations
 db.Student.belongsTo(db.Class);
@@ -90,5 +94,32 @@ db.Subject.hasMany(db.Question);
 
 db.Option.belongsTo(db.Question);
 db.Question.hasMany(db.Option);
+
+// db.Student.belongsToMany(db.Notification, { through: db.UserNotification });
+// db.Aspirant.belongsToMany(db.Notification, { through: db.UserNotification });
+// db.Notification.belongsToMany(db.Student, { through: db.UserNotification });
+// db.Notification.belongsToMany(db.Aspirant, { through: db.UserNotification });
+
+db.Student.belongsToMany(db.Notification, {
+  through: db.UserNotification,
+  foreignKey: "StudentId",
+});
+
+db.Aspirant.belongsToMany(db.Notification, {
+  through: db.UserNotification,
+  foreignKey: "AspirantId",
+});
+
+db.Notification.belongsToMany(db.Student, {
+  through: db.UserNotification,
+  foreignKey: "NotificationId",
+  targetKey: "id", // 👈 Ensure it correctly maps to UUID
+});
+
+db.Notification.belongsToMany(db.Aspirant, {
+  through: db.UserNotification,
+  foreignKey: "NotificationId",
+  targetKey: "id",
+});
 
 module.exports = db;
