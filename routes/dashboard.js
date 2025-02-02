@@ -183,6 +183,23 @@ router.get("/disabled-features", async (req, res) => {
   });
 });
 
+// Subject
+router.get("/all-subjects", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/subject/allSubjects.ejs");
+});
+router.get("/subject", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/subject/subject.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    classes: (await require("../utils/getClasses")()) || "",
+    formSection: req.flash("formSection")[0] || "",
+    subjects: await require("../utils/getSubjects")(false),
+  });
+});
+router.post("/subject", require("../controllers/dashboard/subject"));
+
 // Exam
 router.get("/exam", async (req, res) => {
   const status = req.flash("status")[0] || 200;
@@ -194,5 +211,18 @@ router.get("/exam", async (req, res) => {
   });
 });
 router.post("/exam", require("../controllers/dashboard/exam"));
+
+// Notification
+router.get("/notification", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  console.log(await require("../utils/getUsers")());
+  res.status(status).render("dashboard/notification/notification.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    users: await require("../utils/getUsers")(),
+    formSection: req.flash("formSection")[0] || "",
+  });
+});
+router.post("/notification", require("../controllers/dashboard/notification"));
 
 module.exports = router;
