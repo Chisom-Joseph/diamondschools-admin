@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
         await UserNotification.create({
           StudentId: student.id, // Foreign Key matching capitalized StudentId
           NotificationId: notification.id, // Foreign Key to Notification's UUID
-          userType: "student",
+          // userType: "student",
         });
       }
     }
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
         await UserNotification.create({
           AspirantId: aspirant.id, // Foreign Key matching capitalized AspirantId
           NotificationId: notification.id, // Foreign Key to Notification's UUID
-          userType: "aspirant",
+          // userType: "aspirant",
         });
       }
     }
