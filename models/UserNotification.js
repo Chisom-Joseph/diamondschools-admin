@@ -1,21 +1,31 @@
 module.exports = (sequelize, DataTypes) => {
   const UserNotification = sequelize.define("UserNotification", {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
     StudentId: {
-      type: DataTypes.UUID, // Change to UUID if you're using UUID for Student IDs
+      type: DataTypes.UUID,
       allowNull: true,
       references: { model: "Students", key: "id" },
-      defaultValue: null,
+      unique: false,
     },
     AspirantId: {
-      type: DataTypes.UUID, // Change to UUID if you're using UUID for Aspirant IDs
+      type: DataTypes.UUID,
       allowNull: true,
       references: { model: "Aspirants", key: "id" },
-      defaultValue: null,
+      unique: false,
     },
     NotificationId: {
-      type: DataTypes.UUID, // Match Notification's UUID type
+      type: DataTypes.UUID,
       allowNull: false,
       references: { model: "Notifications", key: "id" },
+      unique: false,
     },
     seen: {
       type: DataTypes.BOOLEAN,
