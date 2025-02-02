@@ -1,0 +1,226 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Subjects</h1><a class="badge bg-primary ms-2" href="/dashboard/all-subjects">All Subjects <i class="fas fa-fw fa-external-link-alt"></i></a>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Add new Subjects</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=add">
+              <% if(alert.status === "error" && alert.section === "add") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "add") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="addSubject">Subject Name</label>
+                  <input type="text" class="form-control" id="addSubject" placeholder="Subject" name="subject" value="<%- formSection === "add" ? form.subject : "" %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="addShortName">Short Name</label>
+                  <input type="text" class="form-control" id="addShortName" placeholder="Math" name="shortName" value="<%- formSection === "add" ? form.shortName : "" %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="addClass">Class</label>
+                  <select class="form-control" id="addClass" name="classItem" <%= classes.length <= 0 ? "disabled" : "" %>>
+                    <% if(classes.length > 0) { %>
+                    <option disabled selected hidden>Select class</option>
+                    <% classes.map((classItem) => { %>
+                    <option value="<%= classItem.id %>" <%- formSection === "update" && form.classItem === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No Subjects found</option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Add Subject</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Edit Subject</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=update">
+              <% if(alert.status === "error" && alert.section === "update") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "update") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editSubject">Subjects</label>
+                  <select class="form-control" id="editSubject" name="subject" <%= subjects.length <= 0 ? "disabled" : "" %>>
+                    <% if(subjects.length > 0) { %>
+                    <option disabled selected hidden>Select subject</option>
+                    <% subjects.map((subject) => { %>
+                    <option value="<%= subject.id %>" <%- formSection === "update" && form.subject === subject.id ? "selected" : "" %>><%= subject.name %> <% if(Object.keys(subject.class).length > 0) { %>(<%= subject.class.name %>)<% } %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No Subjects found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editSubjectName">Subject Name</label>
+                  <input <%= form == "" ? "disabled" : "" %> type="text" class="form-control" id="editSubjectName" placeholder="Subject" name="subjectName" value="<%= form.subjectName %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editShortName">Short Name</label>
+                  <input <%= form == "" ? "disabled" : "" %> type="text" class="form-control" id="editShortName" placeholder="Math" name="shortName" value="<%= form.shortName %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="editClass">Class</label>
+                  <select <%= !form.classItem ? "disabled" : "" %> class=" form-control" id="editClass" name="classItem">
+                    <option disabled selected hidden>Select class</option>
+                    <% if(form.classItem && classes) { %>
+                    <% classes.forEach(classItem => { %>
+                    <option value="<%= classItem.id %>" <%= classItem.id === form.classItem ? "selected" : "" %>><%= classItem.name %></option>
+                    <% }) %>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-secondary">Update Subject</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Delete Subject</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=delete">
+              <% if(alert.status === "error" && alert.section === "delete") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "delete") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="deleteSubject">Subject</label>
+                  <select class="form-control" id="deleteSubject" name="subject" <%= subjects.length <= 0 ? "disabled" : "" %>>
+                    <% if(subjects.length > 0) { %>
+                    <option disabled selected hidden>Select Subject</option>
+                    <% subjects.map((subject) => { %>
+                    <option value="<%= subject.id %>" <%- formSection === "delete" && form.subject === subject.id ? "selected" : "" %>><%= subject.name %> <% if(Object.keys(subject.class).length > 0) { %>(<%= subject.class.name %>)<% } %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No Subjects found</option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-danger">Delete Subject</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+<script>
+  const editSubject = document.querySelector("#editSubject")
+
+  const updateEditForm = () => {
+    const subjectId = editSubject.value
+
+    fetch(`/api/get-subject-and-classes/${subjectId}`)
+      .then(data => data.json())
+      .then(result => {
+        editClass.innerText = "";
+        populateEditForm(result);
+      })
+      .catch(error => console.log(error))
+  }
+
+  const populateEditForm = (data) => {
+    const editSubjectName = document.querySelector("#editSubjectName")
+    const editShortName = document.querySelector("#editShortName")
+    const editClass = document.querySelector("#editClass")
+
+    // editSubjectName
+    editSubjectName.disabled = false
+    editSubjectName.value = data.subject.name
+
+    // editShortName
+    editShortName.disabled = false
+    editShortName.value = data.subject.shortName
+
+    // editClass
+    data.classes.forEach(classItem => {
+      const classOption = document.createElement("option")
+      classOption.value = classItem.id
+      classOption.innerHTML = classItem.name
+      if (classItem.id === data.subject.class.id) classOption.selected = true
+      editClass.add(classOption)
+      editClass.disabled = false
+    })
+
+  }
+
+  editSubject.addEventListener("change", updateEditForm)
+</script>
+<%- include("../../partials/footer") %>
