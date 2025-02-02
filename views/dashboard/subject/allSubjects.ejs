@@ -1,0 +1,54 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <h1 class="h3 mb-3">All Subjects</h1>
+
+    <div class="row">
+      <div class="col-12 col-xl-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Striped Rows</h5>
+          </div>
+          <div class="card-body">
+            <table id="example" class="datatable" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Subject Name</th>
+                  <th>Short Name</th>
+                  <th>Class</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="/DataTables/datatables.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new DataTable('#example', {
+      serverSide: true,
+      ajax: '/api/get-subjects',
+      columns: [{
+          data: 'name'
+        },
+        {
+          data: 'shortName'
+        },
+        {
+          data: 'class',
+          render: (data, type, row) => {
+            return data.name
+          }
+        },
+      ],
+    });
+  });
+</script>
+
+<%- include("../../partials/footer") %>
