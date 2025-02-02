@@ -95,31 +95,36 @@ db.Subject.hasMany(db.Question);
 db.Option.belongsTo(db.Question);
 db.Question.hasMany(db.Option);
 
-// db.Student.belongsToMany(db.Notification, { through: db.UserNotification });
-// db.Aspirant.belongsToMany(db.Notification, { through: db.UserNotification });
-// db.Notification.belongsToMany(db.Student, { through: db.UserNotification });
-// db.Notification.belongsToMany(db.Aspirant, { through: db.UserNotification });
-
 db.Student.belongsToMany(db.Notification, {
-  through: db.UserNotification,
+  through: {
+    model: db.UserNotification,
+    unique: false,
+  },
   foreignKey: "StudentId",
 });
 
 db.Aspirant.belongsToMany(db.Notification, {
-  through: db.UserNotification,
+  through: {
+    model: db.UserNotification,
+    unique: false,
+  },
   foreignKey: "AspirantId",
 });
 
 db.Notification.belongsToMany(db.Student, {
-  through: db.UserNotification,
+  through: {
+    model: db.UserNotification,
+    unique: false,
+  },
   foreignKey: "NotificationId",
-  targetKey: "id", // 👈 Ensure it correctly maps to UUID
 });
 
 db.Notification.belongsToMany(db.Aspirant, {
-  through: db.UserNotification,
+  through: {
+    model: db.UserNotification,
+    unique: false,
+  },
   foreignKey: "NotificationId",
-  targetKey: "id",
 });
 
 module.exports = db;
