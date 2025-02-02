@@ -27,36 +27,42 @@ module.exports = async (req, res) => {
     // Create notification
     const notification = await Notification.create({ title, message });
 
-    // const existingNotification = await UserNotification.findOne({
-    //   where: {
-    //     StudentId: studentId,
-    //     NotificationId: notificationId,
-    //   },
-    // });
-
-    // if (!existingNotification) {
-    // }
-
     // Fetch students and aspirants if they are selected
     if (users.includes("student")) {
       const students = await Student.findAll();
       for (let student of students) {
-        await UserNotification.create({
-          StudentId: student.id, // Foreign Key matching capitalized StudentId
-          NotificationId: notification.id, // Foreign Key to Notification's UUID
-          // userType: "student",
+        const existingEntry = await UserNotification.findOne({
+          where: {
+            StudentId: student.id,
+            NotificationId: notification.id,
+          },
         });
+
+        if (!existingEntry) {
+          await UserNotification.create({
+            StudentId: student.id,
+            NotificationId: notification.id,
+          });
+        }
       }
     }
 
     if (users.includes("aspirant")) {
       const aspirants = await Aspirant.findAll();
       for (let aspirant of aspirants) {
-        await UserNotification.create({
-          AspirantId: aspirant.id, // Foreign Key matching capitalized AspirantId
-          NotificationId: notification.id, // Foreign Key to Notification's UUID
-          // userType: "aspirant",
+        const existingEntry = await UserNotification.findOne({
+          where: {
+            AspirantId: aspirant.id,
+            NotificationId: notification.id,
+          },
         });
+
+        if (!existingEntry) {
+          await UserNotification.create({
+            AspirantId: aspirant.id,
+            NotificationId: notification.id,
+          });
+        }
       }
     }
 
