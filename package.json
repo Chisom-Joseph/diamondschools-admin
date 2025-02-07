@@ -6,7 +6,7 @@
   "scripts": {
     "build:css": "npx postcss ./public/css/style.css -o ./public/dist/output.css",
     "watch:css": "npx postcss ./public/css/style.css -o ./public/dist/output.css --watch",
-    "start": "concurrently \"npm run build:css\" \"node server.js\"",
+    "start": "node server.js",
     "devStart": "concurrently \"npm:watch:css\" \"nodemon server.js\"",
     "dev": "nodemon server.js"
   },
