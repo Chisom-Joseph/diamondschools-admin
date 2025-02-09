@@ -1,8 +1,4 @@
----
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/ovyqbumg/public_html/admin.diamondschools.com.ng
-    - /bin/cp -rf * $DEPLOYPATH
-    - cd $DEPLOYPATH
-    - npm install
-    - npm run restart
+    - export DEPLOY_PATH=/home/ovyqbumg/public_html/admin.diamondschools.com.ng
+    - /bin/cp -r * $DEPLOY_PATH
