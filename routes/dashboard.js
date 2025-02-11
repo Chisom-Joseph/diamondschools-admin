@@ -204,13 +204,24 @@ router.post("/subject", require("../controllers/dashboard/subject"));
 router.get("/exam", async (req, res) => {
   const status = req.flash("status")[0] || 200;
   res.status(status).render("dashboard/exam/exam.ejs", {
-    alert: req.flash("alert")[0] || "",
+    alert: req.flassh("alert")[0] || "",
     form: req.flash("form")[0] || "",
     subjects: await require("../utils/getSubjects")(false),
     formSection: req.flash("formSection")[0] || "",
   });
 });
 router.post("/exam", require("../controllers/dashboard/exam"));
+
+// Exam settings
+router.get("/exam-settings", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/exam/examSettings.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    subjects: await require("../utils/getSubjects")(false),
+    formSection: req.flash("formSection")[0] || "",
+  });
+});
 
 // Notification
 router.get("/notification", async (req, res) => {
