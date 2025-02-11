@@ -148,6 +148,22 @@
           </li>
 
           <li class="sidebar-header">
+            Exams
+          </li>          
+          <li class="sidebar-item <%= currentPath === '/dashboard/exam' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/exam">
+              <i class="align-middle" data-feather="settings"></i>
+              <span class="align-middle">Exams</span>
+            </a>
+          </li>
+          <li class="sidebar-item <%= currentPath === '/dashboard/exam-settings' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/exam-settings">
+              <i class="align-middle" data-feather="settings"></i>
+              <span class="align-middle">Exam Settings</span>
+            </a>
+          </li>
+
+          <li class="sidebar-header">
             Settings
           </li>
 
@@ -162,13 +178,6 @@
             <a class="sidebar-link" href="/dashboard/religion">
               <i class="align-middle" data-feather="heart"></i>
               <span class="align-middle">Religion</span>
-            </a>
-          </li>
-
-          <li class="sidebar-item <%= currentPath === '/dashboard/exam' ? 'active' : '' %>">
-            <a class="sidebar-link" href="/dashboard/exam">
-              <i class="align-middle" data-feather="settings"></i>
-              <span class="align-middle">Exams</span>
             </a>
           </li>
 
