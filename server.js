@@ -36,7 +36,11 @@ app.use(require("./routes"));
 
 console.log("Waiting for database connection...");
 db.sequelize
-  .sync({ force: false, alter: false, benchmark: true })
+  .sync({
+    force: false,
+    alter: process.env.NODE_ENV === "production",
+    benchmark: true,
+  })
   .then(({ options, config }) => {
     console.log(`Database connection sucessfull!`);
     console.table({
