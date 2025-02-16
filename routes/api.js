@@ -21,4 +21,10 @@ router.get(
 // Subjectss
 router.get("/get-subjects", require(`../controllers/api/getSubjects`));
 
+// Academic years
+router.get(
+  "/get-academic-year/:id",
+  require(`../controllers/api/getAcademicYears`)
+);
+
 module.exports = router;
