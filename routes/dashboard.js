@@ -204,7 +204,7 @@ router.post("/subject", require("../controllers/dashboard/subject"));
 router.get("/exam", async (req, res) => {
   const status = req.flash("status")[0] || 200;
   res.status(status).render("dashboard/exam/exam.ejs", {
-    alert: req.flassh("alert")[0] || "",
+    alert: req.flash("alert")[0] || "",
     form: req.flash("form")[0] || "",
     subjects: await require("../utils/getSubjects")(false),
     formSection: req.flash("formSection")[0] || "",
@@ -222,6 +222,18 @@ router.get("/exam-settings", async (req, res) => {
     formSection: req.flash("formSection")[0] || "",
   });
 });
+
+// Exam academicYear
+router.get("/academic-year", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/academicYear/academicYear.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    formSection: req.flash("formSection")[0] || "",
+    academicYears: await require("../utils/getAcademicYears")(),
+  });
+});
+router.post("/academic-year", require("../controllers/dashboard/academicYear"));
 
 // Notification
 router.get("/notification", async (req, res) => {
