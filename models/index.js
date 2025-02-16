@@ -17,6 +17,8 @@ const Option = require("./Option");
 const OptionName = require("./OptionName");
 const Notification = require("./Notification");
 const UserNotification = require("./UserNotification");
+const AcademicYear = require("./AcademicYear");
+const Term = require("./Term");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -57,6 +59,8 @@ db.Option = Option(sequelize, DataTypes);
 db.OptionName = OptionName(sequelize, DataTypes);
 db.Notification = Notification(sequelize, DataTypes);
 db.UserNotification = UserNotification(sequelize, DataTypes);
+db.AcademicYear = AcademicYear(sequelize, DataTypes);
+db.Term = Term(sequelize, DataTypes);
 
 // Relations
 db.Student.belongsTo(db.Class);
@@ -96,35 +100,28 @@ db.Option.belongsTo(db.Question);
 db.Question.hasMany(db.Option);
 
 db.Student.belongsToMany(db.Notification, {
-  through: {
-    model: db.UserNotification,
-    unique: false,
-  },
+  through: db.UserNotification,
   foreignKey: "StudentId",
 });
 
 db.Aspirant.belongsToMany(db.Notification, {
-  through: {
-    model: db.UserNotification,
-    unique: false,
-  },
+  through: db.UserNotification,
   foreignKey: "AspirantId",
 });
 
 db.Notification.belongsToMany(db.Student, {
-  through: {
-    model: db.UserNotification,
-    unique: false,
-  },
+  through: db.UserNotification,
   foreignKey: "NotificationId",
+  targetKey: "id", // 👈 Ensure it correctly maps to UUID
 });
 
 db.Notification.belongsToMany(db.Aspirant, {
-  through: {
-    model: db.UserNotification,
-    unique: false,
-  },
+  through: db.UserNotification,
   foreignKey: "NotificationId",
+  targetKey: "id",
 });
+
+db.AcademicYear.hasMany(db.Term, { onDelete: "CASCADE" });
+db.Term.belongsTo(db.AcademicYear);
 
 module.exports = db;
