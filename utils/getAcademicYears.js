@@ -1,15 +1,24 @@
+const academicYear = require("../controllers/dashboard/academicYear");
+const { AcademicYear } = require("../models");
+
 module.exports = async () => {
-  const academicYears = [
-    "2022/2023",
-    "2023/2024",
-    "2024/2025",
-    "2025/2026",
-    "2026/2027",
-    "2027/2028",
-    "2028/2029",
-    "2029/2030",
-    "2030/2031",
-    "2031/2032",
-  ];
-  return academicYears;
+  try {
+    const academicYearsFromDb = await AcademicYear.findAll();
+
+    if (!academicYearsFromDb) return [];
+
+    const academicYears = await Promise.all(
+      academicYearsFromDb.map((academicYear) => {
+        return academicYear.dataValues;
+      })
+    );
+
+    console.log(academicYears);
+
+    return academicYears;
+  } catch (error) {
+    console.log("ERROR GETTING ACADEMIC YEARS");
+    console.log(error);
+    return [];
+  }
 };
