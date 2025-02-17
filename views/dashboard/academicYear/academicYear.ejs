@@ -1,0 +1,184 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Add Academic year</h5>
+      </div>
+      <div class="card-body">
+        <form action="?action=add" method="POST">
+          <% if(alert.status === "error" && alert.section === "add") { %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>Error!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <% if(alert.status === "success" && alert.section === "add") { %>
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message pr-5">
+              <strong>Sucess!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <div class="row">
+            <div class="mb-2 col-md-6">
+              <label for="year" class="form-label">Academic Year (e.g., 2024/2025):</label>
+              <input type="text" class="form-control" id="year" name="year" value="<%= form.year %>" required placeholder="2024/2025">
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="startDate" class="form-label">Start Date:</label>
+              <input type="date" class="form-control" id="startDate" name="startDate" value="<%= form.startDate %>" required>
+            </div>
+
+            <div class="mb-3 col-md-6">
+              <label for="endDate" class="form-label">End Date:</label>
+              <input type="date" class="form-control" id="endDate" name="endDate" value="<%= form.endDate %>" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Update Academic year</h5>
+      </div>
+      <div class="card-body">
+        <form action="?action=update" method="POST">
+          <% if(alert.status === "error" && alert.section === "update") { %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>Error!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <% if(alert.status === "success"  && alert.section === "update") { %>
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message pr-5">
+              <strong>Sucess!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <div class="row">
+            <div class="mb-2 col-md-6">
+              <label class="form-label" for="updateAcademicYears">Academic year</label>
+              <select class="form-control" id="updateAcademicYears" name="academicYears" <%= academicYears.length <= 0 ? "disabled" : "" %>>
+                <% if(academicYears.length > 0) { %>
+                <option disabled selected hidden>Select Academic year</option>
+                <% academicYears.map((academicYear) => { %>
+                <option value="<%= academicYear.id %>" <%- formSection === "update" && form.academicYears === academicYear.id ? "selected" : "" %>><%= academicYear.year %></option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No Academic year found</option>
+                <% } %>
+              </select>
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="updateYear" class="form-label">Academic Year (e.g., 2024/2025):</label>
+              <input type="text" class="form-control" id="updateYear" name="year" value="<%= form.year %>" required placeholder="2024/2025">
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="updateStartDate" class="form-label">Start Date:</label>
+              <input type="date" class="form-control" id="updateStartDate" name="startDate" value="<%= form.startDate %>" required>
+            </div>
+
+            <div class="mb-3 col-md-6">
+              <label for="updateEndDate" class="form-label">End Date:</label>
+              <input type="date" class="form-control" id="updateEndDate" name="endDate" value="<%= form.endDate %>" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-secondary">Update</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Delete Academic year</h5>
+      </div>
+      <div class="card-body">
+        <form action="?action=delete" method="POST">
+          <% if(alert.status === "error" && alert.section === "delete") { %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>Error!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <% if(alert.status === "success"  && alert.section === "delete") { %>
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message pr-5">
+              <strong>Sucess!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="deleteAcademicYear">Academic year</label>
+              <select class="form-control" id="deleteAcademicYear" name="academicYear" <%= academicYears.length <= 0 ? "disabled" : "" %>>
+                <% if(academicYears.length > 0) { %>
+                <option disabled selected hidden>Select Academic year</option>
+                <% academicYears.map((academicYear) => { %>
+                <option value="<%= academicYear.id %>" <%- formSection === "delete" && form.academicYear === academicYear.id ? "selected" : "" %>><%= academicYear.year %></option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No Academic year found</option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const updateAcademicYears = document.querySelector("#updateAcademicYears")
+
+  const updateEditForm = () => {
+    const academicYearId = updateAcademicYears.value
+
+    fetch(`/api/get-academic-year/${academicYearId}`)
+      .then(data => data.json())
+      .then(result => {
+        updateEndDate.innerText = "";
+        populateEditForm(result);
+      })
+      .catch(error => console.log(error))
+  }
+
+  const populateEditForm = (data) => {
+    const updateYear = document.querySelector("#updateYear")
+    const updateStartDate = document.querySelector("#updateStartDate")
+    const updateEndDate = document.querySelector("#updateEndDate")
+
+    // updateYear
+    updateYear.value = data.year
+
+    // updateStartDate
+    updateStartDate.value = data.startDate
+
+    // updateEndDate
+    updateEndDate.value = data.endDate
+
+  }
+
+  updateAcademicYears.addEventListener("change", updateEditForm)
+</script>
+<%- include("../../partials/footer") %>
