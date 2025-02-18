@@ -149,7 +149,7 @@
 
           <li class="sidebar-header">
             Exams
-          </li>          
+          </li>
           <li class="sidebar-item <%= currentPath === '/dashboard/exam' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/exam">
               <i class="align-middle" data-feather="settings"></i>
@@ -165,6 +165,13 @@
 
           <li class="sidebar-header">
             Settings
+          </li>
+
+          <li class="sidebar-item <%= currentPath === '/dashboard/academic-year' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard/academic-year">
+              <i class="align-middle" data-feather="book"></i>
+              <span class="align-middle">Academic Year</span>
+            </a>
           </li>
 
           <li class="sidebar-item <%= currentPath === '/dashboard/class' ? 'active' : '' %>">
