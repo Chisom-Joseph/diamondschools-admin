@@ -11,16 +11,21 @@ const cookieParser = require("cookie-parser");
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const sessionStore = new SequelizeStore({ db: db.sequelize });
+const sessionStore = new SequelizeStore({
+  db: db.sequelize,
+  checkExpirationInterval: 15 * 60 * 1000,
+  expiration: 7 * 24 * 60 * 60 * 1000,
+});
 
+app.set("trust proxy", 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    store: isProduction ? sessionStore : undefined, // Use undefined instead of MemoryStore
+    store: isProduction ? sessionStore : undefined,
     resave: false,
     saveUninitialized: isProduction,
     cookie: {
-      secure: isProduction, // Secure cookies in production
+      secure: isProduction,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
