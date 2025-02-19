@@ -11,8 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     name: {
-      type: DataTypes.ENUM("First Term", "Second Term", "Third Term"),
+      type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     startDate: {
       type: DataTypes.DATE,
