@@ -1,4 +1,3 @@
-const academicYear = require("../controllers/dashboard/academicYear");
 const { AcademicYear } = require("../models");
 
 module.exports = async () => {
