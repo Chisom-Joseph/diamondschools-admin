@@ -27,4 +27,7 @@ router.get(
   require(`../controllers/api/getAcademicYears`)
 );
 
+// Term
+router.get("/get-term/:id", require(`../controllers/api/getTerm`));
+
 module.exports = router;
