@@ -223,7 +223,7 @@ router.get("/exam-settings", async (req, res) => {
   });
 });
 
-// Exam academicYear
+// AcademicYear
 router.get("/academic-year", async (req, res) => {
   const status = req.flash("status")[0] || 200;
   res.status(status).render("dashboard/academicYear/academicYear.ejs", {
@@ -234,6 +234,19 @@ router.get("/academic-year", async (req, res) => {
   });
 });
 router.post("/academic-year", require("../controllers/dashboard/academicYear"));
+
+// Term
+router.get("/term", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/term/term.ejs", {
+    alert: req.flash("alert")[0] || "",
+    form: req.flash("form")[0] || "",
+    formSection: req.flash("formSection")[0] || "",
+    academicYears: await require("../utils/getAcademicYears")(),
+    terms: await require("../utils/getTerms")(),
+  });
+});
+router.post("/term", require("../controllers/dashboard/term"));
 
 // Notification
 router.get("/notification", async (req, res) => {
