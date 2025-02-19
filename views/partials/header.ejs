@@ -38,9 +38,7 @@
         </a>
 
         <ul class="sidebar-nav">
-          <li class="sidebar-header">
-            Students
-          </li>
+          <li class="sidebar-header">Students</li>
 
           <li class="sidebar-item <%= currentPath === '/dashboard/all-students' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/all-students">
@@ -54,6 +52,7 @@
               <span class="align-middle">Add Student</span>
             </a>
           </li>
+
           <% if(currentPath.startsWith("/dashboard/student/")) { %>
           <li class="sidebar-item <%= currentPath === `/dashboard/student/${student.id}` ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/student/<%= student.id %>">
@@ -63,13 +62,11 @@
           </li>
           <% } %>
 
-          <li class="sidebar-header">
-            Aspirants
-          </li>
+          <li class="sidebar-header">Aspirants</li>
 
           <li class="sidebar-item <%= currentPath === '/dashboard/all-aspirants' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/all-aspirants">
-              <i class="align-middle" data-feather="file-text"></i>
+              <i class="align-middle" data-feather="users"></i>
               <span class="align-middle">All Aspirants</span>
             </a>
           </li>
@@ -79,6 +76,7 @@
               <span class="align-middle">Add Aspirant</span>
             </a>
           </li>
+
           <% if(currentPath.startsWith("/dashboard/aspirant/")) { %>
           <li class="sidebar-item <%= currentPath === `/dashboard/aspirant/${aspirant.id}` ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/aspirant/<%= aspirant.id %>">
@@ -88,106 +86,74 @@
           </li>
           <% } %>
 
-          <li class="sidebar-header">
-            Guardians
-          </li>
+          <li class="sidebar-header">Guardians</li>
 
           <li class="sidebar-item <%= currentPath === '/dashboard/all-guardians' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/all-guardians">
-              <i class="align-middle" data-feather="file-text"></i>
+              <i class="align-middle" data-feather="users"></i>
               <span class="align-middle">All Guardians</span>
             </a>
           </li>
-          <% if(currentPath.startsWith("/dashboard/guardian/")) { %>
-          <li class="sidebar-item <%= currentPath === `/dashboard/guardian/${guardian.id}` ? 'active' : '' %>">
-            <a class="sidebar-link" href="/dashboard/guardian/<%= guardian.id %>">
-              <i class="align-middle" data-feather="user"></i>
-              <span class="align-middle"><%= guardian.email %></span>
-            </a>
-          </li>
-          <% } %>
 
-          <li class="sidebar-header">
-            Teachers
-          </li>
+          <li class="sidebar-header">Teachers</li>
+
           <li class="sidebar-item <%= currentPath === '/dashboard/all-teachers' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/all-teachers">
-              <i class="align-middle" data-feather="file-text"></i>
+              <i class="align-middle" data-feather="users"></i>
               <span class="align-middle">All Teachers</span>
             </a>
           </li>
           <li class="sidebar-item <%= currentPath === '/dashboard/add-teacher' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/add-teacher">
-              <i class="align-middle" data-feather="file-text"></i>
-              <span class="align-middle">Add Teachers</span>
+              <i class="align-middle" data-feather="user-plus"></i>
+              <span class="align-middle">Add Teacher</span>
             </a>
           </li>
-          <% if(currentPath.startsWith("/dashboard/teacher/")) { %>
-          <li class="sidebar-item <%= currentPath === `/dashboard/teacher/${teacher.id}` ? 'active' : '' %>">
-            <a class="sidebar-link" href="/dashboard/teacher/<%= teacher.id %>">
-              <i class="align-middle" data-feather="user"></i>
-              <span class="align-middle"><%= teacher.email %></span>
-            </a>
-          </li>
-          <% } %>
 
-          <li class="sidebar-header">
-            Subject
-          </li>
+          <li class="sidebar-header">Subjects</li>
+
           <li class="sidebar-item <%= currentPath === '/dashboard/all-subjects' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/all-subjects">
-              <i class="align-middle" data-feather="users"></i>
+              <i class="align-middle" data-feather="book"></i>
               <span class="align-middle">All Subjects</span>
             </a>
           </li>
-          <li class="sidebar-item <%= currentPath === '/dashboard/subject' ? 'active' : '' %>">
-            <a class="sidebar-link" href="/dashboard/subject">
-              <i class="align-middle" data-feather="users"></i>
-              <span class="align-middle">Subject</span>
-            </a>
-          </li>
 
-          <li class="sidebar-header">
-            Exams
-          </li>
+          <li class="sidebar-header">Exams</li>
+
           <li class="sidebar-item <%= currentPath === '/dashboard/exam' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/exam">
-              <i class="align-middle" data-feather="settings"></i>
+              <i class="align-middle" data-feather="clipboard"></i>
               <span class="align-middle">Exams</span>
             </a>
           </li>
           <li class="sidebar-item <%= currentPath === '/dashboard/exam-settings' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/exam-settings">
-              <i class="align-middle" data-feather="settings"></i>
+              <i class="align-middle" data-feather="sliders"></i>
               <span class="align-middle">Exam Settings</span>
             </a>
           </li>
 
-          <li class="sidebar-header">
-            Settings
-          </li>
+          <li class="sidebar-header">Settings</li>
 
           <li class="sidebar-item <%= currentPath === '/dashboard/term' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/term">
-              <i class="align-middle" data-feather="book"></i>
+              <i class="align-middle" data-feather="calendar"></i>
               <span class="align-middle">Term</span>
             </a>
           </li>
-
           <li class="sidebar-item <%= currentPath === '/dashboard/academic-year' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/academic-year">
-              <i class="align-middle" data-feather="book"></i>
+              <i class="align-middle" data-feather="calendar"></i>
               <span class="align-middle">Academic Year</span>
             </a>
           </li>
-
           <li class="sidebar-item <%= currentPath === '/dashboard/class' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/class">
-              <i class="align-middle" data-feather="book"></i>
+              <i class="align-middle" data-feather="layers"></i>
               <span class="align-middle">Class</span>
             </a>
           </li>
-
           <li class="sidebar-item <%= currentPath === '/dashboard/religion' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/religion">
               <i class="align-middle" data-feather="heart"></i>
@@ -197,7 +163,7 @@
 
           <li class="sidebar-item <%= currentPath === '/dashboard/notification' ? 'active' : '' %>">
             <a class="sidebar-link" href="/dashboard/notification">
-              <i class="align-middle" data-feather="settings"></i>
+              <i class="align-middle" data-feather="bell"></i>
               <span class="align-middle">Notification</span>
             </a>
           </li>
@@ -215,6 +181,8 @@
               <span class="align-middle">Logout</span>
             </a>
           </li>
+        </ul>
+
 
 
       </div>
