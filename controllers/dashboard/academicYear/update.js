@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
     req.flash("formSection", "update");
     res.redirect("/dashboard/academic-year");
   } catch (error) {
-    console.error("ERROR ADDING ACADEMIC YEAR");
+    console.error("ERROR UPDATING ACADEMIC YEAR");
     console.error(error);
   }
 };

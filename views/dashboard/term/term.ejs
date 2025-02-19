@@ -1,0 +1,227 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Add Term</h5>
+      </div>
+      <div class="card-body">
+        <form action="?action=add" method="POST">
+          <% if(alert.status === "error" && alert.section === "add") { %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>Error!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <% if(alert.status === "success" && alert.section === "add") { %>
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message pr-5">
+              <strong>Sucess!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <div class="row">
+            <div class="mb-2 col-md-6">
+              <label for="termName" class="form-label">Term Name:</label>
+              <input type="text" class="form-control" id="termName" name="termName" value="<%= form.termName %>" required placeholder="First Term">
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="academicYear" class="form-label">Academic Year:</label>
+              <select class="form-control" id="academicYear" name="academicYear" <%= academicYears.length <= 0 ? "disabled" : "" %> required>
+                <option value="" disabled hidden selected>Select Academic Year</option>
+                <% academicYears.forEach(year => { %>
+                <option value="<%= year.id %>" <%= form.academicYear === year.id ? 'selected' : '' %>>
+                  <%= year.year %>
+                </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="termStartDate" class="form-label">Start Date:</label>
+              <input type="date" class="form-control" id="termStartDate" name="termStartDate" value="<%= form.termStartDate %>" required>
+            </div>
+
+            <div class="mb-3 col-md-6">
+              <label for="termEndDate" class="form-label">End Date:</label>
+              <input type="date" class="form-control" id="termEndDate" name="termEndDate" value="<%= form.termEndDate %>" required>
+            </div>
+          </div>
+
+
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Update Term</h5>
+      </div>
+      <div class="card-body">
+        <form action="?action=update" method="POST">
+          <% if(alert.status === "error" && alert.section === "update") { %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>Error!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <% if(alert.status === "success"  && alert.section === "update") { %>
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message pr-5">
+              <strong>Sucess!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <div class="row">
+            <div class="mb-2 col-md-6">
+              <label class="form-label" for="updateTerm">Term</label>
+              <select class="form-control" id="updateTerm" name="updateTerm" <%= terms.length <= 0 ? "disabled" : "" %>>
+                <% if(terms.length > 0) { %>
+                <option disabled selected hidden>Select Term</option>
+                <% terms.map((term) => { %>
+                <option value="<%= term.id %>" <%- formSection === "update" && form.updateTerm === term.id ? "selected" : "" %>><%= term.name %> (<%= term.AcademicYear.year %>)</option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No Term found</option>
+                <% } %>
+              </select>
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="updateTermName" class="form-label">Term Name:</label>
+              <input <%= !form.updateTermName ? "disabled" : ""  %> type="text" class="form-control" id="updateTermName" name="updateTermName" value="<%= form.updateTermName %>" required placeholder="First Term">
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label class="form-label" for="updateAcademicYears">Academic Year</label>
+              <select <%= !form.updateAcademicYears ? "disabled" : ""  %> class="form-control" id="updateAcademicYears" name="updateAcademicYears" <%= academicYears.length <= 0 ? "disabled" : "" %>>
+                <% if(academicYears.length > 0) { %>
+                <option disabled selected hidden>Select Academic year</option>
+                <% academicYears.map((academicYear) => { %>
+                <option value="<%= academicYear.id %>" <%- formSection === "update" && form.updateAcademicYears === academicYear.id ? "selected" : "" %>><%= academicYear.year %></option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No Academic year found</option>
+                <% } %>
+              </select>
+            </div>
+
+            <div class="mb-2 col-md-6">
+              <label for="updateStartDate" class="form-label">Start Date:</label>
+              <input <%= !form.updateStartDate ? "disabled" : ""  %> type="date" class="form-control" id="updateStartDate" name="updateStartDate" value="<%= form.updateStartDate %>" required>
+            </div>
+
+            <div class="mb-3 col-md-6">
+              <label for="updateEndDate" class="form-label">End Date:</label>
+              <input <%= !form.updateEndDate ? "disabled" : ""  %> type="date" class="form-control" id="updateEndDate" name="updateEndDate" value="<%= form.updateEndDate %>" required>
+            </div>
+          </div>
+
+          <button type="submit" id="updateButton" class="btn btn-secondary" disabled>Update</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Delete Term</h5>
+      </div>
+      <div class="card-body">
+        <form action="?action=delete" method="POST">
+          <% if(alert.status === "error" && alert.section === "delete") { %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>Error!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <% if(alert.status === "success"  && alert.section === "delete") { %>
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message pr-5">
+              <strong>Sucess!</strong> <%- alert.message %>
+            </div>
+          </div>
+          <% } %>
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="deleteTerm">Term</label>
+              <select class="form-control" id="deleteTerm" name="term" <%= terms.length <= 0 ? "disabled" : "" %>>
+                <% if(terms.length > 0) { %>
+                <option disabled selected hidden>Select Term</option>
+                <% terms.map((term) => { %>
+                <option value="<%= term.id %>" <%- formSection === "delete" && form.term === term.id ? "selected" : "" %>><%= term.name %> (<%= term.AcademicYear.year %>)</option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No Term found</option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-danger" <%= terms.length <= 0 ? "disabled" : "" %>>Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const updateTerm = document.querySelector("#updateTerm")
+
+  const updateEditForm = () => {
+    const termId = updateTerm.value
+
+    fetch(`/api/get-term/${termId}`)
+      .then(data => data.json())
+      .then(result => {
+        populateEditForm(result);
+      })
+      .catch(error => console.log(error))
+  }
+
+  const populateEditForm = (data) => {
+    const updateAcademicYears = document.querySelector("#updateAcademicYears")
+    const updateStartDate = document.querySelector("#updateStartDate")
+    const updateTermName = document.querySelector("#updateTermName")
+    const updateEndDate = document.querySelector("#updateEndDate")
+    const updateButton = document.querySelector("#updateButton")
+
+    // updateAcademicYears
+    updateAcademicYears.disabled = false
+    for (let option of updateAcademicYears.options) {
+      if (option.value === data.AcademicYear.id) {
+        option.selected = true;
+        break;
+      }
+    }
+
+    // updateStartDate
+    updateStartDate.disabled = false
+    updateStartDate.value = data.startDate
+
+    // updateEndDate
+    updateEndDate.disabled = false
+    updateEndDate.value = data.endDate
+
+    // updateTermName
+    updateTermName.disabled = false
+    updateTermName.value = data.name
+
+    // updateButton
+    updateButton.disabled = false
+
+  }
+
+  updateTerm.addEventListener("change", updateEditForm)
+</script>
+<%- include("../../partials/footer") %>
