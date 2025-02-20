@@ -59,15 +59,6 @@ module.exports = async (req, res) => {
     const sortedScores = [...totalScores, totalScore].sort((a, b) => b - a);
     const position = sortedScores.indexOf(totalScore) + 1;
 
-    // Assign remark based on grade
-    // let remark;
-    // if (grade === "A") remark = "Excellent";
-    // else if (grade === "B") remark = "Very Good";
-    // else if (grade === "C") remark = "Good";
-    // else if (grade === "D") remark = "Fair";
-    // else if (grade === "E") remark = "Needs Improvement";
-    // else remark = "Fail";
-
     let existingResult = await Result.findOne({
       where: { StudentId: studentId, SubjectId: subjectId, TermId: termId },
     });
