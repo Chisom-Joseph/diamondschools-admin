@@ -1,10 +1,24 @@
-const { Op } = require("sequelize");
+const term = require("../../../validation/result/result");
 const { Result, Student } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
     const { subject: subjectId, totalScore, grade } = req.body;
     const { student: studentId, term: termId } = req.query;
+
+    // Validate academic year input
+    const termValid = term.validate(req.body);
+    if (termValid.error) {
+      req.flash("alert", {
+        status: "error",
+        section: subjectId,
+        message: termValid.error.message,
+      });
+      req.flash("form", req.body);
+      req.flash("status", 400);
+      req.flash("formSection", subjectId);
+      return res.redirect(req.originalUrl);
+    }
 
     // Fetch all results for the same subject, term, and class
     const results = await Result.findAll({
@@ -43,49 +57,55 @@ module.exports = async (req, res) => {
     else if (grade === "E") remark = "Needs Improvement";
     else remark = "Fail";
 
-    console.log({
-      studentId,
-      subjectId,
-      termId,
-      totalScore,
-      grade,
-      position,
-      classAverage,
-      classLowest,
-      classHighest,
-      remark,
-      date: new Date().toISOString(),
-    });
-    return res.json({
-      studentId,
-      subjectId,
-      termId,
-      totalScore,
-      grade,
-      position,
-      classAverage,
-      classLowest,
-      classHighest,
-      remark,
-      date: new Date().toISOString(),
+    let existingResult = await Result.findOne({
+      where: { StudentId: studentId, SubjectId: subjectId, TermId: termId },
     });
 
     // Save the result to the database
-    const result = await Result.create({
-      studentId,
-      subjectId,
-      termId,
-      totalScore,
-      grade,
-      position,
-      classAverage,
-      classLowest,
-      classHighest,
-      remark,
-      date: new Date().toISOString(),
-    });
+    if (existingResult) {
+      const updatedResult = existingResult.update(
+        {
+          StudentId: studentId,
+          SubjectId: subjectId,
+          TermId: termId,
+          totalScore,
+          grade,
+          position,
+          classAverage,
+          classLowest,
+          classHighest,
+          remark,
+          date: new Date().toISOString(),
+        },
+        { where: {} }
+      );
+      console.log(updatedResult);
+    } else {
+      const newResult = await Result.create({
+        StudentId: studentId,
+        SubjectId: subjectId,
+        TermId: termId,
+        totalScore,
+        grade,
+        position,
+        classAverage,
+        classLowest,
+        classHighest,
+        remark,
+        date: new Date().toISOString(),
+      });
+      console.log(newResult);
+    }
 
-    return res.json({ form: req.body, query: req.query });
+    req.flash("alert", {
+      status: "success",
+      section: subjectId,
+      message: "Result successfully updated!",
+    });
+    req.flash("form", req.body);
+    req.flash("status", 200);
+    req.flash("formSection", subjectId);
+    res.redirect(req.originalUrl);
   } catch (error) {
     console.error("ERROR UPDATING RESULT");
     console.error(error);
