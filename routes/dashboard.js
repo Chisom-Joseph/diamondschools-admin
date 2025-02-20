@@ -256,7 +256,10 @@ router.get("/result", async (req, res) => {
     academicYears: await require("../utils/getAcademicYearsWithTerms")(),
     form: "",
     selectedTerm: req.query.term,
-    subjects: await require("../utils/getStudentSubjects")(req.query.student),
+    ...(await require("../utils/getStudentSubjects")(
+      req.query.student,
+      req.query.term
+    )),
   });
 });
 router.post("/result", require("../controllers/dashboard/result/result"));

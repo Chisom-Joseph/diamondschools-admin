@@ -12,7 +12,7 @@
               <div class="col-md-6 col-xxl-4">
                 <div class="input-group">
                   <select name="term" id="term" class="form-select">
-                    <option disabled selected hidden>Select a term</option>
+                    <option disabled selected hidden>Select a Term</option>
                     <% academicYears.forEach((year) => { %>
                     <optgroup label="<%= year.year %>">
                       <% year.Terms.forEach((term) => { %>
@@ -30,7 +30,9 @@
           <div class="card-body h-100">
             <% if(selectedTerm) { %>
             <% if(subjects.length > 0) { %>
-            <% subjects.forEach(subject => { %>
+            <% subjects.forEach(subject => { 
+                let result = resultsMap[subject.id] || {}; // Get existing result or empty object
+            %>
             <form method="POST">
               <h4 class="mt-3"><%= subject.name %></h4>
               <input type="hidden" name="subject" value="<%= subject.id %>">
@@ -55,61 +57,41 @@
               <div class="row">
                 <div class="mb-3 col-md-3">
                   <label class="form-label" for="firstTest">First test score (0 - 10)</label>
-                  <input type="number" class="form-control" id="firstTest" min="0" max="10" placeholder="e.g: 10" name="firstTest" value="<%= form.firstTest %>">
+                  <input type="number" class="form-control" name="firstTest" min="0" max="10" value="<%= form.firstTest || result.firstTest %>">
                 </div>
                 <div class="mb-3 col-md-3">
                   <label class="form-label" for="presentation">Presentation (0 - 5)</label>
-                  <input type="number" class="form-control" id="presentation" min="0" max="5" placeholder="e.g: 5" name="presentation" value="<%= form.presentation %>">
+                  <input type="number" class="form-control" name="presentation" min="0" max="5" value="<%= form.presentation || result.presentation %>">
                 </div>
                 <div class="mb-3 col-md-3">
-                  <label class="form-label" for="midTermTest">mid Term Test (0 - 10)</label>
-                  <input type="number" class="form-control" id="midTermTest" min="0" max="10" placeholder="e.g: 10" name="midTermTest" value="<%= form.midTermTest %>">
+                  <label class="form-label" for="midTermTest">Mid Term Test (0 - 10)</label>
+                  <input type="number" class="form-control" name="midTermTest" min="0" max="10" value="<%= form.midTermTest || result.midTermTest %>">
                 </div>
                 <div class="mb-3 col-md-3">
                   <label class="form-label" for="project">Project (0 - 10)</label>
-                  <input type="number" class="form-control" id="project" min="0" max="10" placeholder="e.g: 10" name="project" value="<%= form.project %>">
+                  <input type="number" class="form-control" name="project" min="0" max="10" value="<%= form.project || result.project %>">
                 </div>
                 <div class="mb-3 col-md-3">
                   <label class="form-label" for="note">Note (0 - 5)</label>
-                  <input type="number" class="form-control" id="note" min="0" max="5" placeholder="e.g: 5" name="note" value="<%= form.note %>">
+                  <input type="number" class="form-control" name="note" min="0" max="5" value="<%= form.note || result.note %>">
                 </div>
                 <div class="mb-3 col-md-3">
                   <label class="form-label" for="examScore">Exam score (0 - 60)</label>
-                  <input type="number" class="form-control" id="examScore" min="0" max="60" placeholder="e.g: 60" name="examScore" value="<%= form.examScore %>">
+                  <input type="number" class="form-control" name="examScore" min="0" max="60" value="<%= form.examScore || result.examScore %>">
                 </div>
                 <div class="mb-3 col-md-3">
-                  <label class="form-label" for="totalScore">Total (0 - 100)</label>
-                  <input readonly type="number" class="form-control" id="totalScore" min="0" max="60" placeholder="e.g: 5" name="totalScore" value="<%= form.totalScore %>">
+                  <label class="form-label" for="totalScore">Total Score</label>
+                  <input readonly type="number" class="form-control" name="totalScore" value="<%= form.totalScore || result.totalScore %>">
                 </div>
                 <div class="mb-3 col-md-3">
-                  <label class="form-label" for="grade">Grade (A - F)</label>
-                  <input readonly type="text" class="form-control" id="grade" min="A" max="F" placeholder="e.g: A" name="grade" value="<%= form.grade %>">
+                  <label class="form-label" for="grade">Grade</label>
+                  <input readonly type="text" class="form-control" name="grade" value="<%= form.grade || result.grade %>">
                 </div>
-                <!--
-                <div class="mb-3 col-md-3">
-                  <label class="form-label" for="position">Position</label>
-                  <input disabled type="text" class="form-control" id="position" placeholder="e.g: A" name="position" value="<%= form.position %>">
-                </div>
-                <div class="mb-3 col-md-3">
-                  <label class="form-label" for="classAverage">Class average</label>
-                  <input disabled type="text" class="form-control" id="classAverage" placeholder="e.g: 5" name="classAverage" value="<%= form.classAverage %>">
-                </div>
-                <div class="mb-3 col-md-3">
-                  <label class="form-label" for="classLowest">Class lowest score</label>
-                  <input disabled type="text" class="form-control" id="classLowest" placeholder="e.g: 5" name="classLowest" value="<%= form.classLowest %>">
-                </div>
-                <div class="mb-3 col-md-3">
-                  <label class="form-label" for="classHighest">Class highest score</label>
-                  <input disabled type="text" class="form-control" id="classHighest" placeholder="e.g: 5" name="classHighest" value="<%= form.classHighest %>">
-                </div>
-                -->
                 <div class="mb-3 col-md-12">
                   <label class="form-label" for="remark">Remark</label>
-                  <textarea type="text" class="form-control" id="remark" placeholder="Your remark" name="remark" value="<%= form.remark %>"></textarea>
+                  <textarea class="form-control" name="remark"><%= form.remark || result.remark %></textarea>
                 </div>
-
               </div>
-              <!-- Submit Button -->
               <button type="submit" class="btn btn-success mb-3">Update</button>
             </form>
             <% }) %>
@@ -120,6 +102,7 @@
             <p class="text-center">Please select a term to continue</p>
             <% } %>
           </div>
+
         </div>
       </div>
     </div>
@@ -130,6 +113,19 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+    // Restore scroll position if it exists
+    if (sessionStorage.getItem("scrollPosition")) {
+      window.scrollTo(0, sessionStorage.getItem("scrollPosition"));
+      sessionStorage.removeItem("scrollPosition"); // Remove after restoring
+    }
+
+    // Store scroll position before form submission
+    document.querySelectorAll("form").forEach(form => {
+      form.addEventListener("submit", function() {
+        sessionStorage.setItem("scrollPosition", window.scrollY);
+      });
+    });
+
     const select = document.getElementById("term");
 
     select.addEventListener("change", function() {
