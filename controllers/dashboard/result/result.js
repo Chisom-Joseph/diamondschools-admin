@@ -3,7 +3,18 @@ const { Result, Student } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
-    const { subject: subjectId, totalScore, grade } = req.body;
+    const {
+      subject: subjectId,
+      totalScore,
+      grade,
+      firstTest,
+      presentation,
+      midTermTest,
+      project,
+      note,
+      remark,
+      examScore,
+    } = req.body;
     const { student: studentId, term: termId } = req.query;
 
     // Validate academic year input
@@ -49,13 +60,13 @@ module.exports = async (req, res) => {
     const position = sortedScores.indexOf(totalScore) + 1;
 
     // Assign remark based on grade
-    let remark;
-    if (grade === "A") remark = "Excellent";
-    else if (grade === "B") remark = "Very Good";
-    else if (grade === "C") remark = "Good";
-    else if (grade === "D") remark = "Fair";
-    else if (grade === "E") remark = "Needs Improvement";
-    else remark = "Fail";
+    // let remark;
+    // if (grade === "A") remark = "Excellent";
+    // else if (grade === "B") remark = "Very Good";
+    // else if (grade === "C") remark = "Good";
+    // else if (grade === "D") remark = "Fair";
+    // else if (grade === "E") remark = "Needs Improvement";
+    // else remark = "Fail";
 
     let existingResult = await Result.findOne({
       where: { StudentId: studentId, SubjectId: subjectId, TermId: termId },
@@ -75,6 +86,12 @@ module.exports = async (req, res) => {
           classLowest,
           classHighest,
           remark,
+          firstTest,
+          presentation,
+          midTermTest,
+          project,
+          note,
+          examScore,
           date: new Date().toISOString(),
         },
         { where: {} }
@@ -92,6 +109,12 @@ module.exports = async (req, res) => {
         classLowest,
         classHighest,
         remark,
+        firstTest,
+        presentation,
+        midTermTest,
+        project,
+        note,
+        examScore,
         date: new Date().toISOString(),
       });
       console.log(newResult);
