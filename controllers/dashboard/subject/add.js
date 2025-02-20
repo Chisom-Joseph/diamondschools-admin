@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
 
     // Check if subject already exists
     const subjectExists = await Subject.findOne({
-      where: { name: req.body.subject },
+      where: { name: req.body.subject, ClassId: req.body.classItem },
     });
     if (subjectExists) {
       req.flash("alert", {
