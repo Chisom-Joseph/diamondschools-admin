@@ -248,6 +248,19 @@ router.get("/term", async (req, res) => {
 });
 router.post("/term", require("../controllers/dashboard/term"));
 
+// Result
+router.get("/result", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/result/result.ejs", {
+    alert: req.flash("alert")[0] || "",
+    academicYears: await require("../utils/getAcademicYearsWithTerms")(),
+    form: "",
+    selectedTerm: req.query.term,
+    subjects: await require("../utils/getStudentSubjects")(req.query.student),
+  });
+});
+router.post("/result", require("../controllers/dashboard/result/result"));
+
 // Notification
 router.get("/notification", async (req, res) => {
   const status = req.flash("status")[0] || 200;

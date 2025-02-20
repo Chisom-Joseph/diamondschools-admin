@@ -1,0 +1,158 @@
+<%- include("../../partials/header") %>
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <h1 class="h3 mb-3">Results</h1>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-md-6 col-xxl-4">
+                <div class="input-group">
+                  <select name="term" id="term" class="form-select">
+                    <% academicYears.forEach((year) => { %>
+                    <optgroup label="<%= year.year %>">
+                      <% year.Terms.forEach((term) => { %>
+                      <option value="<%= term.id %>" <%= selectedTerm === term.id ? "selected" : "" %>><%= term.name %></option>
+                      <% }) %>
+                    </optgroup>
+                    <% }) %>
+                  </select>
+
+                  <button class="btn btn-secondary" type="button">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body h-100">
+            <% if(subjects.length > 0) { %>
+            <% subjects.forEach(subject => { %>
+            <form method="POST">
+              <h4 class="mt-3"><%= subject.name %></h4>
+              <input type="hidden" name="subject" value="<%= subject.id %>">
+
+              <div class="row">
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="firstTest">First test score (0 - 10)</label>
+                  <input type="number" class="form-control" id="firstTest" min="0" max="10" placeholder="e.g: 10" name="firstTest" value="<%= form.firstTest %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="presentation">Presentation (0 - 5)</label>
+                  <input type="number" class="form-control" id="presentation" min="0" max="5" placeholder="e.g: 5" name="presentation" value="<%= form.presentation %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="midTermTest">mid Term Test (0 - 10)</label>
+                  <input type="number" class="form-control" id="midTermTest" min="0" max="10" placeholder="e.g: 10" name="midTermTest" value="<%= form.midTermTest %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="project">Project (0 - 10)</label>
+                  <input type="number" class="form-control" id="project" min="0" max="10" placeholder="e.g: 10" name="project" value="<%= form.project %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="note">Note (0 - 5)</label>
+                  <input type="number" class="form-control" id="note" min="0" max="5" placeholder="e.g: 5" name="note" value="<%= form.note %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="examScore">Exam score (0 - 60)</label>
+                  <input type="number" class="form-control" id="examScore" min="0" max="60" placeholder="e.g: 60" name="examScore" value="<%= form.examScore %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="totalScore">Total (0 - 100)</label>
+                  <input readonly type="number" class="form-control" id="totalScore" min="0" max="60" placeholder="e.g: 5" name="totalScore" value="<%= form.totalScore %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="grade">Grade (A - F)</label>
+                  <input readonly type="text" class="form-control" id="grade" min="A" max="F" placeholder="e.g: A" name="grade" value="<%= form.grade %>">
+                </div>
+                <!--
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="position">Position</label>
+                  <input disabled type="text" class="form-control" id="position" placeholder="e.g: A" name="position" value="<%= form.position %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="classAverage">Class average</label>
+                  <input disabled type="text" class="form-control" id="classAverage" placeholder="e.g: 5" name="classAverage" value="<%= form.classAverage %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="classLowest">Class lowest score</label>
+                  <input disabled type="text" class="form-control" id="classLowest" placeholder="e.g: 5" name="classLowest" value="<%= form.classLowest %>">
+                </div>
+                <div class="mb-3 col-md-3">
+                  <label class="form-label" for="classHighest">Class highest score</label>
+                  <input disabled type="text" class="form-control" id="classHighest" placeholder="e.g: 5" name="classHighest" value="<%= form.classHighest %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="remark">Remark</label>
+                  <textarea type="text" class="form-control" id="remark" placeholder="Your remark" name="remark" value="<%= form.remark %>"></textarea>
+                </div>
+                -->
+
+              </div>
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-success mb-3">Update</button>
+            </form>
+            <% }) %>
+            <% } else { %>
+            <p>No subjects found for this student</p>
+            <% } %>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const select = document.getElementById("term");
+
+    select.addEventListener("change", function() {
+      const selectedTermId = this.value;
+      let currentUrl = new URL(window.location.href); // Parse current URL
+      let studentId = currentUrl.searchParams.get("student"); // Get 'student' parameter
+
+      if (studentId) {
+        // Update the term in the URL
+        currentUrl.searchParams.set("term", selectedTermId);
+        window.location.href = currentUrl.toString(); // Redirect to updated URL
+      } else {
+        console.error("Student ID not found in the URL.");
+      }
+    });
+
+    document.querySelectorAll("form").forEach((form) => {
+      form.addEventListener("input", function() {
+        let firstTest = parseFloat(form.querySelector("[name='firstTest']").value) || 0;
+        let presentation = parseFloat(form.querySelector("[name='presentation']").value) || 0;
+        let midTermTest = parseFloat(form.querySelector("[name='midTermTest']").value) || 0;
+        let project = parseFloat(form.querySelector("[name='project']").value) || 0;
+        let note = parseFloat(form.querySelector("[name='note']").value) || 0;
+        let exam = parseFloat(form.querySelector("[name='examScore']").value) || 0;
+
+        // Calculate total score
+        let totalScore = firstTest + presentation + midTermTest + project + note + exam;
+        form.querySelector("[name='totalScore']").value = totalScore;
+
+        // Assign grade based on total score
+        let grade;
+        if (totalScore >= 90) grade = "A";
+        else if (totalScore >= 80) grade = "B";
+        else if (totalScore >= 70) grade = "C";
+        else if (totalScore >= 60) grade = "D";
+        else if (totalScore >= 50) grade = "E";
+        else grade = "F";
+
+        form.querySelector("[name='grade']").value = grade;
+      });
+    });
+  });
+</script>
+
+
+
+<%- include("../../partials/footer") %>
