@@ -1,4 +1,4 @@
-const { Student, Subject, Result } = require("../models");
+const { Student, Subject, Result, Class } = require("../models");
 
 module.exports = async (studentId, termId) => {
   try {
@@ -12,7 +12,11 @@ module.exports = async (studentId, termId) => {
     }
     // Fetch all subjects the student is enrolled in
     const subjects = await Subject.findAll({
-      where: { ClassId: student.ClassId },
+      include: {
+        model: Class,
+        where: { id: student.ClassId },
+        through: { attributes: [] },
+      },
     });
 
     // Fetch existing results for this student & term
@@ -23,9 +27,11 @@ module.exports = async (studentId, termId) => {
 
     // Map results to easily find scores for each subject
     const resultsMap = {};
-    results.forEach((result) => {
-      resultsMap[result.Subject.id] = result; // Store result by subject ID
-    });
+    if (results.length > 0) {
+      results.forEach((result) => {
+        resultsMap[result.Subject.id] = result; // Store result by subject ID
+      });
+    }
 
     return { subjects, resultsMap };
   } catch (error) {

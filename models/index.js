@@ -152,10 +152,10 @@ db.Student.hasMany(db.Result, {
 });
 
 db.Result.belongsTo(db.Subject, {
-  onDelete: "SET NULL",
+  onDelete: "CASCADE",
 });
 db.Subject.hasMany(db.Result, {
-  onDelete: "SET NULL",
+  onDelete: "CASCADE",
 });
 
 db.Result.belongsTo(db.Term, {
