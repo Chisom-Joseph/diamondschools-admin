@@ -41,17 +41,26 @@
                   <input type="text" class="form-control" id="addShortName" placeholder="Math" name="shortName" value="<%- formSection === "add" ? form.shortName : "" %>">
                 </div>
                 <div class="mb-3 col-md-12">
-                  <label class="form-label" for="addClass">Class</label>
-                  <select class="form-control" id="addClass" name="classItem" <%= classes.length <= 0 ? "disabled" : "" %>>
+                  <label class="form-label" for="addSubject">Class</label>
+                  <div class="d-flex gap-2 flex-wrap">
                     <% if(classes.length > 0) { %>
-                    <option disabled selected hidden>Select class</option>
+                    <label class="form-check">
+                      <input class="form-check-input" type="checkbox" id="check-all" value="all">
+                      <span class="form-check-label">All</span>
+                    </label>
                     <% classes.map((classItem) => { %>
-                    <option value="<%= classItem.id %>" <%- formSection === "update" && form.classItem === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
+                    <label class="form-check">
+                      <input class="form-check-input class-checkbox" type="checkbox" name="classItem" value="<%= classItem.id %>" <%= (form.classItem === classItem.id || (Array.isArray(form.classItem) && form.classItem.includes(classItem.id))) ? "checked" : "" %>>
+                      <span class="form-check-label"><%= classItem.name %></span>
+                    </label>
                     <% }) %>
                     <% } else { %>
-                    <option disabled selected hidden>No Subjects found</option>
+                    <option disabled selected hidden></option>
+                    <span class="form-check-label">
+                      No Subjects found
+                    </span>
                     <% } %>
-                  </select>
+                  </div>
                 </div>
               </div>
 
@@ -109,15 +118,27 @@
                   <input <%= form == "" ? "disabled" : "" %> type="text" class="form-control" id="editShortName" placeholder="Math" name="shortName" value="<%= form.shortName %>">
                 </div>
                 <div class="mb-3 col-md-12">
+
                   <label class="form-label" for="editClass">Class</label>
-                  <select <%= !form.classItem ? "disabled" : "" %> class=" form-control" id="editClass" name="classItem">
-                    <option disabled selected hidden>Select class</option>
-                    <% if(form.classItem && classes) { %>
-                    <% classes.forEach(classItem => { %>
-                    <option value="<%= classItem.id %>" <%= classItem.id === form.classItem ? "selected" : "" %>><%= classItem.name %></option>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <% if(classes.length > 0) { %>
+                    <label class="form-check">
+                      <input class="form-check-input" type="checkbox" id="edit-check-all" value="all">
+                      <span class="form-check-label">All</span>
+                    </label>
+                    <% classes.map((classItem) => { %>
+                    <label class="form-check">
+                      <input class="form-check-input edit-class-checkbox" type="checkbox" name="classItem" value="<%= classItem.id %>" <%= (form.classItem === classItem.id || (Array.isArray(form.classItem) && form.classItem.includes(classItem.id))) ? "checked" : "" %>>
+                      <span class="form-check-label"><%= classItem.name %></span>
+                    </label>
                     <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden></option>
+                    <span class="form-check-label">
+                      No Subjects found
+                    </span>
                     <% } %>
-                  </select>
+                  </div>
                 </div>
               </div>
 
@@ -182,45 +203,77 @@
 </main>
 
 <script>
-  const editSubject = document.querySelector("#editSubject")
+  document.addEventListener('DOMContentLoaded', () => {
+    function setupCheckboxGroup(masterSelector, itemSelector) {
+      const masterCheckbox = document.querySelector(masterSelector);
+      const itemCheckboxes = document.querySelectorAll(itemSelector);
 
-  const updateEditForm = () => {
-    const subjectId = editSubject.value
+      if (!masterCheckbox || itemCheckboxes.length === 0) return;
 
-    fetch(`/api/get-subject-and-classes/${subjectId}`)
-      .then(data => data.json())
-      .then(result => {
-        editClass.innerText = "";
-        populateEditForm(result);
-      })
-      .catch(error => console.log(error))
-  }
+      masterCheckbox.addEventListener("change", () => {
+        const isChecked = masterCheckbox.checked;
+        itemCheckboxes.forEach(checkbox => {
+          checkbox.checked = isChecked;
+          checkbox.dispatchEvent(new Event("change")); // **Manually trigger change event**
+        });
+      });
 
-  const populateEditForm = (data) => {
-    const editSubjectName = document.querySelector("#editSubjectName")
-    const editShortName = document.querySelector("#editShortName")
-    const editClass = document.querySelector("#editClass")
+      itemCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+          masterCheckbox.checked = Array.from(itemCheckboxes).every(cb => cb.checked);
+        });
+      });
+    }
 
-    // editSubjectName
-    editSubjectName.disabled = false
-    editSubjectName.value = data.subject.name
+    // Usage for static checkboxes
+    setupCheckboxGroup("#check-all", ".class-checkbox");
+    setupCheckboxGroup("#edit-check-all", ".edit-class-checkbox");
 
-    // editShortName
-    editShortName.disabled = false
-    editShortName.value = data.subject.shortName
+    const editSubject = document.querySelector("#editSubject");
 
-    // editClass
-    data.classes.forEach(classItem => {
-      const classOption = document.createElement("option")
-      classOption.value = classItem.id
-      classOption.innerHTML = classItem.name
-      if (classItem.id === data.subject.class.id) classOption.selected = true
-      editClass.add(classOption)
-      editClass.disabled = false
-    })
+    const updateEditForm = () => {
+      const subjectId = editSubject.value;
 
-  }
+      fetch(`/api/get-subject-and-classes/${subjectId}`)
+        .then(data => data.json())
+        .then(result => {
+          populateEditForm(result);
+        })
+        .catch(error => console.log(error));
+    };
 
-  editSubject.addEventListener("change", updateEditForm)
+    const populateEditForm = (data) => {
+      const editSubjectName = document.querySelector("#editSubjectName");
+      const editShortName = document.querySelector("#editShortName");
+      const editClass = document.querySelectorAll(".edit-class-checkbox");
+      const editCheckAll = document.querySelector("#edit-check-all");
+
+      // editSubjectName
+      editSubjectName.disabled = false;
+      editSubjectName.value = data.subject.name;
+
+      // editShortName
+      editShortName.disabled = false;
+      editShortName.value = data.subject.shortName;
+
+      // Uncheck all first
+      editClass.forEach(classInput => (classInput.checked = false));
+
+      // Check only the relevant ones
+      data.classes.forEach(classItem => {
+        editClass.forEach(classInput => {
+          if (classInput.value === classItem.id) {
+            classInput.checked = true;
+            classInput.dispatchEvent(new Event("change")); // **Manually trigger change event**
+          }
+        });
+      });
+
+      // Ensure "Select All" is updated
+      editCheckAll.checked = Array.from(editClass).every(cb => cb.checked);
+    };
+
+    editSubject.addEventListener("change", updateEditForm);
+  });
 </script>
 <%- include("../../partials/footer") %>

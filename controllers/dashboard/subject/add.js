@@ -1,8 +1,11 @@
 const addSubjectSchema = require("../../../validation/subject/add");
-const { Subject } = require("../../../models");
+const { Subject, Sequelize } = require("../../../models");
+const { Op } = Sequelize;
 
 module.exports = async (req, res) => {
   try {
+    const { subject, shortName, classItem } = req.body;
+
     // Validate subject
     const subjectValid = addSubjectSchema.validate(req.body);
     if (subjectValid.error) {
@@ -19,7 +22,7 @@ module.exports = async (req, res) => {
 
     // Check if subject already exists
     const subjectExists = await Subject.findOne({
-      where: { name: req.body.subject, ClassId: req.body.classItem },
+      where: { [Op.or]: [{ name: req.body.subject }, { shortName }] },
     });
     if (subjectExists) {
       req.flash("alert", {
@@ -35,11 +38,21 @@ module.exports = async (req, res) => {
 
     // Create subject
     const newSubject = await Subject.create({
-      name: req.body.subject,
-      shortName: req.body.shortName,
-      ClassId: req.body.classItem,
+      name: subject,
+      shortName: shortName,
     });
     console.log(newSubject);
+
+    // Add classes
+    if (Array.isArray(classItem)) {
+      classItem.forEach((currentClass) => {
+        const newClass = newSubject.addClass(currentClass);
+        console.log(newClass);
+      });
+    } else {
+      const newClass = newSubject.addClass(classItem);
+      console.log(newClass);
+    }
 
     req.flash("alert", {
       status: "success",
