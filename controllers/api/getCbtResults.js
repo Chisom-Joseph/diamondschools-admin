@@ -1,16 +1,22 @@
-const { AttemptedSubject, Student, Subject, Term } = require("../../models");
+const {
+  AttemptedSubject,
+  Student,
+  Aspirant,
+  Subject,
+  Term,
+} = require("../../models");
 const { Op } = require("sequelize");
 
 module.exports = async (req, res) => {
   try {
     const { draw, start, length, search, order } = req.query;
 
-    const page = parseInt(start) / parseInt(length) + 1; // Calculate page number
-    const limit = parseInt(length) || 10; // Number of items per page
-    const offset = parseInt(start) || 0; // Offset for items
-    const searchValue = search?.value || ""; // Search term
+    const page = parseInt(start) / parseInt(length) + 1;
+    const limit = parseInt(length) || 10;
+    const offset = parseInt(start) || 0;
+    const searchValue = search?.value || "";
 
-    // Define searchable fields
+    // Define searchable fields for both Student and Aspirant
     const where = searchValue
       ? {
           [Op.or]: [
@@ -19,13 +25,20 @@ module.exports = async (req, res) => {
             {
               "$Student.registrationNumber$": { [Op.like]: `%${searchValue}%` },
             },
+            { "$Aspirant.firstName$": { [Op.like]: `%${searchValue}%` } },
+            { "$Aspirant.lastName$": { [Op.like]: `%${searchValue}%` } },
+            {
+              "$Aspirant.examinationNumber$": {
+                [Op.like]: `%${searchValue}%`,
+              },
+            },
             { "$Subject.name$": { [Op.like]: `%${searchValue}%` } },
             { "$Term.name$": { [Op.like]: `%${searchValue}%` } },
           ],
         }
       : {};
 
-    // Define columns for sorting
+    // Define sortable columns
     const columns = [
       "id",
       "correctCount",
@@ -45,11 +58,23 @@ module.exports = async (req, res) => {
       order: orderBy,
       limit,
       offset,
-      attributes: [...columns, "StudentId", "SubjectId", "TermId"],
+      attributes: [
+        ...columns,
+        "StudentId",
+        "AspirantId",
+        "SubjectId",
+        "TermId",
+      ],
       include: [
         {
           model: Student,
           attributes: ["id", "firstName", "lastName", "registrationNumber"],
+          required: false, // Student may not always be present
+        },
+        {
+          model: Aspirant,
+          attributes: ["id", "firstName", "lastName", "examinationNumber"],
+          required: false, // Aspirant may not always be present
         },
         {
           model: Subject,
@@ -62,18 +87,23 @@ module.exports = async (req, res) => {
       ],
     });
 
-    // Process rows to add student, subject, and term names
-    const allRows = rows.map((row) => ({
-      id: row.id,
-      studentName: `${row.Student.firstName} ${row.Student.lastName}`,
-      registrationNumber: row.Student.registrationNumber,
-      subject: row.Subject.name,
-      term: row.Term.name,
-      correctCount: row.correctCount,
-      totalQuestions: row.totalQuestions,
-      scorePercentage: row.scorePercentage,
-      totalAnswered: row.totalAnswered,
-    }));
+    // Process rows to include either Student or Aspirant
+    const allRows = rows.map((row) => {
+      const user = row.Student || row.Aspirant || {}; // Pick Student if available, else Aspirant
+      return {
+        id: row.id,
+        userType: row.Student ? "Student" : "Aspirant",
+        fullName: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+        registrationNumber:
+          user.registrationNumber || user.examinationNumber || "N/A",
+        subject: row.Subject.name,
+        term: row.Term.name,
+        correctCount: row.correctCount,
+        totalQuestions: row.totalQuestions,
+        scorePercentage: row.scorePercentage,
+        totalAnswered: row.totalAnswered,
+      };
+    });
 
     // Respond with DataTables format
     res.json({

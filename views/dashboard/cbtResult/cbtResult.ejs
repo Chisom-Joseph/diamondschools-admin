@@ -1,28 +1,27 @@
 <%- include("../../partials/header") %>
-
 <main class="content">
   <div class="container-fluid p-0">
 
-    <h1 class="h3 mb-3">All CBT Results</h1>
+    <h1 class="h3 mb-3">All Students & Aspirants</h1>
 
     <div class="row">
       <div class="col-12 col-xl-12">
         <div class="card">
           <div class="card-header">
-            <h5 class="card-title">Attempted Subjects</h5>
+            <h5 class="card-title">Striped Rows</h5>
           </div>
           <div class="card-body">
             <table id="example" class="datatable" style="width:100%">
               <thead>
                 <tr>
-                  <th>Student</th>
-                  <th>Reg Number</th>
+                  <th>Full Name</th>
+                  <th>User Type</th>
+                  <th>Reg/Exam Number</th>
                   <th>Subject</th>
                   <th>Term</th>
-                  <th>Score (%)</th>
-                  <th>Total Questions</th>
-                  <th>Correct Answers</th>
-                  <th>Total Answered</th>
+                  <th>Correct</th>
+                  <th>Total</th>
+                  <th>Score %</th>
                 </tr>
               </thead>
             </table>
@@ -41,13 +40,17 @@
       serverSide: true,
       ajax: '/api/get-cbt-results',
       columns: [{
-          data: 'studentName',
+          data: 'fullName',
           render: (data, type, row) => {
-            return `<a href="/dashboard/student/${row.StudentId}">${data}</a>`;
-          },
+            return data ? `<a href="/dashboard/${row.userType.toLowerCase()}/${row.id}">${data}</a>` : 'No Name';
+          }
         },
         {
-          data: 'registrationNumber'
+          data: 'userType'
+        },
+        {
+          data: 'registrationNumber',
+          title: 'Reg/Exam Number'
         },
         {
           data: 'subject'
@@ -56,19 +59,15 @@
           data: 'term'
         },
         {
-          data: 'scorePercentage',
-          render: (data) => `${data}%`
+          data: 'correctCount'
         },
         {
           data: 'totalQuestions'
         },
         {
-          data: 'correctCount'
-        },
-        {
-          data: 'totalAnswered'
-        },
-      ],
+          data: 'scorePercentage'
+        }
+      ]
     });
   });
 </script>
