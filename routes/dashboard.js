@@ -208,6 +208,8 @@ router.get("/exam", async (req, res) => {
     form: req.flash("form")[0] || "",
     subjects: await require("../utils/getSubjects")(false),
     formSection: req.flash("formSection")[0] || "",
+    classes: await require("../utils/getClasses")(),
+    academicYears: await require("../utils/getAcademicYearsWithTerms")(),
   });
 });
 router.post("/exam", require("../controllers/dashboard/exam"));

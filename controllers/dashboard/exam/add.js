@@ -1,9 +1,13 @@
 const addExamSchema = require("../../../validation/exam/add");
-const { Question, Option } = require("../../../models");
+const { Question, Option, ClassSubject } = require("../../../models");
 
 module.exports = async (req, res) => {
+  // return res.json(req.body);
   try {
     const {
+      updateFor,
+      class: classItem,
+      term,
       option1,
       option2,
       option3,
@@ -27,10 +31,33 @@ module.exports = async (req, res) => {
       return res.redirect("/dashboard/exam");
     }
 
+    // Check if class has subject
+    const classHasSubject = await ClassSubject.findOne({
+      where: {
+        SubjectId: subject,
+        ClassId: classItem,
+      },
+    });
+
+    if (!classHasSubject) {
+      req.flash("alert", {
+        status: "error",
+        section: "add",
+        message: "Selected subject is not available in class",
+      });
+      req.flash("form", req.body);
+      req.flash("formSection", "add");
+      req.flash("status", 400);
+      return res.redirect("/dashboard/exam");
+    }
+
     // Create question
     const newQuestion = await Question.create({
       name: question,
       SubjectId: subject,
+      ClassId: classItem,
+      TermId: term,
+      for: updateFor,
     });
 
     // Add Questions

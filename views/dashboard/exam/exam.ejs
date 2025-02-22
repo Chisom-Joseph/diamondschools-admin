@@ -31,7 +31,7 @@
               </div>
               <% } %>
               <!-- Personal Information -->
-              <h4 class="mt-3">Exam settings and meta data</h4>
+              <h4 class="mt-3">Exam settings</h4>
               <div class="row">
                 <div class="mb-2 col-md-6">
                   <label class="form-label" for="addSubject">Subject</label>
@@ -47,14 +47,49 @@
                   </select>
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label class="form-label" for="question">Question image (Optional)</label>
-                  <input type="file" class="form-control" placeholder="Input">
+                  <label class="form-label" for="deleteClass">Class</label>
+                  <select class="form-control" id="deleteClass" name="class" <%= classes.length <= 0 ? "disabled" : "" %>>
+                    <% if(classes.length > 0) { %>
+                    <option disabled selected hidden>Select class</option>
+                    <% classes.map((classItem) => { %>
+                    <option value="<%= classItem.id %>" <%- formSection === "delete" && form.class === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No classes found</option>
+                    <% } %>
+                  </select>
                 </div>
-                <div class="mb-3 col-md-12">
+                <div class="mb-2 col-md-6">
+                  <label class="form-label" for="updateTerm">Term</label>
+                  <select name="term" id="term" class="form-select">
+                    <option disabled selected hidden>Select a Term</option>
+                    <% academicYears.forEach((year) => { %>
+                    <optgroup label="<%= year.year %>">
+                      <% year.Terms.forEach((term) => { %>
+                      <option value="<%= term.id %>" <%= form.term === term.id ? "selected" : "" %>><%= term.name %></option>
+                      <% }) %>
+                    </optgroup>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="mb-2 col-md-6">
+                  <label class="form-label" for="updateFor">For</label>
+                  <select class="form-control" id="updateFor" name="updateFor">
+                    <option disabled selected hidden>Select User For Exam</option>
+                    <option value="all">All</option>
+                    <option value="aspirant">Aspirant</option>
+                    <option value="student">Student</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-6">
                   <label class="form-label" for="question">Question</label>
                   <textarea class="form-control" id="question" name="question"><%= form.question %></textarea>
                 </div>
-                <div class="mb-3 col-md-3">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="question">Question image (Optional)</label>
+                  <input type="file" class="form-control" placeholder="Input">
+                </div>
+                <div class="mb-3 col-md-6">
                   <label class="form-label" for="option1">Option 1</label>
                   <div class="input-group">
                     <div class="input-group-text">
@@ -63,8 +98,8 @@
                     <input name="option1" type="text" class="form-control" placeholder="Radio">
                   </div>
                 </div>
-                <div class="mb-3 col-md-3">
-                  <label class="form-label" for="option2">Option 4</label>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="option2">Option 2</label>
                   <div class="input-group">
                     <div class="input-group-text">
                       <input name="correctOption" value="option2" type="radio">
@@ -72,7 +107,7 @@
                     <input name="option2" type="text" class="form-control" placeholder="Radio">
                   </div>
                 </div>
-                <div class="mb-3 col-md-3">
+                <div class="mb-3 col-md-6">
                   <label class="form-label" for="option3">Option 3</label>
                   <div class="input-group">
                     <div class="input-group-text">
@@ -81,7 +116,7 @@
                     <input name="option3" type="text" class="form-control" placeholder="Radio">
                   </div>
                 </div>
-                <div class="mb-3 col-md-3">
+                <div class="mb-3 col-md-6">
                   <label class="form-label" for="option4">Option 4</label>
                   <div class="input-group">
                     <div class="input-group-text">

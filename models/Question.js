@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       type: ENUM("aspirant", "student", "all"),
       allowNull: false,
       validate: {
-        noteEmpty: false,
+        notEmpty: false,
       },
       defaultValue: "all",
     },
