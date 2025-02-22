@@ -1,0 +1,76 @@
+<%- include("../../partials/header") %>
+
+<main class="content">
+  <div class="container-fluid p-0">
+
+    <h1 class="h3 mb-3">All CBT Results</h1>
+
+    <div class="row">
+      <div class="col-12 col-xl-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Attempted Subjects</h5>
+          </div>
+          <div class="card-body">
+            <table id="example" class="datatable" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Reg Number</th>
+                  <th>Subject</th>
+                  <th>Term</th>
+                  <th>Score (%)</th>
+                  <th>Total Questions</th>
+                  <th>Correct Answers</th>
+                  <th>Total Answered</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="/DataTables/datatables.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new DataTable('#example', {
+      serverSide: true,
+      ajax: '/api/get-cbt-results',
+      columns: [{
+          data: 'studentName',
+          render: (data, type, row) => {
+            return `<a href="/dashboard/student/${row.StudentId}">${data}</a>`;
+          },
+        },
+        {
+          data: 'registrationNumber'
+        },
+        {
+          data: 'subject'
+        },
+        {
+          data: 'term'
+        },
+        {
+          data: 'scorePercentage',
+          render: (data) => `${data}%`
+        },
+        {
+          data: 'totalQuestions'
+        },
+        {
+          data: 'correctCount'
+        },
+        {
+          data: 'totalAnswered'
+        },
+      ],
+    });
+  });
+</script>
+
+<%- include("../../partials/footer") %>

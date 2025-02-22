@@ -266,6 +266,12 @@ router.get("/result", async (req, res) => {
 });
 router.post("/result", require("../controllers/dashboard/result/result"));
 
+// CBT Result
+router.get("/cbt-result/:id", async (req, res) => {
+  const status = req.flash("status")[0] || 200;
+  res.status(status).render("dashboard/cbtResult/cbtResult.ejs");
+});
+
 // Notification
 router.get("/notification", async (req, res) => {
   const status = req.flash("status")[0] || 200;

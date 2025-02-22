@@ -30,4 +30,7 @@ router.get(
 // Term
 router.get("/get-term/:id", require(`../controllers/api/getTerm`));
 
+// Cbt results
+router.get("/get-cbt-results", require(`../controllers/api/getCbtResults`));
+
 module.exports = router;
