@@ -51,10 +51,7 @@ module.exports = async (req, res) => {
 
     // Hash password
     const salt = await bcrypt.genSalt(5);
-    const hashedPassword = await bcrypt.hash(
-      require("../../../utils/genPassword")(6),
-      salt
-    );
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     console.log({ registrationNumber, password, hashedPassword });
 
