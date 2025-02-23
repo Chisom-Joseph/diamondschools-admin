@@ -157,11 +157,10 @@
 
         // Assign grade based on total score
         let grade;
-        if (totalScore >= 90) grade = "A";
-        else if (totalScore >= 80) grade = "B";
-        else if (totalScore >= 70) grade = "C";
-        else if (totalScore >= 60) grade = "D";
-        else if (totalScore >= 50) grade = "E";
+        if (totalScore >= 70) grade = "A";
+        else if (totalScore >= 60) grade = "B";
+        else if (totalScore >= 50) grade = "C";
+        else if (totalScore >= 40) grade = "D";
         else grade = "F";
 
         form.querySelector("[name='grade']").value = grade;
