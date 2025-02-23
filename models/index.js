@@ -28,9 +28,6 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   dialectOptions: {
     connectTimeout: 100000,
   },
-  define: {
-    timestamps: false,
-  },
   polli: {
     min: dbConfig.poll.min,
     max: dbConfig.poll.max,
