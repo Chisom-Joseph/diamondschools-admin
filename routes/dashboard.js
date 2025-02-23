@@ -227,8 +227,10 @@ router.get("/exam-settings", async (req, res) => {
     form: req.flash("form")[0] || "",
     subjects: await require("../utils/getSubjects")(false),
     formSection: req.flash("formSection")[0] || "",
+    examSettings: (await require("../utils/getExamSettings")()) || "",
   });
 });
+router.post("/exam-settings", require("../controllers/dashboard/examSettings"));
 
 // AcademicYear
 router.get("/academic-year", async (req, res) => {
