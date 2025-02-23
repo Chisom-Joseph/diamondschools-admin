@@ -1,8 +1,13 @@
 const router = require("express").Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/dashboard.ejs");
+  res.status(status).render("dashboard/dashboard.ejs", {
+    studentCount: await require("../utils/getStudentCount")(),
+    aspirantCount: await require("../utils/getAspirantCount")(),
+    teacherCount: await require("../utils/getTeacherCount")(),
+    newAspirants: await require("../utils/getAspirants")(5, "createdAt", "ASC"),
+  });
 });
 
 // All aspirants

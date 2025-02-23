@@ -8,93 +8,67 @@
       <div class="col-xl-12 col-xxl-12 d-flex">
         <div class="w-100">
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-md-4">
+              <!-- ✅ Each card in a separate column -->
               <div class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="col mt-0">
                       <h5 class="card-title">Students</h5>
                     </div>
-
                     <div class="col-auto">
                       <div class="stat text-primary">
                         <i class="align-middle" data-feather="truck"></i>
                       </div>
                     </div>
                   </div>
-                  <h1 class="mt-1 mb-3">2,382</h1>
-                  <div class="mb-0">
-                    <span class="text-danger"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
-                    <span class="text-muted">Since last week</span>
-                  </div>
+                  <h1 class="mt-1 mb-3"><%= studentCount %></h1>
                 </div>
               </div>
+            </div>
+
+            <div class="col-md-4">
+              <!-- ✅ Keeps cards side by side from md and up -->
               <div class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="col mt-0">
                       <h5 class="card-title">Aspirants</h5>
                     </div>
-
                     <div class="col-auto">
                       <div class="stat text-primary">
                         <i class="align-middle" data-feather="users"></i>
                       </div>
                     </div>
                   </div>
-                  <h1 class="mt-1 mb-3">1,212</h1>
-                  <div class="mb-0">
-                    <span class="text-success"> <i class="mdi mdi-arrow-bottom-right"></i> 5.25% </span>
-                    <span class="text-muted">Since last week</span>
-                  </div>
+                  <h1 class="mt-1 mb-3"><%= aspirantCount %></h1>
                 </div>
               </div>
             </div>
-            <div class="col-sm-6">
+
+            <div class="col-md-4">
+              <!-- ✅ Third card in a separate column -->
               <div class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="col mt-0">
                       <h5 class="card-title">Teachers</h5>
                     </div>
-
                     <div class="col-auto">
                       <div class="stat text-primary">
                         <i class="align-middle" data-feather="dollar-sign"></i>
                       </div>
                     </div>
                   </div>
-                  <h1 class="mt-1 mb-3">21</h1>
-                  <div class="mb-0">
-                    <span class="text-success"> <i class="mdi mdi-arrow-bottom-right"></i> 6.65% </span>
-                    <span class="text-muted">Since last week</span>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col mt-0">
-                      <h5 class="card-title">Visitors</h5>
-                    </div>
-
-                    <div class="col-auto">
-                      <div class="stat text-primary">
-                        <i class="align-middle" data-feather="shopping-cart"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <h1 class="mt-1 mb-3">64</h1>
-                  <div class="mb-0">
-                    <span class="text-danger"> <i class="mdi mdi-arrow-bottom-right"></i> -2.25% </span>
-                    <span class="text-muted">Since last week</span>
-                  </div>
+                  <h1 class="mt-1 mb-3"><%= teacherCount %></h1>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
+
 
     </div>
   </div>
@@ -113,69 +87,30 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th class="d-none d-xl-table-cell">Start Date</th>
-                <th class="d-none d-xl-table-cell">End Date</th>
-                <th>Status</th>
-                <th class="d-none d-md-table-cell">Assignee</th>
+                <th class="d-none d-xl-table-cell">Class</th>
+                <th class="d-none d-xl-table-cell">Exam Number</th>
+                <th>Gender</th>
+                <th class="d-none d-md-table-cell">Status</th>
               </tr>
             </thead>
             <tbody>
+              <% if(newAspirants.length > 0) { %>
+              <% newAspirants.forEach(aspirant => { %>
               <tr>
-                <td>Project Apollo</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-success">Done</span></td>
-                <td class="d-none d-md-table-cell">Vanessa Tucker</td>
+                <td><a href="/dashboard/aspirant/<%= aspirant.id %>"><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></a></td>
+                <td class="d-none d-xl-table-cell"><%= aspirant.class.name %></td>
+                <td class="d-none d-xl-table-cell"><%= aspirant.examinationNumber %></td>
+                <td><%= aspirant.gender %></td>
+                <td><%- aspirant.isStudent ? '<span class="badge bg-success">Admitted</span>' : '<span class="badge bg-danger">Not Admitted</span>' %> </td>
               </tr>
+              <% }) %>
+              <% } else { %>
               <tr>
-                <td>Project Fireball</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-danger">Cancelled</span></td>
-                <td class="d-none d-md-table-cell">William Harris</td>
+                <td colspan="5">
+                  No Aspirants available
+                </td>
               </tr>
-              <tr>
-                <td>Project Hades</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-success">Done</span></td>
-                <td class="d-none d-md-table-cell">Sharon Lessman</td>
-              </tr>
-              <tr>
-                <td>Project Nitro</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-warning">In progress</span></td>
-                <td class="d-none d-md-table-cell">Vanessa Tucker</td>
-              </tr>
-              <tr>
-                <td>Project Phoenix</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-success">Done</span></td>
-                <td class="d-none d-md-table-cell">William Harris</td>
-              </tr>
-              <tr>
-                <td>Project X</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-success">Done</span></td>
-                <td class="d-none d-md-table-cell">Sharon Lessman</td>
-              </tr>
-              <tr>
-                <td>Project Romeo</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-success">Done</span></td>
-                <td class="d-none d-md-table-cell">Christina Mason</td>
-              </tr>
-              <tr>
-                <td>Project Wombat</td>
-                <td class="d-none d-xl-table-cell">01/01/2023</td>
-                <td class="d-none d-xl-table-cell">31/06/2023</td>
-                <td><span class="badge bg-warning">In progress</span></td>
-                <td class="d-none d-md-table-cell">William Harris</td>
-              </tr>
+              <% } %>
             </tbody>
           </table>
         </div>

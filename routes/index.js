@@ -9,7 +9,7 @@ router.use("/auth", loginVerifier, require("./auth"));
 router.use("/api", loginVerifier, require("./api"));
 
 router.get("/", (req, res) => {
-  res.redirect("/dashboard/all-students");
+  res.redirect("/dashboard");
 });
 
 router.get("*", (req, res) => {

@@ -38,6 +38,13 @@
         </a>
 
         <ul class="sidebar-nav">
+          <li class="sidebar-item <%= currentPath === '/dashboard' ? 'active' : '' %>">
+            <a class="sidebar-link" href="/dashboard">
+              <i class="align-middle" data-feather="users"></i>
+              <span class="align-middle">Dashboard</span>
+            </a>
+          </li>
+
           <li class="sidebar-header">Students</li>
 
           <li class="sidebar-item <%= currentPath === '/dashboard/all-students' ? 'active' : '' %>">

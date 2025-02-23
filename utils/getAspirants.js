@@ -1,8 +1,11 @@
-const { Aspirant, Guardian } = require("../models");
+const { Aspirant } = require("../models");
 
-module.exports = async () => {
+module.exports = async (limit = null, sortBy = "id", sortOrder = "ASC") => {
   try {
-    const aspirantsFromDb = await Aspirant.findAll();
+    const aspirantsFromDb = await Aspirant.findAll({
+      limit: limit ? parseInt(limit) : undefined,
+      order: [[sortBy, sortOrder.toUpperCase()]],
+    });
 
     const aspirants = Promise.all(
       aspirantsFromDb.map(async (aspirant) => {
