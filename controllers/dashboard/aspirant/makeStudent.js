@@ -30,10 +30,7 @@ module.exports = async (req, res) => {
     }
 
     // Check if aspirant is already a student
-    const aspirantIsStudent = await Aspirant.findOne({
-      where: { isStudent: id },
-    });
-    if (aspirantIsStudent) {
+    if (aspirantExists.isStudent) {
       req.flash("alert", {
         status: "error",
         message: "Aspirant is already a student",

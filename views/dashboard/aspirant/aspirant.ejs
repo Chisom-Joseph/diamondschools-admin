@@ -4,6 +4,9 @@
 
     <div class="mb-3">
       <h1 class="h3 d-inline align-middle">Aspirant</h1><a class="badge bg-primary ms-2" href="/dashboard/all-aspirants">All Aspirants <i class="fas fa-fw fa-external-link-alt"></i></a>
+      <% if(aspirant.isStudent) { %>
+      <a class="badge bg-primary ms-2" href="/dashboard/student/<%= aspirant.isStudent %>" disabled>View Student <i class="fas fa-arrow-right"></i></a>
+      <% } %>
     </div>
 
     <div class="row">
@@ -27,12 +30,11 @@
             <h5 class="card-title mb-3">Aspitan details</h5>
             <div class="mb-0 d-flex gap-2 flex-wrap">
               <button class="btn btn-primary" disabled><i class="far fa-smile"></i> Approve Aspirant</button>
+              <% if(!aspirant.isStudent) { %>
               <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary"><i class="fas fa-check"></i> Make Student</button>
+              <% } %>
               <button class="btn btn-warning" disabled><i class="fas fa-ban"></i> Block</button>
               <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
-              <% if(aspirant.isStudent !== null) { %>
-              <a href="/dashboard/student/<%= aspirant.isStudent %>" disabled>View Student <i class="fas fa-arrow-right"></i></a>
-              <% } %>
             </div>
           </div>
           <div class="card-body">
