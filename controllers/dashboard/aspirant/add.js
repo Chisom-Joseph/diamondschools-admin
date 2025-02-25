@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const { Country } = require("country-state-city");
 const addAspirantSchema = require("../../../validation/aspirant/add");
 const sutdentProfileImageUpload = require("../../../middlewares/aspirantProfileImageUpload");
-const { Aspirant, Guardian, sequelize } = require("../../../models");
+const { Aspirant, Guardian, AcademicYear, sequelize } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -31,6 +31,18 @@ module.exports = async (req, res) => {
           status: "error",
           section: "add",
           message: "Guardian email already in use.",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-aspirant");
+      }
+
+      const academicYearFromDb = await AcademicYear.findByPk(req.body.academicYear, { attibutes: ["year"] })
+      if (!academicYearFromDb) {
+        req.flash("alert", {
+          status: "error",
+          section: "add",
+          message: "Invalid academic year.",
         });
         req.flash("form", req.body);
         req.flash("status", 400);
@@ -103,7 +115,7 @@ module.exports = async (req, res) => {
       }
 
       const country = Country.getCountryByCode(req.body.country).name;
-      const examinationNumber = await require("../../../utils/genExamNumber")(req.body.academicYear);
+      const examinationNumber = await require("../../../utils/genExamNumber")(academicYearFromDb.year);
       const examinationDate =
         await require("../../../utils/getExaminationDate")();
       const password = require("../../../utils/genPassword")(6);
@@ -139,7 +151,7 @@ module.exports = async (req, res) => {
           country,
           stateOfOrigin: req.body.stateOfOrigin,
           religion: req.body.religion,
-          academicYear: req.body.academicYear,
+          AcademicYearId: req.body.academicYear,
           examinationNumber,
           examinationDate,
           password: hashedPassword,
