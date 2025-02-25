@@ -102,7 +102,7 @@ module.exports = async (req, res) => {
         return res.redirect("/dashboard/add-student");
       }
 
-      const registrationNumber = await require("../../../utils/genRegNumber")();
+      const registrationNumber = await require("../../../utils/genRegNumber")(req.body.academicYear);
       const password = require("../../../utils/genPassword")(6);
 
       // Hash password
