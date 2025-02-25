@@ -1,10 +1,10 @@
 const { Aspirant } = require("../models");
 
-module.exports = async () => {
+module.exports = async (academicYear) => {
   const genExamNumber = async () => {
     const prefix = "DNPSS";
     const sufix = "ASP";
-    const year = new Date().getFullYear();
+    const year = academicYear.split("/")[0];
 
     const aspirantsCount = await Aspirant.count();
     const aspirantsNumber = aspirantsCount + 1;

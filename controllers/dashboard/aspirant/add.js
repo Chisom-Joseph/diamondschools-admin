@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
       }
 
       const country = Country.getCountryByCode(req.body.country).name;
-      const examinationNumber = await require("../../../utils/genExamNumber")();
+      const examinationNumber = await require("../../../utils/genExamNumber")(req.body.academicYear);
       const examinationDate =
         await require("../../../utils/getExaminationDate")();
       const password = require("../../../utils/genPassword")(6);

@@ -52,7 +52,7 @@
                     <option selected disabled hidden>Choose Academic Year</option>
                     <% if(academicYears.length > 0){ %>
                     <% academicYears.forEach(academicYear => { %>
-                    <option value="<%= academicYear.id %>" <%= form.academicYear === academicYear.id ? "selected" : "" %>><%= academicYear.year %></option>
+                    <option value="<%= academicYear.year %>" <%= form.academicYear === academicYear.year ? "selected" : "" %>><%= academicYear.year %></option>
                     <% }) %>
                     <% } else { %>
                     <option selected disabled hidden>No Academic Year Found</option>
