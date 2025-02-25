@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { Aspirant, Student } = require("../../../models");
+const { Aspirant, Student, AcademicYear } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -39,19 +39,7 @@ module.exports = async (req, res) => {
       req.flash("status", 400);
       return res.redirect(`/dashboard/aspirant/${req.params.id}`);
     }
-
-    // Genetate Registration Number
-    const registrationNumber = await require("../../../utils/genRegNumber")();
-
-    // Generate Password
-    const password = await require("../../../utils/genPassword")();
-
-    // Hash password
-    const salt = await bcrypt.genSalt(5);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    console.log({ registrationNumber, password, hashedPassword });
-
+    
     const aspirant = aspirantExists.dataValues;
     const {
       firstName,
@@ -66,7 +54,32 @@ module.exports = async (req, res) => {
       dateOfBirth,
       GuardianId,
       ClassId,
+      AcademicYearId
     } = aspirant;
+    
+    const academicYearFromDb = await AcademicYear.findByPk(AcademicYearId, { attibutes: ["year"] })
+    if (!academicYearFromDb) {
+      req.flash("alert", {
+        status: "error",
+        section: "add",
+        message: "Invalid academic year.",
+      });
+      req.flash("form", req.body);
+      req.flash("status", 400);
+      return res.redirect(`/dashboard/aspirant/${req.params.id}`);
+    }
+
+    // Genetate Registration Number
+    const registrationNumber = await require("../../../utils/genRegNumber")(academicYearFromDb.year);
+
+    // Generate Password
+    const password = await require("../../../utils/genPassword")();
+
+    // Hash password
+    const salt = await bcrypt.genSalt(5);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    console.log({ registrationNumber, password, hashedPassword });
 
     // Add student to db
     const newStudent = await Student.create({
@@ -84,6 +97,7 @@ module.exports = async (req, res) => {
       password: hashedPassword,
       GuardianId,
       ClassId,
+      AcademicYearId
     });
     console.log(newStudent);
 
