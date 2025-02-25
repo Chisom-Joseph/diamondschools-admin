@@ -263,15 +263,16 @@ router.get("/result", async (req, res) => {
   res.status(status).render("dashboard/result/result.ejs", {
     alert: req.flash("alert")[0] || "",
     academicYears: await require("../utils/getAcademicYearsWithTerms")(),
-    form: "",
+    form: req.flash("form")[0] || "",
     selectedTerm: req.query.term,
     ...(await require("../utils/getStudentSubjects")(
       req.query.student,
       req.query.term
     )),
+    getStudentTermPerformance: await require("../utils/getStudentTermPerformance")({termId: req.query.term, studentId: req.query.student}),
   });
 });
-router.post("/result", require("../controllers/dashboard/result/result"));
+router.post("/result", require("../controllers/dashboard/result"));
 
 // CBT Result
 router.get("/cbt-result", async (req, res) => {

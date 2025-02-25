@@ -79,27 +79,6 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
-    classAverage: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    classLowest: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    classHighest: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
     remark: {
       type: DataTypes.STRING,
       allowNull: false,

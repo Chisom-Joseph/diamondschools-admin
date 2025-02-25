@@ -1,5 +1,11 @@
 const term = require("../../../validation/result/result");
-const { Result, Student } = require("../../../models");
+const {
+  Result,
+  Student,
+  ClassStats,
+  StudentTermPerformance,
+  Sequelize,
+} = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -17,7 +23,7 @@ module.exports = async (req, res) => {
     } = req.body;
     const { student: studentId, term: termId } = req.query;
 
-    // Validate academic year input
+    // Validate input
     const termValid = term.validate(req.body);
     if (termValid.error) {
       req.flash("alert", {
@@ -31,74 +37,59 @@ module.exports = async (req, res) => {
       return res.redirect(req.originalUrl);
     }
 
-    // Fetch all results for the same subject, term, and class
-    const results = await Result.findAll({
-      where: { subjectId, termId },
-      include: [{ model: Student, attributes: ["ClassId"] }],
-    });
+    // Fetch student info
+    const student = await Student.findByPk(studentId);
+    if (!student) {
+      console.error("Student not found");
+      return;
+    }
+    const classId = student.ClassId;
 
+    // Fetch all results for this subject and term
     const existingResults = await Result.findAll({
-      where: { subjectId, termId },
-      attributes: ["totalScore"],
+      where: { SubjectId: subjectId, TermId: termId },
+      attributes: ["id", "totalScore", "StudentId"],
+      order: [["totalScore", "DESC"]],
     });
 
-    const scores = existingResults.map((r) => r.totalScore);
+    let scores = existingResults.map((r) => r.totalScore);
 
-    // Extract total scores
-    const totalScores = results.map((r) => r.totalScore);
-
-    // Calculate class average
-    const classAverage =
-      scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-
-    // Find lowest and highest scores in the class
-    const classLowest = scores.length > 0 ? Math.min(...scores) : 0;
-    const classHighest = scores.length > 0 ? Math.max(...scores) : 0;
-
-    // Determine the student's position (rank by descending order)
-    const sortedScores = [...totalScores, totalScore].sort((a, b) => b - a);
-    const position = sortedScores.indexOf(totalScore) + 1;
-
+    // Find the student's existing result (if any)
     let existingResult = await Result.findOne({
       where: { StudentId: studentId, SubjectId: subjectId, TermId: termId },
     });
 
-    // Save the result to the database
     if (existingResult) {
-      const updatedResult = existingResult.update(
-        {
-          StudentId: studentId,
-          SubjectId: subjectId,
-          TermId: termId,
-          totalScore,
-          grade,
-          position,
-          classAverage,
-          classLowest,
-          classHighest,
-          remark,
-          firstTest,
-          presentation,
-          midTermTest,
-          project,
-          note,
-          examScore,
-          date: new Date().toISOString(),
-        },
-        { where: {} }
-      );
-      console.log(updatedResult);
+      // Remove old score from the ranking list
+      const oldScoreIndex = scores.indexOf(existingResult.totalScore);
+      if (oldScoreIndex !== -1) {
+        scores.splice(oldScoreIndex, 1);
+      }
+    }
+
+    // Add the new score and recalculate stats
+    scores.push(totalScore);
+    const classAverage =
+      scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+    const classLowest = Math.min(...scores);
+    const classHighest = Math.max(...scores);
+
+    // Update or create ClassStats
+    let classStats = await ClassStats.findOne({
+      where: { ClassId: classId, SubjectId: subjectId, TermId: termId },
+    });
+
+    if (classStats) {
+      await classStats.update({ classAverage, classLowest, classHighest });
     } else {
-      const newResult = await Result.create({
-        StudentId: studentId,
-        SubjectId: subjectId,
-        TermId: termId,
+      await ClassStats.create({ ClassId: classId, SubjectId: subjectId, TermId: termId, classAverage, classLowest, classHighest });
+    }
+
+    // Save or update the student's result
+    if (existingResult) {
+      await existingResult.update({
         totalScore,
         grade,
-        position,
-        classAverage,
-        classLowest,
-        classHighest,
         remark,
         firstTest,
         presentation,
@@ -108,7 +99,114 @@ module.exports = async (req, res) => {
         examScore,
         date: new Date().toISOString(),
       });
-      console.log(newResult);
+    } else {
+      existingResult = await Result.create({
+        StudentId: studentId,
+        SubjectId: subjectId,
+        TermId: termId,
+        totalScore,
+        grade,
+        remark,
+        firstTest,
+        presentation,
+        midTermTest,
+        project,
+        note,
+        examScore,
+        position: 0, // Temporary position
+        date: new Date().toISOString(),
+      });
+    }
+
+    // Fetch updated results after saving
+    const results = await Result.findAll({
+      where: {
+        SubjectId: subjectId,
+        TermId: termId,
+        StudentId: {
+          [Sequelize.Op.in]: Sequelize.literal(
+            `(SELECT id FROM \`Students\` WHERE \`ClassId\` = '${classId}')`
+          ),
+        },
+      },
+      attributes: ["id", "totalScore", "StudentId"],
+      order: [["totalScore", "DESC"]],
+    });
+
+
+
+    // Assign positions correctly
+    let lastScore = null;
+    let lastPosition = 0;
+    let sameRankCount = 0;
+
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].totalScore !== lastScore) {
+        lastPosition += sameRankCount + 1;
+        sameRankCount = 0;
+      } else {
+        sameRankCount++;
+      }
+      lastScore = results[i].totalScore;
+
+      await Result.update({ position: lastPosition }, { where: { id: results[i].id } });
+    }
+
+    // Ensure StudentTermPerformance exists
+    let studentTermPerformance = await StudentTermPerformance.findOne({
+      where: { StudentId: studentId, TermId: termId },
+    });
+
+    // Calculate student average score
+    const studentResults = await Result.findAll({
+      where: { StudentId: studentId, TermId: termId },
+      attributes: [[Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"]],
+      raw: true,
+    });
+    const averageScore = studentResults[0].averageScore || 0;
+
+    if (!studentTermPerformance) {
+      studentTermPerformance = await StudentTermPerformance.create({
+        StudentId: studentId,
+        TermId: termId,
+        ClassId: student.ClassId,
+        totalScore,
+        averageScore,
+        position: 0, // Temporary position
+      });
+    } else {
+      await studentTermPerformance.update({ totalScore, averageScore });
+    }
+
+    // Fetch all student term performances for ranking
+    const studentTermPerformances = await StudentTermPerformance.findAll({
+      where: { TermId: termId, ClassId: student.ClassId },
+      attributes: ["id", "StudentId", "totalScore"],
+      order: [["totalScore", "DESC"]],
+    });
+
+    console.log(studentTermPerformances);
+
+    // Assign term positions correctly
+    lastScore = null;
+    lastPosition = 0;
+    sameRankCount = 0;
+
+    for (let i = 0; i < studentTermPerformances.length; i++) {
+      if (studentTermPerformances[i].totalScore !== lastScore) {
+        lastPosition += sameRankCount + 1;
+        sameRankCount = 0;
+      } else {
+        sameRankCount++;
+      }
+
+      lastScore = studentTermPerformances[i].totalScore;
+
+      // Update the student's position
+      await StudentTermPerformance.update(
+        { position: lastPosition },
+        { where: { id: studentTermPerformances[i].id } }
+      );
     }
 
     req.flash("alert", {

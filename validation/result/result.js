@@ -65,6 +65,8 @@ const schema = Joi.object({
     "string.guid": "Invalid subject ID format",
     "any.required": "Subject ID is required",
   }),
+
+  form: Joi.allow(),
 });
 
 module.exports = schema;

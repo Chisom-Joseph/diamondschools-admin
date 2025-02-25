@@ -59,6 +59,21 @@
       <script src="/js/app.js"></script>
 
       <script>
+        // Restore scroll position if it exists
+        if (sessionStorage.getItem("scrollPosition")) {
+          window.scrollTo(0, sessionStorage.getItem("scrollPosition"));
+          sessionStorage.removeItem("scrollPosition"); // Remove after restoring
+        }
+
+        // Store scroll position before form submission
+        document.querySelectorAll("form").forEach(form => {
+          form.addEventListener("submit", function() {
+            sessionStorage.setItem("scrollPosition", window.scrollY);
+          });
+        });
+      </script>
+
+      <script>
         document.addEventListener("DOMContentLoaded", function() {
           var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
           var gradient = ctx.createLinearGradient(0, 0, 0, 225);
