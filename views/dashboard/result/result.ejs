@@ -119,10 +119,10 @@
                 </form>
                 <% }) %>
                 <% } else { %>
-                <p>No subjects found for this student</p>
+                <p class="text-center pt-3">No subjects found for this student</p>
                 <% } %>
                 <% } else { %>
-                <p class="text-center">Please select a term to continue</p>
+                <p class="text-center pt-3">Please select a term to continue</p>
                 <% } %>
               </div>
 
@@ -133,6 +133,7 @@
             <div class="card">
               <div class="card-body">
                 <% if(selectedTerm) { %>
+                <% if(subjects.length > 0) { %>
                 <h5 class="card-title">Results info</h5>
 
                 <% if(alert.status === "error" && alert.section === "remarks") { %>
@@ -165,7 +166,10 @@
                   <button type="submit" class="btn btn-primary">Save changes</button>
                 </form>
                 <% } else { %>
-                <p class="text-center">Please select a term to continue</p>
+                <p class="text-center pt-3">No subjects found for this student</p>
+                <% } %>
+                <% } else { %>
+                <p class="text-center pt-3">Please select a term to continue</p>
                 <% } %>
 
               </div>
