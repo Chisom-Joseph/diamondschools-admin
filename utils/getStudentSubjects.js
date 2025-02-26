@@ -8,7 +8,7 @@ module.exports = async (studentId, termId) => {
     });
 
     if (!student) {
-      return [];
+      return { subjects: [], resultsMap: {} };
     }
     // Fetch all subjects the student is enrolled in
     const subjects = await Subject.findAll({
@@ -33,9 +33,13 @@ module.exports = async (studentId, termId) => {
       });
     }
 
-    return { subjects, resultsMap };
+    return {
+      subjects: subjects.length ? subjects : [],
+      resultsMap: Object.keys(resultsMap).length ? resultsMap : {},
+    };
   } catch (error) {
-    console.log(error);
-    return [];
+    console.error("ERROR GETTING SUBJECTS AND RESULT MAP");
+    console.error(error);
+    return { subjects: [], resultsMap: {} };
   }
 };
