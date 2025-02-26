@@ -36,22 +36,12 @@ module.exports = async (req, res) => {
         attibutes: [...columns, "ClassId"],
       });
 
-      const allRows = await Promise.all(
-        rows.map(async (row) => {
-          const currentRow = row.dataValues;
-          currentRow.class =
-            (await require("../../utils/getClass")(currentRow.ClassId)) || {};
-
-          return { ...currentRow };
-        })
-      );
-
       // Respond with data in DataTables format
       res.json({
         draw: parseInt(draw) || 0,
         recordsTotal: count,
         recordsFiltered: count,
-        data: await allRows,
+        data: await rows,
       });
     } catch (error) {
       console.error(error);
