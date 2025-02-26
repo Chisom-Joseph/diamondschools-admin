@@ -269,7 +269,11 @@ router.get("/result", async (req, res) => {
       req.query.student,
       req.query.term
     )),
-    getStudentTermPerformance: await require("../utils/getStudentTermPerformance")({termId: req.query.term, studentId: req.query.student}),
+    getStudentTermPerformance:
+      await require("../utils/getStudentTermPerformance")({
+        termId: req.query.term,
+        studentId: req.query.student,
+      }),
   });
 });
 router.post("/result", require("../controllers/dashboard/result"));
