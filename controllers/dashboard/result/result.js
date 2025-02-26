@@ -69,8 +69,13 @@ module.exports = async (req, res) => {
 
     // Add the new score and recalculate stats
     scores.push(totalScore);
+    const validScores = scores.filter((s) => s !== null && s !== undefined);
     const classAverage =
-      scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+      validScores.length > 0
+        ? validScores.reduce((sum, score) => sum + score, 0) /
+          validScores.length
+        : 0;
+    console.log(`classAverage: ${classAverage}`);
     const classLowest = Math.min(...scores);
     const classHighest = Math.max(...scores);
 
@@ -82,7 +87,14 @@ module.exports = async (req, res) => {
     if (classStats) {
       await classStats.update({ classAverage, classLowest, classHighest });
     } else {
-      await ClassStats.create({ ClassId: classId, SubjectId: subjectId, TermId: termId, classAverage, classLowest, classHighest });
+      await ClassStats.create({
+        ClassId: classId,
+        SubjectId: subjectId,
+        TermId: termId,
+        classAverage,
+        classLowest,
+        classHighest,
+      });
     }
 
     // Save or update the student's result
@@ -133,8 +145,6 @@ module.exports = async (req, res) => {
       order: [["totalScore", "DESC"]],
     });
 
-
-
     // Assign positions correctly
     let lastScore = null;
     let lastPosition = 0;
@@ -149,7 +159,10 @@ module.exports = async (req, res) => {
       }
       lastScore = results[i].totalScore;
 
-      await Result.update({ position: lastPosition }, { where: { id: results[i].id } });
+      await Result.update(
+        { position: lastPosition },
+        { where: { id: results[i].id } }
+      );
     }
 
     // Ensure StudentTermPerformance exists
@@ -160,22 +173,31 @@ module.exports = async (req, res) => {
     // Calculate student average score
     const studentResults = await Result.findAll({
       where: { StudentId: studentId, TermId: termId },
-      attributes: [[Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"]],
+      attributes: [
+        [Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"],
+      ],
       raw: true,
     });
     const averageScore = studentResults[0].averageScore || 0;
+
+    const totalScoreSum = await Result.sum("totalScore", {
+      where: { StudentId: studentId, TermId: termId },
+    });
 
     if (!studentTermPerformance) {
       studentTermPerformance = await StudentTermPerformance.create({
         StudentId: studentId,
         TermId: termId,
         ClassId: student.ClassId,
-        totalScore,
+        totalScore: totalScoreSum,
         averageScore,
         position: 0, // Temporary position
       });
     } else {
-      await studentTermPerformance.update({ totalScore, averageScore });
+      await studentTermPerformance.update({
+        totalScore: totalScoreSum,
+        averageScore,
+      });
     }
 
     // Fetch all student term performances for ranking
