@@ -16,6 +16,20 @@ module.exports = async (req, res) => {
       req.flash("formSection", "add");
       return res.redirect("/dashboard/academic-year");
     }
+    
+    // Check if academic year already exits
+    const academicYearExists = await AcademicYear.findOne({ where: { year: req.body.year } })
+    if(academicYearExists) {
+      req.flash("alert", {
+        status: "error",
+        section: "add",
+        message: `Academic year "${req.body.year}" already exists`,
+      });
+      req.flash("form", req.body);
+      req.flash("status", 400);
+      req.flash("formSection", "add");
+      return res.redirect("/dashboard/academic-year");
+    }
 
     // Add academic year to db
     const newAcademicYear = await AcademicYear.create(req.body);
