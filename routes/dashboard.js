@@ -36,7 +36,7 @@ router.post("/add-aspirant", require("../controllers/dashboard/aspirant"));
 router.get("/aspirant/:id", async (req, res) => {
   const aspirant = await require("../utils/getAspirant")(req.params.id);
   if (Object.keys(aspirant).length === 0) {
-    return res.status(404).render("error.ejs");
+    return res.status(404).render("error.ejs", { error: "" });
   }
 
   const status = req.flash("status")[0] || 200;
@@ -75,7 +75,7 @@ router.post("/add-student", require("../controllers/dashboard/student"));
 router.get("/student/:id", async (req, res) => {
   const student = await require("../utils/getStudent")(req.params.id);
   if (Object.keys(student).length === 0) {
-    return res.status(404).render("error.ejs");
+    return res.status(404).render("error.ejs", { error: "" });
   }
 
   const status = req.flash("status")[0] || 200;
@@ -96,7 +96,7 @@ router.get("/all-guardians", async (req, res) => {
 router.get("/guardian/:id", async (req, res) => {
   const guardian = await require("../utils/getGuardian")(req.params.id);
   if (Object.keys(guardian).length === 0) {
-    return res.status(404).render("error.ejs");
+    return res.status(404).render("error.ejs", { error: "" });
   }
 
   const status = req.flash("status")[0] || 200;
@@ -133,7 +133,7 @@ router.get("/add-teacher", async (req, res) => {
 router.get("/teacher/:id", async (req, res) => {
   const teacher = await require("../utils/getTeacher")(req.params.id);
   if (Object.keys(teacher).length === 0) {
-    return res.status(404).render("error.ejs");
+    return res.status(404).render("error.ejs", { error: "" });
   }
 
   const status = req.flash("status")[0] || 200;
