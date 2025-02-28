@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("*", (req, res) => {
-  res.status(404).render("error.ejs");
+  res.status(404).render("error.ejs", { error: "" });
 });
 
 module.exports = router;
