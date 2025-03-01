@@ -4,7 +4,12 @@ const bcrypt = require("bcryptjs");
 const { Country } = require("country-state-city");
 const addAspirantSchema = require("../../../validation/aspirant/add");
 const sutdentProfileImageUpload = require("../../../middlewares/aspirantProfileImageUpload");
-const { Aspirant, Guardian, AcademicYear, sequelize } = require("../../../models");
+const {
+  Aspirant,
+  Guardian,
+  AcademicYear,
+  sequelize,
+} = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -37,7 +42,10 @@ module.exports = async (req, res) => {
         return res.redirect("/dashboard/add-aspirant");
       }
 
-      const academicYearFromDb = await AcademicYear.findByPk(req.body.academicYear, { attibutes: ["year"] })
+      const academicYearFromDb = await AcademicYear.findByPk(
+        req.body.academicYear,
+        { attibutes: ["year"] }
+      );
       if (!academicYearFromDb) {
         req.flash("alert", {
           status: "error",
@@ -115,7 +123,19 @@ module.exports = async (req, res) => {
       }
 
       const country = Country.getCountryByCode(req.body.country).name;
-      const examinationNumber = await require("../../../utils/genExamNumber")(academicYearFromDb.year);
+      const examinationNumber = await require("../../../utils/genExamNumber")(
+        academicYearFromDb.year
+      );
+      if (!examinationNumber) {
+        req.flash("alert", {
+          status: "error",
+          message: "Failed to generate examination number",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-aspirant");
+      }
+
       const examinationDate =
         await require("../../../utils/getExaminationDate")();
       const password = require("../../../utils/genPassword")(6);
