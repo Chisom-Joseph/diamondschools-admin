@@ -4,7 +4,12 @@ const bcrypt = require("bcryptjs");
 const { Country } = require("country-state-city");
 const addStudentSchema = require("../../../validation/student/add");
 const sutdentProfileImageUpload = require("../../../middlewares/studentProfileImageUpload");
-const { Student, Guardian, AcademicYear, sequelize } = require("../../../models");
+const {
+  Student,
+  Guardian,
+  AcademicYear,
+  sequelize,
+} = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -36,8 +41,11 @@ module.exports = async (req, res) => {
         req.flash("status", 400);
         return res.redirect("/dashboard/add-student");
       }
-      
-      const academicYearFromDb = await AcademicYear.findByPk(req.body.academicYear, { attibutes: ["year"] })
+
+      const academicYearFromDb = await AcademicYear.findByPk(
+        req.body.academicYear,
+        { attibutes: ["year"] }
+      );
       if (!academicYearFromDb) {
         req.flash("alert", {
           status: "error",
@@ -114,7 +122,19 @@ module.exports = async (req, res) => {
         return res.redirect("/dashboard/add-student");
       }
 
-      const registrationNumber = await require("../../../utils/genRegNumber")(academicYearFromDb.year);
+      const registrationNumber = await require("../../../utils/genRegNumber")(
+        academicYearFromDb.year
+      );
+      if (!registrationNumber) {
+        req.flash("alert", {
+          status: "error",
+          message: "Error generating registration number",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-student");
+      }
+
       const password = require("../../../utils/genPassword")(6);
 
       // Hash password
