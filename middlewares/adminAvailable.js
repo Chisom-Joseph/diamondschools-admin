@@ -16,5 +16,13 @@ module.exports = async (req, res, next) => {
     return next();
   } catch (error) {
     console.error(`ERROR TRYING TO FIND AVAILABLE ADMINS: ${error}`);
+
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
   }
 };
