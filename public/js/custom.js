@@ -70,4 +70,5 @@ const updateStateSelect = () => {
 };
 
 if (form !== "" && states !== "") updateStateSelect();
+if (userCountry !== "" && states !== "") updateStateSelect();
 countrySelect.addEventListener("change", updateStateSelect);
