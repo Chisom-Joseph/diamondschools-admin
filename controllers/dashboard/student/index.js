@@ -18,6 +18,6 @@ module.exports = (req, res) => {
       req.flash("form", req.body);
       req.flash("formSection", "add");
       req.flash("status", 400);
-      return res.redirect("/dashboard/add-student");
+      return res.redirect(req.baseUrl + req.path);
   }
 };
