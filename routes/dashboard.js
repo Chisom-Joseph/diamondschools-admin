@@ -52,24 +52,48 @@ router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 
 // All students
 router.get("/all-students", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/student/allStudents.ejs");
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/student/allStudents.ejs");
+  } catch (error) {
+    console.error("ERROR RENDERING ALL STUDENTS PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 // Add student
 router.get("/add-student", async (req, res) => {
-  const { Country, State } = require("country-state-city");
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/student/addStudent.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    newStudentId: req.flash("newStudentId")[0] || "",
-    classes: await require("../utils/getClasses")(),
-    religions: await require("../utils/getReligions")(),
-    examinationDate: await require("../utils/getExaminationDate")(),
-    academicYears: await require("../utils/getAcademicYears")(),
-    countries: Country.getAllCountries(),
-    states: State.getAllStates(),
-  });
+  try {
+    const { Country, State } = require("country-state-city");
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/student/addStudent.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      newStudentId: req.flash("newStudentId")[0] || "",
+      classes: await require("../utils/getClasses")(),
+      religions: await require("../utils/getReligions")(),
+      examinationDate: await require("../utils/getExaminationDate")(),
+      academicYears: await require("../utils/getAcademicYears")(),
+      countries: Country.getAllCountries(),
+      states: State.getAllStates(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING ADD STUDENT PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/add-student", require("../controllers/dashboard/student"));
 router.get("/student/:id", async (req, res) => {
