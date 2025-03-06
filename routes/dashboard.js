@@ -34,19 +34,31 @@ router.get("/add-aspirant", async (req, res) => {
 router.post("/add-aspirant", require("../controllers/dashboard/aspirant"));
 // Aspirant
 router.get("/aspirant/:id", async (req, res) => {
-  const aspirant = await require("../utils/getAspirant")(req.params.id);
-  if (Object.keys(aspirant).length === 0) {
-    return res.status(404).render("error.ejs", { error: "" });
-  }
+  try {
+    const aspirant = await require("../utils/getAspirant")(req.params.id);
+    if (Object.keys(aspirant).length === 0) {
+      return res.status(404).render("error.ejs", { error: "" });
+    }
 
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/aspirant/aspirant.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    newStudentId: req.flash("newStudentId")[0] || "",
-    aspirant: await require("../utils/getAspirant")(req.params.id),
-    user: "",
-  });
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/aspirant/aspirant.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      newStudentId: req.flash("newStudentId")[0] || "",
+      aspirant: await require("../utils/getAspirant")(req.params.id),
+      user: "",
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING ASPIRANT PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 
