@@ -17,19 +17,31 @@ router.get("/all-aspirants", async (req, res) => {
 });
 // Add aspirant
 router.get("/add-aspirant", async (req, res) => {
-  const { Country, State } = require("country-state-city");
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/aspirant/addAspirant.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    newAspirantId: req.flash("newAspirantId")[0] || "",
-    classes: await require("../utils/getClasses")(),
-    religions: await require("../utils/getReligions")(),
-    examinationDate: await require("../utils/getExaminationDate")(),
-    academicYears: await require("../utils/getAcademicYears")(),
-    countries: Country.getAllCountries(),
-    states: State.getAllStates(),
-  });
+  try {
+    const { Country, State } = require("country-state-city");
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/aspirant/addAspirant.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      newAspirantId: req.flash("newAspirantId")[0] || "",
+      classes: await require("../utils/getClasses")(),
+      religions: await require("../utils/getReligions")(),
+      examinationDate: await require("../utils/getExaminationDate")(),
+      academicYears: await require("../utils/getAcademicYears")(),
+      countries: Country.getAllCountries(),
+      states: State.getAllStates(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING ADD ASPIRANT PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/add-aspirant", require("../controllers/dashboard/aspirant"));
 // Aspirant
