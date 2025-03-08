@@ -12,8 +12,20 @@ router.get("/", async (req, res) => {
 
 // All aspirants
 router.get("/all-aspirants", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/aspirant/allAspirants.ejs");
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/aspirant/allAspirants.ejs");
+  } catch (error) {
+    console.error("ERROR RENDERING ALL ASPIRANTS PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 // Add aspirant
 router.get("/add-aspirant", async (req, res) => {
