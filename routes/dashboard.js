@@ -1,13 +1,29 @@
 const router = require("express").Router();
 
 router.get("/", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/dashboard.ejs", {
-    studentCount: await require("../utils/getStudentCount")(),
-    aspirantCount: await require("../utils/getAspirantCount")(),
-    teacherCount: await require("../utils/getTeacherCount")(),
-    newAspirants: await require("../utils/getAspirants")(5, "createdAt", "ASC"),
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/dashboard.ejs", {
+      studentCount: await require("../utils/getStudentCount")(),
+      aspirantCount: await require("../utils/getAspirantCount")(),
+      teacherCount: await require("../utils/getTeacherCount")(),
+      newAspirants: await require("../utils/getAspirants")(
+        5,
+        "createdAt",
+        "ASC"
+      ),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING DASHBOARD PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 
 // All aspirants
