@@ -382,14 +382,26 @@ router.get("/cbt-result", async (req, res) => {
 
 // Notification
 router.get("/notification", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  console.log(await require("../utils/getUsers")());
-  res.status(status).render("dashboard/notification/notification.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    users: await require("../utils/getUsers")(),
-    formSection: req.flash("formSection")[0] || "",
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    console.log(await require("../utils/getUsers")());
+    res.status(status).render("dashboard/notification/notification.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      users: await require("../utils/getUsers")(),
+      formSection: req.flash("formSection")[0] || "",
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING NOTIFICATION PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/notification", require("../controllers/dashboard/notification"));
 
