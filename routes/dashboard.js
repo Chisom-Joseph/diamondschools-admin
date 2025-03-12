@@ -355,22 +355,34 @@ router.post("/term", require("../controllers/dashboard/term"));
 
 // Result
 router.get("/result", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/result/result.ejs", {
-    alert: req.flash("alert")[0] || "",
-    academicYears: await require("../utils/getAcademicYearsWithTerms")(),
-    form: req.flash("form")[0] || "",
-    selectedTerm: req.query.term,
-    ...(await require("../utils/getStudentSubjects")(
-      req.query.student,
-      req.query.term
-    )),
-    getStudentTermPerformance:
-      await require("../utils/getStudentTermPerformance")({
-        termId: req.query.term,
-        studentId: req.query.student,
-      }),
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/result/result.ejs", {
+      alert: req.flash("alert")[0] || "",
+      academicYears: await require("../utils/getAcademicYearsWithTerms")(),
+      form: req.flash("form")[0] || "",
+      selectedTerm: req.query.term,
+      ...(await require("../utils/getStudentSubjects")(
+        req.query.student,
+        req.query.term
+      )),
+      getStudentTermPerformance:
+        await require("../utils/getStudentTermPerformance")({
+          termId: req.query.term,
+          studentId: req.query.student,
+        }),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING RESULT PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/result", require("../controllers/dashboard/result"));
 
