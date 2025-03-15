@@ -317,14 +317,26 @@ router.post("/exam", require("../controllers/dashboard/exam"));
 
 // Exam settings
 router.get("/exam-settings", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/exam/examSettings.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    subjects: await require("../utils/getSubjects")(false),
-    formSection: req.flash("formSection")[0] || "",
-    examSettings: (await require("../utils/getExamSettings")()) || "",
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/exam/examSettings.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      subjects: await require("../utils/getSubjects")(false),
+      formSection: req.flash("formSection")[0] || "",
+      examSettings: (await require("../utils/getExamSettings")()) || "",
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING EXAM SETTINGS PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/exam-settings", require("../controllers/dashboard/examSettings"));
 
