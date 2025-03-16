@@ -303,15 +303,27 @@ router.post("/subject", require("../controllers/dashboard/subject"));
 
 // Exam
 router.get("/exam", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/exam/exam.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    subjects: await require("../utils/getSubjects")(false),
-    formSection: req.flash("formSection")[0] || "",
-    classes: await require("../utils/getClasses")(),
-    academicYears: await require("../utils/getAcademicYearsWithTerms")(),
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/exam/exam.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      subjects: await require("../utils/getSubjects")(false),
+      formSection: req.flash("formSection")[0] || "",
+      classes: await require("../utils/getClasses")(),
+      academicYears: await require("../utils/getAcademicYearsWithTerms")(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING EXAM PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/exam", require("../controllers/dashboard/exam"));
 
