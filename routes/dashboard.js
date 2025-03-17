@@ -290,14 +290,26 @@ router.get("/all-subjects", async (req, res) => {
   res.status(status).render("dashboard/subject/allSubjects.ejs");
 });
 router.get("/subject", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/subject/subject.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    classes: (await require("../utils/getClasses")()) || "",
-    formSection: req.flash("formSection")[0] || "",
-    subjects: await require("../utils/getSubjects")(false),
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/subject/subject.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      classes: (await require("../utils/getClasses")()) || "",
+      formSection: req.flash("formSection")[0] || "",
+      subjects: await require("../utils/getSubjects")(false),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING SUBJECT PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/subject", require("../controllers/dashboard/subject"));
 
