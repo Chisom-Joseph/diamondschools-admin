@@ -286,8 +286,20 @@ router.get("/disabled-features", async (req, res) => {
 
 // Subject
 router.get("/all-subjects", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/subject/allSubjects.ejs");
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/subject/allSubjects.ejs");
+  } catch (error) {
+    console.error("ERROR RENDERING ALL SUBJECTS PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.get("/subject", async (req, res) => {
   try {
