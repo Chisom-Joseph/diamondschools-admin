@@ -277,11 +277,25 @@ router.post("/religion", require("../controllers/dashboard/religion"));
 
 // Disabled features
 router.get("/disabled-features", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/disabledFeature/disabledFeatures.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res
+      .status(status)
+      .render("dashboard/disabledFeature/disabledFeatures.ejs", {
+        alert: req.flash("alert")[0] || "",
+        form: req.flash("form")[0] || "",
+      });
+  } catch (error) {
+    console.error("ERROR RENDERING DISABLED FEATURES PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 
 // Subject
