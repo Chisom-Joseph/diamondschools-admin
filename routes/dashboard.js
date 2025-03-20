@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING DASHBOARD PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -34,7 +34,7 @@ router.get("/all-aspirants", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ALL ASPIRANTS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -62,7 +62,7 @@ router.get("/add-aspirant", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ADD ASPIRANT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -91,7 +91,7 @@ router.get("/aspirant/:id", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ASPIRANT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -110,7 +110,7 @@ router.get("/all-students", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ALL STUDENTS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -138,7 +138,7 @@ router.get("/add-student", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ADD STUDENT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -173,7 +173,7 @@ router.get("/student/:id", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING STUDENT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -192,7 +192,7 @@ router.get("/all-guardians", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ALL GUARDIANS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -219,7 +219,7 @@ router.get("/guardian/:id", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING GUARDIAN PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -241,7 +241,7 @@ router.get("/all-teachers", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ALL TEACHERS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -265,7 +265,7 @@ router.get("/add-teacher", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ADD TEACHER PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -291,7 +291,7 @@ router.get("/teacher/:id", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING TEACHER PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -313,7 +313,7 @@ router.get("/site-settings", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING SITE SETTINGS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -336,7 +336,7 @@ router.get("/class", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING CLASS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -360,7 +360,7 @@ router.get("/religion", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING RELIGION PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -384,7 +384,7 @@ router.get("/disabled-features", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING DISABLED FEATURES PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -402,7 +402,7 @@ router.get("/all-subjects", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ALL SUBJECTS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -424,7 +424,7 @@ router.get("/subject", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING SUBJECT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -450,7 +450,7 @@ router.get("/exam", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING EXAM PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -475,7 +475,7 @@ router.get("/exam-settings", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING EXAM SETTINGS PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -499,7 +499,7 @@ router.get("/academic-year", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING ACADEMIC YEAR PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -524,7 +524,7 @@ router.get("/term", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING TERM PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -557,7 +557,7 @@ router.get("/result", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING RESULT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -576,7 +576,7 @@ router.get("/cbt-result", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING CBT RESULT PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
@@ -600,7 +600,7 @@ router.get("/notification", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING NOTIFICATION PAGE");
     console.error(error);
-    return res.status(404).render("error.ejs", {
+    return res.status(500).render("error.ejs", {
       error: {
         statusCode: 500,
         title: "Internal Server Error",
