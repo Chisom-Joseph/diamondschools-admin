@@ -265,13 +265,25 @@ router.post("/class", require("../controllers/dashboard/class"));
 
 // religion
 router.get("/religion", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/religion/religion.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    formSection: req.flash("formSection")[0] || "",
-    religions: await require("../utils/getReligions")(),
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/religion/religion.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      formSection: req.flash("formSection")[0] || "",
+      religions: await require("../utils/getReligions")(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING RELIGION PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/religion", require("../controllers/dashboard/religion"));
 
