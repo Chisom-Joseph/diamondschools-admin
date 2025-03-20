@@ -291,13 +291,7 @@ router.get("/teacher/:id", async (req, res) => {
   } catch (error) {
     console.error("ERROR RENDERING TEACHER PAGE");
     console.error(error);
-    return res.status(500).render("error.ejs", {
-      error: {
-        statusCode: 500,
-        title: "Internal Server Error",
-        message: "Something went wrong. Please try again later.",
-      },
-    });
+    require("../utils/showErrorPage")(500, {}, res);
   }
 });
 router.post("/add-teacher", require("../controllers/dashboard/teacher"));
