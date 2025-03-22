@@ -215,16 +215,28 @@ router.get("/all-teachers", async (req, res) => {
   });
 });
 router.get("/add-teacher", async (req, res) => {
-  const { Country, State } = require("country-state-city");
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/teacher/addTeacher.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    newTeacherId: req.flash("newTeacherId")[0] || "",
-    religions: await require("../utils/getReligions")(),
-    countries: Country.getAllCountries(),
-    states: State.getAllStates(),
-  });
+  try {
+    const { Country, State } = require("country-state-city");
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/teacher/addTeacher.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      newTeacherId: req.flash("newTeacherId")[0] || "",
+      religions: await require("../utils/getReligions")(),
+      countries: Country.getAllCountries(),
+      states: State.getAllStates(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING ADD TEACHER PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.get("/teacher/:id", async (req, res) => {
   try {
