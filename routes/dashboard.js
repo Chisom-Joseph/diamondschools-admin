@@ -227,18 +227,30 @@ router.get("/add-teacher", async (req, res) => {
   });
 });
 router.get("/teacher/:id", async (req, res) => {
-  const teacher = await require("../utils/getTeacher")(req.params.id);
-  if (Object.keys(teacher).length === 0) {
-    return res.status(404).render("error.ejs", { error: "" });
-  }
+  try {
+    const teacher = await require("../utils/getTeacher")(req.params.id);
+    if (Object.keys(teacher).length === 0) {
+      return res.status(404).render("error.ejs", { error: "" });
+    }
 
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/teacher/teacher.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    teacher: await require("../utils/getTeacher")(req.params.id),
-    user: "",
-  });
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/teacher/teacher.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      teacher: await require("../utils/getTeacher")(req.params.id),
+      user: "",
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING TEACHER PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.post("/add-teacher", require("../controllers/dashboard/teacher"));
 
