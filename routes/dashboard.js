@@ -190,29 +190,53 @@ router.get("/all-guardians", async (req, res) => {
   res.status(status).render("dashboard/guardian/allGuardians.ejs");
 });
 router.get("/guardian/:id", async (req, res) => {
-  const guardian = await require("../utils/getGuardian")(req.params.id);
-  if (Object.keys(guardian).length === 0) {
-    return res.status(404).render("error.ejs", { error: "" });
-  }
+  try {
+    const guardian = await require("../utils/getGuardian")(req.params.id);
+    if (Object.keys(guardian).length === 0) {
+      return res.status(404).render("error.ejs", { error: "" });
+    }
 
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/guardian/guardian.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    newStudentId: req.flash("newStudentId")[0] || "",
-    guardian: await require("../utils/getGuardian")(req.params.id),
-    user: "",
-  });
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/guardian/guardian.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      newStudentId: req.flash("newStudentId")[0] || "",
+      guardian: await require("../utils/getGuardian")(req.params.id),
+      user: "",
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING GUARDIAN PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 
 // Add teacher
 router.get("/all-teachers", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/teacher/allTeachers.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    teachers: await require("../utils/getTeachers")(),
-  });
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/teacher/allTeachers.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      teachers: await require("../utils/getTeachers")(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING ALL TEACHERS PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.get("/add-teacher", async (req, res) => {
   try {
