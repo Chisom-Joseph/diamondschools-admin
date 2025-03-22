@@ -186,8 +186,20 @@ router.post("/student/:id", require("../controllers/dashboard/student/"));
 
 // Guardian
 router.get("/all-guardians", async (req, res) => {
-  const status = req.flash("status")[0] || 200;
-  res.status(status).render("dashboard/guardian/allGuardians.ejs");
+  try {
+    const status = req.flash("status")[0] || 200;
+    res.status(status).render("dashboard/guardian/allGuardians.ejs");
+  } catch (error) {
+    console.error("ERROR RENDERING ALL GUARDIANS PAGE");
+    console.error(error);
+    return res.status(404).render("error.ejs", {
+      error: {
+        statusCode: 500,
+        title: "Internal Server Error",
+        message: "Something went wrong. Please try again later.",
+      },
+    });
+  }
 });
 router.get("/guardian/:id", async (req, res) => {
   try {
