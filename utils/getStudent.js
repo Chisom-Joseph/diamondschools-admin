@@ -1,8 +1,15 @@
-const { Student } = require("../models");
+const { Student, Class } = require("../models");
 
 module.exports = async (id) => {
   try {
-    const studentFromDb = await Student.findOne({ where: { id } });
+    const studentFromDb = await Student.findOne({
+      where: { id },
+      include: {
+        model: Class,
+        as: "Class",
+        attributes: ["name", "id"],
+      },
+    });
     if (!studentFromDb) return {};
 
     const student = studentFromDb.dataValues;
