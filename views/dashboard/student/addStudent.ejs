@@ -1,230 +1,290 @@
 <%- include("../../partials/header") %>
-<main class="content">
-  <div class="container-fluid p-0">
+  <main class="content">
+    <div class="container-fluid p-0">
 
-    <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Add Student</h1><a class="badge bg-primary ms-2" href="/dashboard/all-students">All Students <i class="fas fa-fw fa-external-link-alt"></i></a>
-    </div>
+      <div class="mb-3">
+        <h1 class="h3 d-inline align-middle">Add Student</h1><a class="badge bg-primary ms-2"
+          href="/dashboard/all-students">All Students <i class="fas fa-fw fa-external-link-alt"></i></a>
+      </div>
 
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title">Student Registration Form</h5>
-          </div>
-          <div class="card-body">
-            <form method="POST" action="?action=add" enctype="multipart/form-data">
-              <% if(alert.status === "error") { %>
-              <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <div class="alert-message">
-                  <strong>Error!</strong> <%- alert.message %>
-                </div>
-              </div>
-              <% } %>
-              <% if(alert.status === "success") { %>
-              <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <div class="alert-message pr-5">
-                  <strong>Sucess!</strong> <%- alert.message %>
-                  <a href="/dashboard/student/<%= newStudentId %>">View New Student</a>
-                </div>
-              </div>
-              <% } %>
-              <!-- Personal Information -->
-              <h4 class="mt-3">Personal Information</h4>
-              <div class="row">
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="firstName">First Name</label>
-                  <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" value="<%= form.firstName %>">
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="middleName">Middle Name</label>
-                  <input type="text" class="form-control" id="middleName" placeholder="Middle Name" name="middleName" value="<%= form.middleName %>">
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="lastName">Last Name</label>
-                  <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" value="<%= form.lastName %>">
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="academicYear">Academic Year</label>
-                  <select name="academicYear" class="form-select" name="academicYear" <%= academicYears.length > 0 ? "" : "disabled" %>>
-                    <option selected disabled hidden>Choose Academic Year</option>
-                    <% if(academicYears.length > 0){ %>
-                    <% academicYears.forEach(academicYear => { %>
-                    <option value="<%= academicYear.id %>" <%= form.academicYear === academicYear.id ? "selected" : "" %>><%= academicYear.year %></option>
-                    <% }) %>
-                    <% } else { %>
-                    <option selected disabled hidden>No Academic Year Found</option>
-                    <% } %>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="country">Nationality</label>
-                  <select id="country" class="form-select" name="country" <%= countries.length > 0 ? "" : "disabled" %>>
-                    <option selected disabled hidden>Choose Nationality</option>
-                    <% if(countries.length > 0){ %>
-                    <% countries.forEach(country => { %>
-                    <option value="<%= country.isoCode %>" <%= form.country === country.isoCode ? "selected" : "" %>><%= country.name %></option>
-                    <% }) %>
-                    <% } else { %>
-                    <option selected disabled hidden>No Country Found</option>
-                    <% } %>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="stateOfOrigin">State Of Origin</label>
-                  <select id="stateOfOrigin" class="form-select" name="stateOfOrigin" disabled>
-                    <option selected disabled hidden>Choose State</option>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="religion">Religion</label>
-                  <select id="religion" class="form-select" name="religion" <%= religions.length > 0 ? "" : "disabled" %>>
-                    <option selected disabled hidden>Choose Religion</option>
-                    <% if(religions.length > 0){ %>
-                    <% religions.forEach(religion => { %>
-                    <option value="<%= religion.name %>" <%= form.religion === religion.name ? "selected" : "" %>><%= religion.name %></option>
-                    <% }) %>
-                    <% } else { %>
-                    <option selected disabled hidden>No Religion Found</option>
-                    <% } %>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="profilePhoto">Profile Photo</label>
-                  <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo" name="profilePhoto" accept="png,jpg,jpeg">
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="dateOfBirth">Date Of Birth</label>
-                  <input id="dateOfBirth" type="date" class="form-control" name="dateOfBirth" value="<%= form.dateOfBirth %>">
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="gender">Gender</label>
-                  <select class="form-control" id="gender" name="gender" value="<%= form.gender %>">
-                    <option selected disabled hidden>Select Gender</option>
-                    <option value="male" <%= form.gender === "male" ? "selected" : "" %>>Male</option>
-                    <option value="female" <%= form.gender === "female" ? "selected" : "" %>>Female</option>
-                    <option value="other" <%= form.gender === "other" ? "selected" : "" %>>Other</option>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="class">Class</label>
-                  <select class="form-control" id="class" name="class" <%= classes.length <= 0 ? "disabled" : "" %>>
-                    <% if(classes.length > 0) { %>
-                    <option disabled selected hidden>Select class</option>
-                    <% classes.map((classItem) => { %>
-                    <option value="<%= classItem.id %>" <%= form.class === classItem.id ? "selected" : "" %>><%= classItem.name %></option>
-                    <% }) %>
-                    <% } else { %>
-                    <option disabled selected hidden>No classes found</option>
-                    <% } %>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" id="examinationDate">Examination Date</label>
-                  <select id="examinationDate" class="form-select" name="examinationDate" disabled>
-                    <option value="<%= examinationDate %>"><%= examinationDate %></option>
-                  </select>
-                </div>
-                <div class="mb-3 col-md-12">
-                  <label class="form-label" for="address">Address</label>
-                  <textarea id="address" class="form-control" name="address" placeholder="Your Present Address"><%= form.address %></textarea>
-                </div>
-              </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Student Registration Form</h5>
+            </div>
+            <div class="card-body">
+              <form method="POST" action="?action=add" enctype="multipart/form-data">
+                <% if(alert.status==="error" ) { %>
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert-message">
+                      <strong>Error!</strong> <%- alert.message %>
+                    </div>
+                  </div>
+                  <% } %>
+                    <% if(alert.status==="success" ) { %>
+                      <div class="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="alert-message pr-5">
+                          <strong>Sucess!</strong> <%- alert.message %>
+                            <a href="/dashboard/student/<%= newStudentId %>">View New Student</a>
+                        </div>
+                      </div>
+                      <% } %>
+                        <!-- Personal Information -->
+                        <h4 class="mt-3">Personal Information</h4>
+                        <div class="row">
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="First Name"
+                              name="firstName" value="<%= form.firstName %>">
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="middleName">Middle Name</label>
+                            <input type="text" class="form-control" id="middleName" placeholder="Middle Name"
+                              name="middleName" value="<%= form.middleName %>">
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Last Name"
+                              name="lastName" value="<%= form.lastName %>">
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="academicYear">Academic Year</label>
+                            <select name="academicYear" class="form-select" name="academicYear" <%=academicYears.length>
+                              0 ? "" : "disabled" %>>
+                              <option selected disabled hidden>Choose Academic Year</option>
+                              <% if(academicYears.length> 0){ %>
+                                <% academicYears.forEach(academicYear=> { %>
+                                  <option value="<%= academicYear.id %>" <%=form.academicYear===academicYear.id
+                                    ? "selected" : "" %>><%= academicYear.year %>
+                                  </option>
+                                  <% }) %>
+                                    <% } else { %>
+                                      <option selected disabled hidden>No Academic Year Found</option>
+                                      <% } %>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="country">Nationality</label>
+                            <select id="country" class="form-select" name="country" <%=countries.length> 0 ? "" :
+                              "disabled" %>>
+                              <option selected disabled hidden>Choose Nationality</option>
+                              <% if(countries.length> 0){ %>
+                                <% countries.forEach(country=> { %>
+                                  <option value="<%= country.isoCode %>" <%=form.country===country.isoCode ? "selected"
+                                    : "" %>><%= country.name %>
+                                  </option>
+                                  <% }) %>
+                                    <% } else { %>
+                                      <option selected disabled hidden>No Country Found</option>
+                                      <% } %>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="stateOfOrigin">State Of Origin</label>
+                            <select id="stateOfOrigin" class="form-select" name="stateOfOrigin" disabled>
+                              <option selected disabled hidden>Choose State</option>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="religion">Religion</label>
+                            <select id="religion" class="form-select" name="religion" <%=religions.length> 0 ? "" :
+                              "disabled" %>>
+                              <option selected disabled hidden>Choose Religion</option>
+                              <% if(religions.length> 0){ %>
+                                <% religions.forEach(religion=> { %>
+                                  <option value="<%= religion.name %>" <%=form.religion===religion.name ? "selected"
+                                    : "" %>><%= religion.name %>
+                                  </option>
+                                  <% }) %>
+                                    <% } else { %>
+                                      <option selected disabled hidden>No Religion Found</option>
+                                      <% } %>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="profilePhoto">Profile Photo</label>
+                            <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo"
+                              name="profilePhoto" accept="png,jpg,jpeg">
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="dateOfBirth">Date Of Birth</label>
+                            <input id="dateOfBirth" type="date" class="form-control" name="dateOfBirth"
+                              value="<%= form.dateOfBirth %>">
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="gender">Gender</label>
+                            <select class="form-control" id="gender" name="gender" value="<%= form.gender %>">
+                              <option selected disabled hidden>Select Gender</option>
+                              <option value="male" <%=form.gender==="male" ? "selected" : "" %>>Male</option>
+                              <option value="female" <%=form.gender==="female" ? "selected" : "" %>>Female</option>
+                              <option value="other" <%=form.gender==="other" ? "selected" : "" %>>Other</option>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="class">Class</label>
+                            <select class="form-control" id="class" name="class" <%=classes.length <=0 ? "disabled" : ""
+                              %>>
+                              <% if(classes.length> 0) { %>
+                                <option disabled selected hidden>Select class</option>
+                                <% classes.map((classItem)=> { %>
+                                  <option value="<%= classItem.id %>" <%=form.class===classItem.id ? "selected" : "" %>>
+                                    <%= classItem.name %>
+                                  </option>
+                                  <% }) %>
+                                    <% } else { %>
+                                      <option disabled selected hidden>No classes found</option>
+                                      <% } %>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" id="examinationDate">Examination Date</label>
+                            <select id="examinationDate" class="form-select" name="examinationDate" disabled>
+                              <option value="<%= examinationDate %>">
+                                <%= examinationDate %>
+                              </option>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-12">
+                            <label class="form-label" for="address">Address</label>
+                            <textarea id="address" class="form-control" name="address"
+                              placeholder="Your Present Address"><%= form.address %></textarea>
+                          </div>
+                        </div>
 
-              <!-- Guardian Information -->
-              <h4 class="mt-3">Guardian Information</h4>
-              <div class="row">
-                <div class="mb-3 col-md-4">
-                  <label class="form-label" for="guardianFirstName">Guardian's First Name</label>
-                  <input type="text" class="form-control" id="guardianFirstName" placeholder="First Name" name="guardianFirstName" value="<%= form.guardianFirstName %>">
-                </div>
-                <div class="mb-3 col-md-4">
-                  <label class="form-label" for="guardianMiddleName">Guardian's Middle Name</label>
-                  <input type="text" class="form-control" id="guardianMiddleName" placeholder="Middle Name" name="guardianMiddleName" value="<%= form.guardianMiddleName %>">
-                </div>
-                <div class="mb-3 col-md-4">
-                  <label class="form-label" for="guardianLastName">Guardian's Last Name</label>
-                  <input type="text" class="form-control" id="guardianLastName" placeholder="Last Name" name="guardianLastName" value="<%= form.guardianLastName %>">
-                </div>
-              </div>
-              <div class="row">
-                <div class="mb-3 col-md-4">
-                  <label class="form-label" for="guardianEmail">Guardian's Email</label>
-                  <input type="email" class="form-control" id="guardianEmail" placeholder="Email" name="guardianEmail" value="<%= form.guardianEmail %>">
-                </div>
-                <div class="mb-3 col-md-4">
-                  <label class="form-label" for="guardianPhoneNumber">Guardian's Phone Number</label>
-                  <input type="tel" class="form-control" id="guardianPhoneNumber" placeholder="Phone Number" name="guardianPhoneNumber" value="<%= form.guardianPhoneNumber %>">
-                </div>
-                <div class="mb-3 col-md-4">
-                  <label class="form-label" for="relationshipToStudent">Relationship to Student</label>
-                  <select class="form-control" id="relationshipToStudent" name="relationshipToStudent">
-                    <option selected disabled hidden>Select Relationship</option>
-                    <option value="father" <%= form.relationshipToStudent === "father" ? "selected" : "" %>>Father</option>
-                    <option value="mother" <%= form.relationshipToStudent === "moder" ? "selected" : "" %>>Mother</option>
-                    <option value="guardian" <%= form.relationshipToStudent === "guardian" ? "selected" : "" %>>Guardian</option>
-                    <option value="brother" <%= form.relationshipToStudent === "brother" ? "selected" : "" %>>brother</option>
-                    <option value="sister" <%= form.relationshipToStudent === "sister" ? "selected" : "" %>>Sister</option>
-                    <option value="uncle" <%= form.relationshipToStudent === "uncle" ? "selected" : "" %>>Uncle</option>
-                    <option value="aunt" <%= form.relationshipToStudent === "aunt" ? "selected" : "" %>>Aunt</option>
-                    <option value="cousin" <%= form.relationshipToStudent === "cousin" ? "selected" : "" %>>Cousin</option>
-                    <option value="nephew" <%= form.relationshipToStudent === "nephew" ? "selected" : "" %>>Nephew</option>
-                    <option value="niece" <%= form.relationshipToStudent === "niece" ? "selected" : "" %>>Niece</option>
-                    <option value="other" <%= form.relationshipToStudent === "other" ? "selected" : "" %>>Other</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="mb-3 col-md-12">
-                  <label class="form-label" for="guardianOccupation">Ocupation</label>
-                  <select class="form-control" id="guardianOccupation" name="guardianOccupation" value="<%= form.guardianOccupation %>">
-                    <option selected disabled hidden>Select Occupation</option>
-                    <option value="teacher" <%= form.guardianOccupation === "Teacher" ? "selected" : "" %>>Teacher</option>
-                    <option value="doctor" <%= form.guardianOccupation === "doctor" ? "selected" : "" %>>Doctor</option>
-                    <option value="engineer" <%= form.guardianOccupation === "engineer" ? "selected" : "" %>>Engineer</option>
-                    <option value="nurse" <%= form.guardianOccupation === "nurse" ? "selected" : "" %>>Nurse</option>
-                    <option value="lawyer" <%= form.guardianOccupation === "lawyer" ? "selected" : "" %>>Lawyer</option>
-                    <option value="accountant" <%= form.guardianOccupation === "accountant" ? "selected" : "" %>>Accountant</option>
-                    <option value="farmer" <%= form.guardianOccupation === "farmer" ? "selected" : "" %>>Farmer</option>
-                    <option value="businessperson" <%= form.guardianOccupation === "businessperson" ? "selected" : "" %>>Businessperson</option>
-                    <option value="policeOfficer" <%= form.guardianOccupation === "policeOfficer" ? "selected" : "" %>>Police Officer</option>
-                    <option value="softwareDeveloper" <%= form.guardianOccupation === "softwareDeveloper" ? "selected" : "" %>>Software Developer</option>
-                    <option value="civilServant" <%= form.guardianOccupation === "civilServant" ? "selected" : "" %>>Civil Servant</option>
-                    <option value="electrician" <%= form.guardianOccupation === "electrician" ? "selected" : "" %>>Electrician</option>
-                    <option value="mechanic" <%= form.guardianOccupation === "mechanic" ? "selected" : "" %>>Mechanic</option>
-                    <option value="pilot" <%= form.guardianOccupation === "pilot" ? "selected" : "" %>>Pilot</option>
-                    <option value="chef" <%= form.guardianOccupation === "chef" ? "selected" : "" %>>Chef</option>
-                    <option value="artist" <%= form.guardianOccupation === "artist" ? "selected" : "" %>>Artist</option>
-                    <option value="driver" <%= form.guardianOccupation === "driver" ? "selected" : "" %>>Driver</option>
-                    <option value="student" <%= form.guardianOccupation === "student" ? "selected" : "" %>>Student</option>
-                    <option value="retired" <%= form.guardianOccupation === "retired" ? "selected" : "" %>>Retired</option>
-                    <option value="other" <%= form.guardianOccupation === "other" ? "selected" : "" %>>Other</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label" for="guardianAddress">Guardian's Address</label>
-                  <textarea class="form-control" id="guardianAddress" placeholder="Guardian's Address" name="guardianAddress"><%= form.guardianAddress %></textarea>
-                </div>
-              </div>
+                        <!-- Guardian Information -->
+                        <h4 class="mt-3">Guardian Information</h4>
+                        <div class="row">
+                          <div class="mb-3 col-md-4">
+                            <label class="form-label" for="guardianFirstName">Guardian's First Name</label>
+                            <input type="text" class="form-control" id="guardianFirstName" placeholder="First Name"
+                              name="guardianFirstName" value="<%= form.guardianFirstName %>">
+                          </div>
+                          <div class="mb-3 col-md-4">
+                            <label class="form-label" for="guardianMiddleName">Guardian's Middle Name</label>
+                            <input type="text" class="form-control" id="guardianMiddleName" placeholder="Middle Name"
+                              name="guardianMiddleName" value="<%= form.guardianMiddleName %>">
+                          </div>
+                          <div class="mb-3 col-md-4">
+                            <label class="form-label" for="guardianLastName">Guardian's Last Name</label>
+                            <input type="text" class="form-control" id="guardianLastName" placeholder="Last Name"
+                              name="guardianLastName" value="<%= form.guardianLastName %>">
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="mb-3 col-md-4">
+                            <label class="form-label" for="guardianEmail">Guardian's Email</label>
+                            <input type="email" class="form-control" id="guardianEmail" placeholder="Email"
+                              name="guardianEmail" value="<%= form.guardianEmail %>">
+                          </div>
+                          <div class="mb-3 col-md-4">
+                            <label class="form-label" for="guardianPhoneNumber">Guardian's Phone Number</label>
+                            <input type="tel" class="form-control" id="guardianPhoneNumber" placeholder="Phone Number"
+                              name="guardianPhoneNumber" value="<%= form.guardianPhoneNumber %>">
+                          </div>
+                          <div class="mb-3 col-md-4">
+                            <label class="form-label" for="relationshipToStudent">Relationship to Student</label>
+                            <select class="form-control" id="relationshipToStudent" name="relationshipToStudent">
+                              <option selected disabled hidden>Select Relationship</option>
+                              <option value="father" <%=form.relationshipToStudent==="father" ? "selected" : "" %>
+                                >Father</option>
+                              <option value="mother" <%=form.relationshipToStudent==="moder" ? "selected" : "" %>>Mother
+                              </option>
+                              <option value="guardian" <%=form.relationshipToStudent==="guardian" ? "selected" : "" %>
+                                >Guardian</option>
+                              <option value="brother" <%=form.relationshipToStudent==="brother" ? "selected" : "" %>
+                                >brother</option>
+                              <option value="sister" <%=form.relationshipToStudent==="sister" ? "selected" : "" %>
+                                >Sister</option>
+                              <option value="uncle" <%=form.relationshipToStudent==="uncle" ? "selected" : "" %>>Uncle
+                              </option>
+                              <option value="aunt" <%=form.relationshipToStudent==="aunt" ? "selected" : "" %>>Aunt
+                              </option>
+                              <option value="cousin" <%=form.relationshipToStudent==="cousin" ? "selected" : "" %>
+                                >Cousin</option>
+                              <option value="nephew" <%=form.relationshipToStudent==="nephew" ? "selected" : "" %>
+                                >Nephew</option>
+                              <option value="niece" <%=form.relationshipToStudent==="niece" ? "selected" : "" %>>Niece
+                              </option>
+                              <option value="other" <%=form.relationshipToStudent==="other" ? "selected" : "" %>>Other
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="mb-3 col-md-12">
+                            <label class="form-label" for="guardianOccupation">Ocupation</label>
+                            <select class="form-control" id="guardianOccupation" name="guardianOccupation"
+                              value="<%= form.guardianOccupation %>">
+                              <option selected disabled hidden>Select Occupation</option>
+                              <option value="teacher" <%=form.guardianOccupation==="Teacher" ? "selected" : "" %>
+                                >Teacher</option>
+                              <option value="doctor" <%=form.guardianOccupation==="doctor" ? "selected" : "" %>>Doctor
+                              </option>
+                              <option value="engineer" <%=form.guardianOccupation==="engineer" ? "selected" : "" %>
+                                >Engineer</option>
+                              <option value="nurse" <%=form.guardianOccupation==="nurse" ? "selected" : "" %>>Nurse
+                              </option>
+                              <option value="lawyer" <%=form.guardianOccupation==="lawyer" ? "selected" : "" %>>Lawyer
+                              </option>
+                              <option value="accountant" <%=form.guardianOccupation==="accountant" ? "selected" : "" %>
+                                >Accountant</option>
+                              <option value="farmer" <%=form.guardianOccupation==="farmer" ? "selected" : "" %>>Farmer
+                              </option>
+                              <option value="businessperson" <%=form.guardianOccupation==="businessperson" ? "selected"
+                                : "" %>>Businessperson</option>
+                              <option value="policeOfficer" <%=form.guardianOccupation==="policeOfficer" ? "selected"
+                                : "" %>>Police Officer</option>
+                              <option value="softwareDeveloper" <%=form.guardianOccupation==="softwareDeveloper"
+                                ? "selected" : "" %>>Software Developer</option>
+                              <option value="civilServant" <%=form.guardianOccupation==="civilServant" ? "selected" : ""
+                                %>>Civil Servant</option>
+                              <option value="electrician" <%=form.guardianOccupation==="electrician" ? "selected" : ""
+                                %>>Electrician</option>
+                              <option value="mechanic" <%=form.guardianOccupation==="mechanic" ? "selected" : "" %>
+                                >Mechanic</option>
+                              <option value="pilot" <%=form.guardianOccupation==="pilot" ? "selected" : "" %>>Pilot
+                              </option>
+                              <option value="chef" <%=form.guardianOccupation==="chef" ? "selected" : "" %>>Chef
+                              </option>
+                              <option value="artist" <%=form.guardianOccupation==="artist" ? "selected" : "" %>>Artist
+                              </option>
+                              <option value="driver" <%=form.guardianOccupation==="driver" ? "selected" : "" %>>Driver
+                              </option>
+                              <option value="student" <%=form.guardianOccupation==="student" ? "selected" : "" %>
+                                >Student</option>
+                              <option value="retired" <%=form.guardianOccupation==="retired" ? "selected" : "" %>
+                                >Retired</option>
+                              <option value="other" <%=form.guardianOccupation==="other" ? "selected" : "" %>>Other
+                              </option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label" for="guardianAddress">Guardian's Address</label>
+                            <textarea class="form-control" id="guardianAddress" placeholder="Guardian's Address"
+                              name="guardianAddress"><%= form.guardianAddress %></textarea>
+                          </div>
+                        </div>
 
-              <!-- Submit Button -->
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
 
+            </div>
           </div>
         </div>
       </div>
+
+
     </div>
+  </main>
 
+  <script>
+    const form = JSON.parse('<%- JSON.stringify(form) %>');
+    const states = JSON.parse(`<%- JSON.stringify(states) %>`);
+    const userCountry = "";
+  </script>
 
-  </div>
-</main>
-
-<script>
-  const form = JSON.parse('<%- JSON.stringify(form) %>');
-  const states = JSON.parse(`<%- JSON.stringify(states) %>`);
-</script>
-
-<%- include("../../partials/footer") %>
+  <%- include("../../partials/footer") %>

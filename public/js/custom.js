@@ -64,11 +64,12 @@ const updateStateSelect = () => {
     const option = document.createElement("option");
     option.value = state.name;
     option.text = state.name;
-    if (form.stateOfOrigin === state.name) option.selected = true;
+    if (form.stateOfOrigin === state.name || userState === state.name)
+      option.selected = true;
     stateSelect.appendChild(option);
   });
 };
 
 if (form !== "" && states !== "") updateStateSelect();
-if (userCountry !== "" && states !== "") updateStateSelect();
+if (userState !== "" && states !== "") updateStateSelect();
 countrySelect.addEventListener("change", updateStateSelect);

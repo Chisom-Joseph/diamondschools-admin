@@ -3,6 +3,9 @@ module.exports = (req, res) => {
     case "add":
       require("./add")(req, res);
       break;
+    case "edit-student-info":
+      require("./editStudentInfo")(req, res);
+      break;
     case "update":
       require("./update")(req, res);
       break;
