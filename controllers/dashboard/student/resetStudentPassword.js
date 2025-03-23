@@ -30,7 +30,8 @@ module.exports = async (req, res) => {
     req.flash("status", 200);
     res.redirect(req.baseUrl + req.path);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    console.error("ERROR RESETING STUDENT PASSWORD");
     req.flash("alert", {
       status: "error",
       section: "update",
