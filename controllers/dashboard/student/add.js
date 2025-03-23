@@ -196,8 +196,8 @@ module.exports = async (req, res) => {
       res.redirect("/dashboard/add-student");
     });
   } catch (error) {
-    console.log(error);
-    console.log("ERROR ADDING STUDENT");
+    console.error(error);
+    console.error("ERROR ADDING STUDENT");
     req.flash("alert", {
       status: "error",
       section: "add",
