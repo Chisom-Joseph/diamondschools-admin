@@ -82,7 +82,11 @@ router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 router.get("/all-students", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
-    res.status(status).render("dashboard/student/allStudents.ejs");
+    res
+      .status(status)
+      .render("dashboard/student/allStudents.ejs", {
+        alert: req.flash("alert")[0] || "",
+      });
   } catch (error) {
     console.error("ERROR RENDERING ALL STUDENTS PAGE");
     console.error(error);

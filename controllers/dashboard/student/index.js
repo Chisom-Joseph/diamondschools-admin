@@ -15,8 +15,8 @@ module.exports = (req, res) => {
     case "block-student":
       require("./blockStudent")(req, res);
       break;
-    case "delete":
-      require("./delete")(req, res);
+    case "delete-student":
+      require("./deleteStudent")(req, res);
       break;
     default:
       req.flash("alert", {

@@ -1,43 +1,64 @@
 <%- include("../../partials/header") %>
-<main class="content">
-  <div class="container-fluid p-0">
+  <main class="content">
+    <div class="container-fluid p-0">
 
-    <h1 class="h3 mb-3">All Students</h1>
+      <h1 class="h3 mb-3">All Students</h1>
 
-    <div class="row">
-      <div class="col-12 col-xl-12">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title">Striped Rows</h5>
-          </div>
-          <div class="card-body">
-            <table id="example" class="datatable" style="width:100%">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Full Name</th>
-                  <th>Class</th>
-                  <th>Reg Number</th>
-                  <th>Gender</th>
-                  <th>Guardian</th>
-                </tr>
-              </thead>
-            </table>
+      <div class="row">
+        <div class="col-12 col-xl-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title">Striped Rows</h5>
+            </div>
+            <div class="card-body">
+              <% if(alert.status==="error" ) { %>
+                <div class="col-12">
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert-message">
+                      <strong>Error!</strong> <%- alert.message %>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+                  <% if(alert.status==="success" ) { %>
+                    <div class="col-12">
+                      <div class="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="alert-message pr-5">
+                          <strong>Sucess!</strong> <%- alert.message %>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %>
+
+                      <table id="example" class="datatable" style="width:100%">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Class</th>
+                            <th>Reg Number</th>
+                            <th>Gender</th>
+                            <th>Guardian</th>
+                          </tr>
+                        </thead>
+                      </table>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
+  </main>
 
-  </div>
-</main>
-
-<script src="/DataTables/datatables.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    new DataTable('#example', {
-      serverSide: true,
-      ajax: '/api/get-students',
-      columns: [{
+  <script src="/DataTables/datatables.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      new DataTable('#example', {
+        serverSide: true,
+        ajax: '/api/get-students',
+        columns: [{
           data: 'profileImageUrl', // Column containing the image URL
           render: (data, type, row) => {
             if (type === 'display' && data) {
@@ -76,9 +97,9 @@
             return fullName ? `<a href="/dashboard/guardian/${data.id}">${fullName}</a>` : 'No Name';
           }
         }
-      ],
+        ],
+      });
     });
-  });
-</script>
+  </script>
 
-<%- include("../../partials/footer") %>
+  <%- include("../../partials/footer") %>
