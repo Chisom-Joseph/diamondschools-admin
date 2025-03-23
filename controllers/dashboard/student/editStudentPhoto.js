@@ -41,6 +41,16 @@ module.exports = async (req, res) => {
       //   Get current profile image
       const student = await Student.findByPk(req.params.id);
 
+      if (!student) {
+        req.flash("alert", {
+          status: "error",
+          section: "block",
+          message: "Student not found",
+        });
+        req.flash("status", 404);
+        return res.redirect(req.baseUrl + req.path);
+      }
+
       const fileBuffer = req.file.buffer;
       const fileName = req.file.originalname;
 
@@ -95,8 +105,8 @@ module.exports = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
-    console.log("ERROR ADDING STUDENT");
+    console.error(error);
+    console.error("ERROR ADDING STUDENT");
     req.flash("alert", {
       status: "error",
       section: "add",
