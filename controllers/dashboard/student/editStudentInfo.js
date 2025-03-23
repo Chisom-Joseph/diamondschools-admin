@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
       return res.redirect("/dashboard/add-student");
     }
 
-    // Create student
+    // Update student
     const editedStudent = await Student.update(
       {
         firstName: req.body.firstName,

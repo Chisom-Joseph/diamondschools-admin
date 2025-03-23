@@ -6,6 +6,9 @@ module.exports = (req, res) => {
     case "edit-student-info":
       require("./editStudentInfo")(req, res);
       break;
+    case "edit-student-photo":
+      require("./editStudentPhoto")(req, res);
+      break;
     case "update":
       require("./update")(req, res);
       break;
