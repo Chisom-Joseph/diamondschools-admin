@@ -12,6 +12,9 @@ module.exports = (req, res) => {
     case "reset-student-password":
       require("./resetStudentPassword")(req, res);
       break;
+    case "block-student":
+      require("./blockStudent")(req, res);
+      break;
     case "delete":
       require("./delete")(req, res);
       break;

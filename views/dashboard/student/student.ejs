@@ -34,8 +34,12 @@
                   Edit </button>
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resetPassword"><i
                     class="fas fa-sync-alt"></i> Reset Password </button>
-                <button class="btn btn-warning" disabled><i class="fas fa-ban"></i> Block</button>
-                <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete</button>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#blockStudent"><i
+                    class="fas fa-ban"></i>
+                  <%= student.blocked ? "Unblock" : "Block" %>
+                </button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent"><i
+                    class="fas fa-times"></i> Delete</button>
               </div>
             </div>
             <div class="card-body">
@@ -318,6 +322,52 @@
           <div class="modal-footer d-flex justify-content-center">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-success">Reset Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal modal-sm fade" id="blockStudent" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form action="?action=block-student" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title">Block Student</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body m-3">
+            <p class="mb-0 text-center">Are you sure you want to block this student?
+            </p>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning">
+              <%= student.blocked ? "Unblock" : "Block" %> Student
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal modal-sm fade" id="deleteStudent" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form action="?action=delete-student" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete Student</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body m-3">
+            <p class="mb-0 text-center">Are you sure you want to delete this student? This action can not be reversed
+            </p>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete Student</button>
           </div>
         </form>
       </div>
