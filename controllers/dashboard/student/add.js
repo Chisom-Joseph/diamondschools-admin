@@ -197,6 +197,7 @@ module.exports = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    console.log("ERROR ADDING STUDENT");
     req.flash("alert", {
       status: "error",
       section: "add",
