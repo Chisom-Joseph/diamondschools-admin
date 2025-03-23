@@ -126,6 +126,7 @@ router.get("/student/:id", async (req, res) => {
     res.status(status).render("dashboard/student/student.ejs", {
       alert: req.flash("alert")[0] || "",
       form: req.flash("form")[0] || "",
+      newPassword: req.flash("newPassword")[0] || "",
       student,
       academicYears: await require("../utils/getAcademicYears")(),
       user: "",

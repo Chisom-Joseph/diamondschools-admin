@@ -9,8 +9,8 @@ module.exports = (req, res) => {
     case "edit-student-photo":
       require("./editStudentPhoto")(req, res);
       break;
-    case "update":
-      require("./update")(req, res);
+    case "reset-student-password":
+      require("./resetStudentPassword")(req, res);
       break;
     case "delete":
       require("./delete")(req, res);
