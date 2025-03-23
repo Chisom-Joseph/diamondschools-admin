@@ -281,10 +281,55 @@
     </div>
   </main>
 
-  <script>
-    const form = JSON.parse('<%- JSON.stringify(form) %>');
-    const states = JSON.parse(`<%- JSON.stringify(states) %>`);
-    const userState = "";
-  </script>
+  <!-- Modal -->
+  <% if(newStudent) { %>
+    <div class="modal modal-sm fade" id="newStudent" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <form action="?action=reset-student-password" method="POST">
+            <div class="modal-header">
+              <h5 class="modal-title">New Student</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body m-3 text-center">
+              <h3>Studen Details</h3>
+              <p class="mb-0"><strong id="studentText">
+                  <%- newStudent %>
+                </strong></p>
+              <p id="copySuccess" class="text-success mt-2" style="display: none;">Student copied!</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="copyStudent">Copy</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-  <%- include("../../partials/footer") %>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var modalElement = document.getElementById('newStudent');
+        var modal = new bootstrap.Modal(modalElement, { backdrop: 'static' });
+        modal.show();
+
+        document.getElementById("copyStudent").addEventListener("click", function () {
+          var studentText = document.getElementById("studentText").innerText;
+          navigator.clipboard.writeText(studentText).then(() => {
+            document.getElementById("copySuccess").style.display = "block";
+            setTimeout(() => {
+              document.getElementById("copySuccess").style.display = "none";
+            }, 2000);
+          });
+        });
+      });
+    </script>
+    <% } %>
+
+      <script>
+        const form = JSON.parse('<%- JSON.stringify(form) %>');
+        const states = JSON.parse(`<%- JSON.stringify(states) %>`);
+        const userState = "";
+      </script>
+
+      <%- include("../../partials/footer") %>

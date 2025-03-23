@@ -82,11 +82,9 @@ router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 router.get("/all-students", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
-    res
-      .status(status)
-      .render("dashboard/student/allStudents.ejs", {
-        alert: req.flash("alert")[0] || "",
-      });
+    res.status(status).render("dashboard/student/allStudents.ejs", {
+      alert: req.flash("alert")[0] || "",
+    });
   } catch (error) {
     console.error("ERROR RENDERING ALL STUDENTS PAGE");
     console.error(error);
@@ -101,6 +99,7 @@ router.get("/add-student", async (req, res) => {
     res.status(status).render("dashboard/student/addStudent.ejs", {
       alert: req.flash("alert")[0] || "",
       form: req.flash("form")[0] || "",
+      newStudent: req.flash("newStudent")[0] || "",
       newStudentId: req.flash("newStudentId")[0] || "",
       classes: await require("../utils/getClasses")(),
       religions: await require("../utils/getReligions")(),

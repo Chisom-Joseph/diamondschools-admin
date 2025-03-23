@@ -188,10 +188,14 @@ module.exports = async (req, res) => {
       req.flash("alert", {
         status: "success",
         section: "add",
-        message: `Student created successfully. REG NUMBER: ${registrationNumber} PASSWORD: ${password}`,
+        message: `Student created successfully`,
       });
       req.flash("form", "");
       req.flash("newStudentId", newStudent.dataValues.id);
+      req.flash(
+        "newStudent",
+        `REG NUMBER: ${registrationNumber} <br> PASSWORD: ${password}`
+      );
       req.flash("status", 200);
       res.redirect("/dashboard/add-student");
     });
