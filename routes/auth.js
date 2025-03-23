@@ -21,10 +21,16 @@ router.post(
 );
 
 router.get("/sign-in", async (req, res) => {
-  res.render("auth/signIn.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-  });
+  try {
+    res.render("auth/signIn.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING SIGNIN PAGE");
+    console.error(error);
+    require("../utils/showErrorPage")(500, {}, res);
+  }
 });
 router.post("/sign-in", require("../controllers/auth/signIn"));
 
