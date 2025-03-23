@@ -2,11 +2,17 @@ const router = require("express").Router();
 const preventDuplicateAdmin = require("../middlewares/preventDuplicatAdmin");
 
 router.get("/sign-up", preventDuplicateAdmin, async (req, res) => {
-  res.render("auth/signUp.ejs", {
-    alert: req.flash("alert")[0] || "",
-    form: req.flash("form")[0] || "",
-    classes: await require("../utils/getClasses")(),
-  });
+  try {
+    res.render("auth/signUp.ejs", {
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+      classes: await require("../utils/getClasses")(),
+    });
+  } catch (error) {
+    console.error("ERROR RENDERING SIGNUP PAGE");
+    console.error(error);
+    require("../utils/showErrorPage")(500, {}, res);
+  }
 });
 router.post(
   "/sign-up",
