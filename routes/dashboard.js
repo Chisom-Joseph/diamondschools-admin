@@ -121,8 +121,6 @@ router.get("/student/:id", async (req, res) => {
     if (Object.keys(student).length === 0) {
       return res.status(404).render("error.ejs", { error: "" });
     }
-    // student.class = await require("../utils/getClass")(student.ClassId);
-    // console.log(student);
 
     const status = req.flash("status")[0] || 200;
     res.status(status).render("dashboard/student/student.ejs", {
