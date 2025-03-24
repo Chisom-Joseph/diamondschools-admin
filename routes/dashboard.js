@@ -103,7 +103,6 @@ router.get("/add-student", async (req, res) => {
       newStudentId: req.flash("newStudentId")[0] || "",
       classes: await require("../utils/getClasses")(),
       religions: await require("../utils/getReligions")(),
-      examinationDate: await require("../utils/getExaminationDate")(),
       academicYears: await require("../utils/getAcademicYears")(),
       countries: Country.getAllCountries(),
       states: State.getAllStates(),
