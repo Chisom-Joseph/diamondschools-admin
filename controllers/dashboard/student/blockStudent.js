@@ -26,8 +26,8 @@ module.exports = async (req, res) => {
       status: "success",
       section: "add",
       message: `Student ${
-        newBlockedStatus ? "blocked" : "unblocked"
-      } successfully`,
+        req.body.studentId ? student.registrationNumber : ""
+      } ${newBlockedStatus ? "blocked" : "unblocked"} successfully`,
     });
     req.flash("form", "");
     req.flash("status", 200);
