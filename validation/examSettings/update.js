@@ -16,12 +16,12 @@ const schema = Joi.object({
   }),
 
   shuffleQuestions: Joi.string().valid("yes", "no").required().messages({
-    "any.only": 'Shuffle questions must be either "Yes" or "No".',
+    "any.only": 'Shuffle questions must be either "yes" or "no".',
     "any.required": "Shuffle questions is required.",
   }),
 
   shuffleOptions: Joi.string().valid("yes", "no").required().messages({
-    "any.only": 'Shuffle options must be either "Yes" or "No".',
+    "any.only": 'Shuffle options must be either "yes" or "no".',
     "any.required": "Shuffle options is required.",
   }),
 
@@ -44,12 +44,27 @@ const schema = Joi.object({
     "date.min": "End date must be after or equal to the start date.",
     "any.required": "End date is required.",
   }),
+
   startTime: Joi.string()
     .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
     .required()
     .messages({
-      "any.required": "Start time is required",
-      "string.pattern.base": "Start time must be in HH:mm format",
+      "any.required": "Start time is required.",
+      "string.pattern.base": "Start time must be in HH:mm format.",
+    }),
+
+  aspirantExaminationDate: Joi.date()
+    .iso()
+    .min(Joi.ref("startDate"))
+    .required()
+    .messages({
+      "date.base": "Aspirant examination date must be a valid date.",
+      "date.format":
+        "Aspirant examination date must be in ISO format (YYYY-MM-DD).",
+      "date.min":
+        "Aspirant examination date must be after or equal to the start date.",
+      "any.required": "Aspirant examination date is required.",
     }),
 });
+
 module.exports = schema;

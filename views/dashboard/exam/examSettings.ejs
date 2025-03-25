@@ -55,21 +55,25 @@
                     <option value="no" <%= (examSettings.shuffleOptions === "no"|| form.shuffleOptions === "no") ? "selected" : "" %>>No</option>
                   </select>
                 </div>
-                <!-- <div class="mb-2 col-md-6">
-                  <label class="form-label" for="markPerQuestion">Mark per question</label>
-                </div> -->
-                <input id="markPerQuestion" name="markPerQuestion" type="hidden" class="form-control" value="<%= examSettings.markPerQuestion || form.markPerQuestion || 1 %>" placeholder="Type duration in seconds">
                 <div class="mb-2 col-md-6">
-                  <label class="form-label" for="startDate">Start date</label>
+                  <label class="form-label" for="markPerQuestion">Mark Per Question</label>
+                  <input id="markPerQuestion" name="markPerQuestion" type="number" class="form-control" value="<%= examSettings.markPerQuestion || form.markPerQuestion %>" placeholder="Type mark per question">
+                </div>
+                <div class="mb-2 col-md-6">
+                  <label class="form-label" for="startDate">Start Date</label>
                   <input id="startDate" name="startDate" type="date" class="form-control" value="<%= examSettings.startDate || form.startDate %>" placeholder="Type duration in seconds">
                 </div>
                 <div class="mb-2 col-md-6">
-                  <label class="form-label" for="endDate">End date</label>
+                  <label class="form-label" for="endDate">End Date</label>
                   <input id="endDate" name="endDate" type="date" class="form-control" value="<%= examSettings.endDate || form.endDate %>" placeholder="Type duration in seconds">
                 </div>
                 <div class="mb-2 col-md-6">
                   <label class="form-label" for="startTime">Start Time</label>
                   <input id="startTime" name="startTime" type="time" class="form-control" value="<%= examSettings.startTime || form.startTime %>" placeholder="Type duration in seconds">
+                </div>
+                <div class="mb-2 col-md-6">
+                  <label class="form-label" for="aspirantExaminationDate">Exam Date (for aspirants only)</label>
+                  <input id="aspirantExaminationDate" name="aspirantExaminationDate" type="date" class="form-control" value="<%= examSettings.aspirantExaminationDate || form.aspirantExaminationDate %>" placeholder="Type duration in seconds">
                 </div>
               </div>
 

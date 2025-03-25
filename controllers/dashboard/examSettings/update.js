@@ -2,17 +2,19 @@ const examSettingsSchema = require("../../../validation/examSettings/update");
 const { ExamSettings } = require("../../../models");
 
 module.exports = async (req, res) => {
-  const {
-    duration,
-    questionLimit,
-    shuffleQuestions,
-    shuffleOptions,
-    markPerQuestion,
-    startDate,
-    endDate,
-    startTime,
-  } = req.body;
   try {
+    const {
+      duration,
+      questionLimit,
+      shuffleQuestions,
+      shuffleOptions,
+      markPerQuestion,
+      startDate,
+      endDate,
+      startTime,
+      aspirantExaminationDate,
+    } = req.body;
+
     // Validate exam
     const examValid = examSettingsSchema.validate(req.body);
     if (examValid.error) {
@@ -36,6 +38,7 @@ module.exports = async (req, res) => {
       startDate,
       endDate,
       startTime,
+      aspirantExaminationDate,
       uniqueKey: 1,
     }); // Always use 1
 
