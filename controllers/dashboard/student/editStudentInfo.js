@@ -17,6 +17,18 @@ module.exports = async (req, res) => {
       return res.redirect(req.baseUrl + req.path);
     }
 
+    const student = await Student.findOne({ where: { id: studentId } });
+
+    if (!student) {
+      req.flash("alert", {
+        status: "error",
+        section: "block",
+        message: "Student not found",
+      });
+      req.flash("status", 404);
+      return res.redirect(req.baseUrl + req.path);
+    }
+
     // Check if academic year exists
     const academicYearFromDb = await AcademicYear.findByPk(
       req.body.academicYear,
