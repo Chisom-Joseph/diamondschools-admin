@@ -209,16 +209,24 @@
 </div>
 
 <!-- Block Student Modal -->
-<div class="modal fade" id="blockStudent" tabindex="-1">
-  <div class="modal-dialog">
+<div class="modal modal-sm fade" id="blockStudent" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Block Student</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p>Blocking student...</p>
-      </div>
+      <form action="?action=block-student" method="POST">
+        <input type="hidden" class="studentId" name="studentId">
+        <div class="modal-header">
+          <h5 class="modal-title">Block Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to block this student?
+          </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning block-student-submit"></button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -377,7 +385,7 @@
                   </button>
               </div>
               <div class="mb-0 d-flex gap-1 flex-wrap">
-                <button class="btn btn-sm btn-warning action-btn" data-action="blockStudent" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
+                <button class="btn btn-sm btn-warning block-btn" data-id="${row.id}" data-blocked="${row.blocked}" style="font-size: 10px; padding: 2px 5px;">
                   <i class="fas fa-ban"></i>
                 </button>
                 <button class="btn btn-sm btn-danger action-btn" data-action="deleteStudent" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
@@ -453,6 +461,26 @@
         document.querySelectorAll(".studentId").forEach(studentField => {
           studentField.value = studentId || "";
         });
+      }
+
+      // Block student
+      const blockButton = event.target.closest(".block-btn");
+      if (blockButton) {
+        const modalElement = document.getElementById('blockStudent');
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static'
+        });
+        modal.show();
+
+        const studentId = blockButton.getAttribute("data-id");
+
+        document.querySelectorAll(".studentId").forEach(studentField => {
+          studentField.value = studentId || "";
+        });
+
+        const isBlocked = blockButton.getAttribute("data-blocked") === "true";
+        const blockSubmitButton = document.querySelector(".block-student-submit");
+        blockSubmitButton.textContent = isBlocked ? "Unblock Student" : "Block Student";
       }
     });
 
