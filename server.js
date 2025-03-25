@@ -21,14 +21,8 @@ app.set("trust proxy", 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    store: isProduction ? sessionStore : undefined,
     resave: false,
-    saveUninitialized: isProduction,
-    cookie: {
-      secure: isProduction,
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    },
+    saveUninitialized: false,
   })
 );
 app.use(cookieParser());
