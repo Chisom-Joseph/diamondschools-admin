@@ -36,7 +36,9 @@ module.exports = async (req, res) => {
     req.flash("alert", {
       status: "success",
       section: "add",
-      message: `Student password reset successfully`,
+      message: `Student ${
+        req.body.studentId ? student.registrationNumber : ""
+      } password reset successfully`,
     });
     req.flash("form", "");
     req.flash("newPassword", password);
