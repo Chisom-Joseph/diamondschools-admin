@@ -70,7 +70,9 @@ module.exports = async (req, res) => {
     req.flash("alert", {
       status: "success",
       section: "add",
-      message: `Student updated successfully`,
+      message: `Student ${
+        req.body.studentId ? student.registrationNumber : ""
+      } updated successfully`,
     });
     req.flash("form", "");
     req.flash("status", 200);
