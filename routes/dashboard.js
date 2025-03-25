@@ -93,6 +93,7 @@ router.get("/all-students", async (req, res) => {
       states: State.getAllStates(),
       form: req.flash("form")[0] || "",
       newPassword: req.flash("newPassword")[0] || "",
+      newPasswordFor: req.flash("newPasswordFor")[0] || "",
     });
   } catch (error) {
     console.error("ERROR RENDERING ALL STUDENTS PAGE");

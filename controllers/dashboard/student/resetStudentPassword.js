@@ -40,6 +40,7 @@ module.exports = async (req, res) => {
     });
     req.flash("form", "");
     req.flash("newPassword", password);
+    req.flash("newPasswordFor", student.registrationNumber);
     req.flash("status", 200);
     res.redirect(req.baseUrl + req.path);
   } catch (error) {

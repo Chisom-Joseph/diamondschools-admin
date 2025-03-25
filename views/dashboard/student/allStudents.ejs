@@ -247,7 +247,7 @@
 </div>
 
 <!-- Modal -->
-<% if(newPassword) { %>
+<% if(newPassword && newPasswordFor) { %>
 <div class="modal modal-sm fade" id="newPassword" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -257,9 +257,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body m-3 text-center">
-          <p class="mb-0">New Password: <strong id="passwordText">
-              <%= newPassword %>
-            </strong></p>
+          <p class="mb-0">Student: <strong><%= newPasswordFor %></strong></p>
+          <p class="mb-0">New Password: <strong id="passwordText"><%= newPassword %></strong></p>
           <p id="copySuccess" class="text-success mt-2" style="display: none;">Password copied!</p>
         </div>
         <div class="modal-footer d-flex justify-content-center">
