@@ -4,6 +4,19 @@ const { Student } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
+    const studentId = req.params.id || req.body.studentId;
+    const student = await Student.findOne({ where: { id: studentId } });
+
+    if (!student) {
+      req.flash("alert", {
+        status: "error",
+        section: "block",
+        message: "Student not found",
+      });
+      req.flash("status", 404);
+      return res.redirect(req.baseUrl + req.path);
+    }
+
     // Generate password
     const password = require("../../../utils/genPassword")(6);
 
@@ -14,7 +27,7 @@ module.exports = async (req, res) => {
     // Update student
     const updatedStudent = await Student.update(
       { password: hashedPassword },
-      { where: { id: req.params.id } }
+      { where: { id: studentId } }
     );
 
     console.log(updatedStudent);

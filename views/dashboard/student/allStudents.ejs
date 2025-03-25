@@ -187,16 +187,23 @@
 </div>
 
 <!-- Reset Password Modal -->
-<div class="modal fade" id="resetPassword" tabindex="-1">
-  <div class="modal-dialog">
+<div class="modal modal-sm fade" id="resetPassword" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Reset Password</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p>Resetting password...</p>
-      </div>
+      <form action="?action=reset-student-password" method="POST">
+        <input type="hidden" class="studentId" name="studentId">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to reset student's password?</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Reset Password</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -238,6 +245,52 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<% if(newPassword) { %>
+<div class="modal modal-sm fade" id="newPassword" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=reset-student-password" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">New Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3 text-center">
+          <p class="mb-0">New Password: <strong id="passwordText">
+              <%= newPassword %>
+            </strong></p>
+          <p id="copySuccess" class="text-success mt-2" style="display: none;">Password copied!</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="copyPassword">Copy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var modalElement = document.getElementById('newPassword');
+    var modal = new bootstrap.Modal(modalElement, {
+      backdrop: 'static'
+    });
+    modal.show();
+
+    document.getElementById("copyPassword").addEventListener("click", function() {
+      var passwordText = document.getElementById("passwordText").innerText;
+      navigator.clipboard.writeText(passwordText).then(() => {
+        document.getElementById("copySuccess").style.display = "block";
+        setTimeout(() => {
+          document.getElementById("copySuccess").style.display = "none";
+        }, 2000);
+      });
+    });
+  });
+</script>
+<% } %>
 
 
 <link rel="stylesheet" href="/DataTables/datatables.min.css">
@@ -320,7 +373,7 @@
                   style="font-size: 10px; padding: 2px 5px;">
                 <i class="far fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-secondary action-btn" data-action="resetPassword" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
+                <button class="btn btn-sm btn-secondary reset-btn" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
                   <i class="fas fa-key"></i>
                   </button>
               </div>
@@ -341,8 +394,8 @@
 
 
     document.querySelector("#example tbody").addEventListener("click", async function(event) {
-      const editButton = event.target.closest(".edit-btn"); // Get the closest button with class "edit-btn"
-
+      // Edit student
+      const editButton = event.target.closest(".edit-btn");
       if (editButton) {
         const modalElement = document.getElementById('edit');
         const modal = new bootstrap.Modal(modalElement, {
@@ -385,6 +438,22 @@
 
         // Preview profile image
         document.getElementById("previewImage").src = editButton.getAttribute("data-profile") || "/img/profileImage/default.png";
+      }
+
+      // Reset student password
+      const resetButton = event.target.closest(".reset-btn");
+      if (resetButton) {
+        const modalElement = document.getElementById('resetPassword');
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static'
+        });
+        modal.show();
+
+        const studentId = resetButton.getAttribute("data-id");
+
+        document.querySelectorAll(".studentId").forEach(studentField => {
+          studentField.value = studentId || "";
+        });
       }
     });
 
