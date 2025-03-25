@@ -1,3 +1,4 @@
+const axios = require("axios");
 const { Student } = require("../../../models");
 
 module.exports = async (req, res) => {
@@ -15,6 +16,24 @@ module.exports = async (req, res) => {
       return res.redirect(req.baseUrl + req.path);
     }
 
+    // Delete student provile image
+    const FormData = require("form-data");
+    const formData = new FormData();
+    formData.append("profilePhoto", student.dataValues.profileImageUrl);
+
+    const response = await axios.post(
+      `${process.env.MAIN_WEBSITE_URL}/api/deleteStudentPhoto`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `bearer ${process.env.MAIN_WEBSITE_ACCESS_TOKEN}`,
+        },
+      }
+    );
+    console.log(response.data);
+
+    // Delete student
     await Student.destroy({ where: { id: studentId } });
 
     req.flash("alert", {
