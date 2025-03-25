@@ -81,9 +81,17 @@ router.post("/aspirant/:id", require("../controllers/dashboard/aspirant"));
 // All students
 router.get("/all-students", async (req, res) => {
   try {
+    const { Country, State } = require("country-state-city");
     const status = req.flash("status")[0] || 200;
     res.status(status).render("dashboard/student/allStudents.ejs", {
       alert: req.flash("alert")[0] || "",
+      academicYears: await require("../utils/getAcademicYears")(),
+      states: State.getAllStates(),
+      religions: await require("../utils/getReligions")(),
+      classes: await require("../utils/getClasses")(),
+      countries: Country.getAllCountries(),
+      states: State.getAllStates(),
+      form: req.flash("form")[0] || "",
     });
   } catch (error) {
     console.error("ERROR RENDERING ALL STUDENTS PAGE");
@@ -91,6 +99,7 @@ router.get("/all-students", async (req, res) => {
     require("../utils/showErrorPage")(500, {}, res);
   }
 });
+router.post("/all-students", require("../controllers/dashboard/student/"));
 // Add student
 router.get("/add-student", async (req, res) => {
   try {
@@ -135,7 +144,6 @@ router.get("/student/:id", async (req, res) => {
       currentCountryStates: State.getStatesOfCountry(student.country) || [],
       religions: await require("../utils/getReligions")(),
       classes: await require("../utils/getClasses")(),
-      examinationDate: await require("../utils/getExaminationDate")(),
     });
   } catch (error) {
     console.error("ERROR RENDERING STUDENT PAGE");

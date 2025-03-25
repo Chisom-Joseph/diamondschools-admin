@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
       });
       req.flash("form", req.body);
       req.flash("status", 400);
-      return res.redirect("/dashboard/add-student");
+      return res.redirect(req.baseUrl + req.path);
     }
 
     // Check if academic year exists
@@ -30,8 +30,10 @@ module.exports = async (req, res) => {
       });
       req.flash("form", req.body);
       req.flash("status", 400);
-      return res.redirect("/dashboard/add-student");
+      return res.redirect(req.baseUrl + req.path);
     }
+
+    const studentId = req.params.id || req.body.studentId;
 
     // Update student
     const editedStudent = await Student.update(
@@ -48,7 +50,7 @@ module.exports = async (req, res) => {
         dateOfBirth: req.body.dateOfBirth,
         ClassId: req.body.class,
       },
-      { where: { id: req.params.id } }
+      { where: { id: studentId } }
     );
     console.log(editedStudent);
 

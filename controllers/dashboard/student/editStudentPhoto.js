@@ -38,8 +38,10 @@ module.exports = async (req, res) => {
         return res.redirect(req.baseUrl + req.path);
       }
 
+      const studentId = req.params.id || req.body.studentId;
+
       //   Get current profile image
-      const student = await Student.findByPk(req.params.id);
+      const student = await Student.findByPk(studentId);
 
       if (!student) {
         req.flash("alert", {
@@ -80,7 +82,7 @@ module.exports = async (req, res) => {
           {
             profileImageUrl,
           },
-          { where: { id: req.params.id } }
+          { where: { id: studentId } }
         );
         console.log(editedStudent);
 

@@ -1,69 +1,270 @@
 <%- include("../../partials/header") %>
-  <main class="content">
-    <div class="container-fluid p-0">
+<main class="content">
+  <div class="container-fluid p-0">
 
-      <h1 class="h3 mb-3">All Students</h1>
+    <h1 class="h3 mb-3">All Students</h1>
 
-      <div class="row">
-        <div class="col-12 col-xl-12">
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">Striped Rows</h5>
-            </div>
-            <div class="card-body">
-              <% if(alert.status==="error" ) { %>
-                <div class="col-12">
-                  <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    <div class="alert-message">
-                      <strong>Error!</strong> <%- alert.message %>
-                    </div>
-                  </div>
+    <div class="row">
+      <div class="col-12 col-xl-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Striped Rows</h5>
+          </div>
+          <div class="card-body">
+            <% if(alert.status==="error" ) { %>
+            <div class="col-12">
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
                 </div>
-                <% } %>
-                  <% if(alert.status==="success" ) { %>
-                    <div class="col-12">
-                      <div class="alert alert-success alert-dismissible" role="alert">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        <div class="alert-message pr-5">
-                          <strong>Sucess!</strong> <%- alert.message %>
-                        </div>
-                      </div>
-                    </div>
-                    <% } %>
-                      <table id="example" class="datatable" style="width:100%">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Full Name</th>
-                            <th>Class</th>
-                            <th>Reg Number</th>
-                            <th>Gender</th>
-                            <th>Guardian</th>
-                          </tr>
-                        </thead>
-                      </table>
+              </div>
+            </div>
+            <% } %>
+            <% if(alert.status==="success" ) { %>
+            <div class="col-12">
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+            </div>
+            <% } %>
+            <div class="table-responsive">
+              <table id="example" class="datatable table table-striped table-bordered" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Class</th>
+                    <th>Reg Number</th>
+                    <th>Gender</th>
+                    <th>Guardian</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+              </table>
             </div>
           </div>
         </div>
       </div>
-
     </div>
-  </main>
 
-  <script src="/DataTables/datatables.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      new DataTable('#example', {
-        serverSide: true,
-        ajax: '/api/get-students',
-        columns: [{
-          data: 'profileImageUrl', // Column containing the image URL
+  </div>
+</main>
+
+<!-- Edit Modal -->
+<div class="modal modal-lg fade" id="edit" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body m-3">
+        <form action="?action=edit-student-info" method="POST">
+          <input type="hidden" class="studentId" name="studentId">
+          <div class="row">
+            <h4 class="mt-3">Student's Info</h4>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="firstName">First Name</label>
+              <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="middleName">Middle Name</label>
+              <input type="text" class="form-control" id="middleName" placeholder="Middle Name" name="middleName">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="lastName">Last Name</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="academicYear">Academic Year</label>
+              <select name="academicYear" id="academicYear" class="form-select" name="academicYear" <%=academicYears.length> 0 ? "" :
+                "disabled" %>>
+                <option selected disabled hidden>Choose Academic Year</option>
+                <% if(academicYears.length> 0){ %>
+                <% academicYears.forEach(academicYear=> { %>
+                <option value="<%= academicYear.id %>" <%=form.academicYear===academicYear.id ? "selected" : "" %>><%= academicYear.year %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option selected disabled hidden>No Academic Year Found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="country">Nationality</label>
+              <select id="country" class="form-select" name="country" <%=countries.length> 0 ? "" : "disabled" %>>
+                <option selected disabled hidden>Choose Nationality</option>
+                <% if(countries.length> 0){ %>
+                <% countries.forEach(country=> { %>
+                <option value="<%= country.isoCode %>" <%=form.country===country.isoCode ? "selected" : "" %>><%= country.name %></option>
+                <% }) %>
+                <% } else { %>
+                <option selected disabled hidden>No Country Found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="stateOfOrigin">State Of Origin</label>
+              <select id="stateOfOrigin" class="form-select" name="stateOfOrigin" disabled>
+                <option selected disabled hidden>Choose State</option>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="religion">Religion</label>
+              <select id="religion" class="form-select" name="religion" <%=religions.length> 0 ? "" : "disabled" %>>
+                <option selected disabled hidden>Choose Religion</option>
+                <% if(religions.length> 0){ %>
+                <% religions.forEach(religion=> { %>
+                <option value="<%= religion.name %>" <%=form.religion===religion.name ? "selected" : "" %>><%= religion.name %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option selected disabled hidden>No Religion Found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="dateOfBirth">Date Of Birth</label>
+              <input id="dateOfBirth" type="date" class="form-control" name="dateOfBirth">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="gender">Gender</label>
+              <select class="form-control" id="gender" name="gender">
+                <option selected disabled hidden>Select Gender</option>
+                <option value="male">Male
+                </option>
+                <option value="female">Female</option>
+                <option value="other">Other
+                </option>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="class">Class</label>
+              <select class="form-control" id="class" name="class" <%=classes.length <=0 ? "disabled" : "" %>>
+                <% if(classes.length> 0) { %>
+                <option disabled selected hidden>Select class</option>
+                <% classes.map((classItem)=> { %>
+                <option value="<%= classItem.id %>" <%=form.class===classItem.id
+                      ? "selected" : "" %>><%= classItem.name %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No classes found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-12">
+              <label class="form-label" for="address">Address</label>
+              <textarea id="address" class="form-control" name="address" placeholder="Your Present Address"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <form action="?action=edit-student-photo" method="POST" enctype="multipart/form-data">
+          <input type="hidden" class="studentId" name="studentId">
+          <div class="row">
+            <h4 class="mt-3">Profile Photo</h4>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="profilePhoto">Profile Photo</label>
+              <input type="file" class="form-control mb-3" id="profilePhoto" name="profilePhoto" accept="image/png, image/jpg, image/jpeg">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+            <div class="mb-3 col-md-6">
+              <img id="previewImage" src="" alt="Profile Image" class="img-thumbnail" style="max-width: 150px;">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPassword" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reset Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Resetting password...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Block Student Modal -->
+<div class="modal fade" id="blockStudent" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Block Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Blocking student...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Student Modal -->
+<div class="modal modal-sm fade" id="deleteStudent" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=delete-student" method="POST">
+        <input type="hidden" name="studentId" id="deleteStudentId">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to delete this student? This action can not be reversed
+          </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<link rel="stylesheet" href="/DataTables/datatables.min.css">
+<link rel="stylesheet" href="/DataTables/responsive.bootstrap.min.css">
+
+<script src="/DataTables/jquery-3.7.1.js"></script>
+<script src="/DataTables/bootstrap.bundle.min.js"></script>
+<script src="/DataTables/datatables.min.js"></script>
+<script src="/DataTables/dataTables.bootstrap5.js"></script>
+<script src="/DataTables/dataTables.responsive.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new DataTable('#example', {
+      responsive: true,
+      serverSide: true,
+      ajax: '/api/get-students',
+      stateSave: true,
+      order: [
+        [3, 'asc']
+      ],
+      columns: [{
+          data: 'profileImageUrl',
           render: (data, type, row) => {
-            if (type === 'display' && data) {
-              return `<img src="${data}" width="32" height="32" class="rounded-circle my-n1" />`;
-            }
-            return '<img src="/img/profileImage/default.png" width="32" height="32" class="rounded-circle my-n1" />';
+            return type === 'display' && data ?
+              `<img src="${data}" width="32" height="32" class="rounded-circle my-n1" />` :
+              `<img src="/img/profileImage/default.png" width="32" height="32" class="rounded-circle my-n1" />`;
           },
         },
         {
@@ -76,29 +277,140 @@
           },
         },
         {
-          data: "class",
+          data: 'class',
           render: (data, type, row) => {
-            return classItem = data.name || "No class"
-          }
+            return data?.name || 'No class';
+          },
         },
         {
-          data: 'registrationNumber'
+          data: 'registrationNumber',
         },
         {
-          data: "gender"
+          data: 'gender',
         },
         {
-          data: "guardian",
+          data: 'guardian',
           render: (data, type, row) => {
+            if (!data) return 'No Name';
             const fullName = [data.firstName, data.middleName, data.lastName]
               .filter(name => name)
               .join(' ');
-            return fullName ? `<a href="/dashboard/guardian/${data.id}">${fullName}</a>` : 'No Name';
-          }
-        }
-        ],
-      });
+            return `<a href="/dashboard/guardian/${data.id}">${fullName}</a>`;
+          },
+        },
+        {
+          data: null,
+          render: (data, type, row) => {
+            return `
+            <div class="mb-0 d-flex gap-1 flex-wrap">
+              <div class="mb-0 d-flex gap-1 flex-wrap">
+                <button class="btn btn-sm btn-success edit-btn"
+                  data-id="${row.id}"
+                  data-firstname="${row.firstName}"
+                  data-middlename="${row.middleName}"
+                  data-lastname="${row.lastName}"
+                  data-academicyear="${row.AcademicYearId}"
+                  data-country="${row.country}"
+                  data-religion="${row.religion}"
+                  data-dob="${row.dateOfBirth}"
+                  data-gender="${row.gender}"
+                  data-class="${row.ClassId}"
+                  data-address="${row.address}"
+                  data-profile="${row.profileImageUrl}"
+                  style="font-size: 10px; padding: 2px 5px;">
+                <i class="far fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-secondary action-btn" data-action="resetPassword" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
+                  <i class="fas fa-key"></i>
+                  </button>
+              </div>
+              <div class="mb-0 d-flex gap-1 flex-wrap">
+                <button class="btn btn-sm btn-warning action-btn" data-action="blockStudent" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
+                  <i class="fas fa-ban"></i>
+                </button>
+                <button class="btn btn-sm btn-danger action-btn" data-action="deleteStudent" data-id="${row.id}" style="font-size: 10px; padding: 2px 5px;">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            `;
+          },
+        },
+      ],
     });
-  </script>
 
-  <%- include("../../partials/footer") %>
+
+    document.querySelector("#example tbody").addEventListener("click", async function(event) {
+      const editButton = event.target.closest(".edit-btn"); // Get the closest button with class "edit-btn"
+
+      if (editButton) {
+        const modalElement = document.getElementById('edit');
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static'
+        });
+        modal.show();
+
+        const studentId = editButton.getAttribute("data-id");
+
+        document.querySelectorAll(".studentId").forEach(studentField => {
+          studentField.value = studentId || "";
+        });
+
+        document.getElementById("firstName").value = editButton.getAttribute("data-firstname") || "";
+        document.getElementById("middleName").value = editButton.getAttribute("data-middlename") || "";
+        document.getElementById("lastName").value = editButton.getAttribute("data-lastname") || "";
+        document.getElementById("academicYear").value = editButton.getAttribute("data-academicyear") || "";
+        document.getElementById("stateOfOrigin").value = editButton.getAttribute("data-stateoforigin") || "";
+        document.getElementById("religion").value = editButton.getAttribute("data-religion") || "";
+        document.getElementById("dateOfBirth").value = editButton.getAttribute("data-dob") || "";
+        document.getElementById("gender").value = editButton.getAttribute("data-gender") || "";
+        document.getElementById("address").innerText = editButton.getAttribute("data-address") || "";
+        document.getElementById("class").value = editButton.getAttribute("data-class") || "";
+
+        const countrySelect = document.getElementById("country");
+        const selectedCountry = editButton.getAttribute("data-country") || "";
+        const countryOptions = countrySelect.querySelectorAll("option");
+
+        let isChanged = false;
+        countryOptions.forEach(option => {
+          if (option.textContent === selectedCountry) {
+            option.selected = true;
+            isChanged = true;
+          }
+        });
+
+        if (isChanged) {
+          countrySelect.dispatchEvent(new Event("change"));
+        }
+
+        // Preview profile image
+        document.getElementById("previewImage").src = editButton.getAttribute("data-profile") || "/img/profileImage/default.png";
+      }
+    });
+
+
+  });
+</script>
+
+<script>
+  document.getElementById('profilePhoto').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewImage');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
+<script>
+  const form = JSON.parse('<%- JSON.stringify(form) %>');
+  const states = JSON.parse(`<%- JSON.stringify(states) %>`);
+  const userState = "";
+</script>
+
+<%- include("../../partials/footer") %>

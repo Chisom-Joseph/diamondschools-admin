@@ -43,6 +43,7 @@ const schema = Joi.object({
     "string.min": "Address must be at least 10 characters long.",
     "string.max": "Address cannot exceed 100 characters.",
   }),
+  studentId: Joi.allow(),
 });
 
 module.exports = schema;

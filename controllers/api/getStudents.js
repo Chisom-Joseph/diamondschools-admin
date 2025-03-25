@@ -44,6 +44,7 @@ module.exports = async (req, res) => {
         "blocked",
         "deleted",
         "lastAccess",
+        "AcademicYearId",
       ];
 
       const orderBy = order?.[0]
