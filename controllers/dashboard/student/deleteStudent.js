@@ -2,7 +2,8 @@ const { Student } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
-    const student = await Student.findOne({ where: { id: req.params.id } });
+    const studentId = req.params.id || req.body.studentId;
+    const student = await Student.findOne({ where: { id: studentId } });
 
     if (!student) {
       req.flash("alert", {
@@ -14,7 +15,7 @@ module.exports = async (req, res) => {
       return res.redirect(req.baseUrl + req.path);
     }
 
-    await Student.destroy({ where: { id: req.params.id } });
+    await Student.destroy({ where: { id: studentId } });
 
     req.flash("alert", {
       status: "success",
