@@ -17,6 +17,8 @@ module.exports = async (req, res) => {
       return res.redirect(req.baseUrl + req.path);
     }
 
+    const studentId = req.params.id || req.body.studentId;
+
     const student = await Student.findOne({ where: { id: studentId } });
 
     if (!student) {
@@ -44,8 +46,6 @@ module.exports = async (req, res) => {
       req.flash("status", 400);
       return res.redirect(req.baseUrl + req.path);
     }
-
-    const studentId = req.params.id || req.body.studentId;
 
     // Update student
     const editedStudent = await Student.update(
