@@ -1,17 +1,6 @@
 const { FeatureFlag } = require("../models");
 
-const defaultFeatures = [
-  {
-    feature: "student-result-portal",
-    title: "Student result portal.",
-    userGroup: ["student"],
-  },
-  {
-    feature: "cbt-portal",
-    title: "CBT portal.",
-    userGroup: ["aspirant", "student"],
-  },
-];
+const defaultFeatures = require("../config/featureFlags");
 
 const seedFeatures = async () => {
   try {
