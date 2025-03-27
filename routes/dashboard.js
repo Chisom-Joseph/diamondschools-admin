@@ -295,21 +295,22 @@ router.get("/religion", async (req, res) => {
 router.post("/religion", require("../controllers/dashboard/religion"));
 
 // Disabled features
-router.get("/disabled-features", async (req, res) => {
+router.get("/featureFlags", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
-    res
-      .status(status)
-      .render("dashboard/disabledFeature/disabledFeatures.ejs", {
-        alert: req.flash("alert")[0] || "",
-        form: req.flash("form")[0] || "",
-      });
+    res.status(status).render("dashboard/featureFlags/featureFlags.ejs", {
+      featureFlags: await require("../utils/getFeatureFlags")(),
+      alert: req.flash("alert")[0] || "",
+      form: req.flash("form")[0] || "",
+    });
+    console.log(await require("../utils/getFeatureFlags")());
   } catch (error) {
     console.error("ERROR RENDERING DISABLED FEATURES PAGE");
     console.error(error);
     require("../utils/showErrorPage")(500, {}, res);
   }
 });
+router.post("/featureFlags", require("../controllers/dashboard/featureFlags"));
 
 // Subject
 router.get("/all-subjects", async (req, res) => {

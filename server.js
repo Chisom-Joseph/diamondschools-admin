@@ -8,6 +8,7 @@ const session = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
+const seedFeatures = require("./utils/seedFeatures");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -53,8 +54,9 @@ db.sequelize
     if (isProduction) {
       sessionStore.sync().then(() => console.log("Session store synced!"));
     }
-    app.listen(PORT, () => {
+    app.listen(PORT, async () => {
       console.log(`Server is Up and Running on http://localhost:${PORT}/`);
+      await seedFeatures();
     });
   })
   .catch((error) => console.log(error));
