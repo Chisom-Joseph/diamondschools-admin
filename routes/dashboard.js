@@ -294,7 +294,7 @@ router.get("/religion", async (req, res) => {
 });
 router.post("/religion", require("../controllers/dashboard/religion"));
 
-// Disabled features
+// Feature flags
 router.get("/featureFlags", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
