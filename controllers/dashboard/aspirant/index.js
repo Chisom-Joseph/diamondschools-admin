@@ -15,6 +15,9 @@ module.exports = (req, res) => {
     case "block-aspirant":
       require("./blockAspirant")(req, res);
       break;
+    case "delete-aspirant":
+      require("./deleteAspirant")(req, res);
+      break;
     case "make-student":
       require("./makeStudent")(req, res);
       break;

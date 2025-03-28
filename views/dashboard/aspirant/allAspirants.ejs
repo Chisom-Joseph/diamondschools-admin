@@ -11,6 +11,26 @@
             <h5 class="card-title">Striped Rows</h5>
           </div>
           <div class="card-body">
+            <% if(alert.status==="error" ) { %>
+            <div class="col-12">
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+            </div>
+            <% } %>
+            <% if(alert.status==="success" ) { %>
+            <div class="col-12">
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                </div>
+              </div>
+            </div>
+            <% } %>
             <table id="example" class="datatable" style="width:100%">
               <thead>
                 <tr>

@@ -38,7 +38,7 @@
                 <%= aspirant.blocked ? "Unblock" : "Block" %>
               </button>
               <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resetPassword"><i class="fas fa-key"></i> Reset Password </button>
-              <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
+              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAspirant"><i class="fas fa-trash"></i> Delete Aspirant</button>
             </div>
           </div>
           <div class="card-body">
@@ -350,6 +350,28 @@
           <button type="submit" class="btn btn-warning">
             <%= aspirant.blocked ? "Unblock" : "Block" %> Aspirant
           </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal modal-sm fade" id="deleteAspirant" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=delete-aspirant" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Aspirant</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to delete this aspirant? This action can not be reversed
+          </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete Aspirant</button>
         </div>
       </form>
     </div>

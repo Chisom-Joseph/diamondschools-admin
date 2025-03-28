@@ -24,7 +24,9 @@ router.get("/", async (req, res) => {
 router.get("/all-aspirants", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
-    res.status(status).render("dashboard/aspirant/allAspirants.ejs");
+    res.status(status).render("dashboard/aspirant/allAspirants.ejs", {
+      alert: req.flash("alert")[0] || "",
+    });
   } catch (error) {
     console.error("ERROR RENDERING ALL ASPIRANTS PAGE");
     console.error(error);
