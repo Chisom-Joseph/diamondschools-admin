@@ -37,6 +37,7 @@
               <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#blockAspirant"><i class="fas fa-ban"></i>
                 <%= aspirant.blocked ? "Unblock" : "Block" %>
               </button>
+              <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resetPassword"><i class="fas fa-key"></i> Reset Password </button>
               <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
             </div>
           </div>
@@ -311,6 +312,27 @@
 </div>
 
 <!-- Modal -->
+<div class="modal modal-sm fade" id="resetPassword" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=reset-aspirant-password" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to reset aspirant's password?</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Reset Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
 <div class="modal modal-sm fade" id="blockAspirant" tabindex="-1" style="display: none;" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -333,6 +355,52 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<% if(newPassword) { %>
+<div class="modal modal-sm fade" id="newPassword" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=reset-aspirant-password" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">New Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3 text-center">
+          <p class="mb-0">New Password: <strong id="passwordText">
+              <%= newPassword %>
+            </strong></p>
+          <p id="copySuccess" class="text-success mt-2" style="display: none;">Password copied!</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="copyPassword">Copy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var modalElement = document.getElementById('newPassword');
+    var modal = new bootstrap.Modal(modalElement, {
+      backdrop: 'static'
+    });
+    modal.show();
+
+    document.getElementById("copyPassword").addEventListener("click", function() {
+      var passwordText = document.getElementById("passwordText").innerText;
+      navigator.clipboard.writeText(passwordText).then(() => {
+        document.getElementById("copySuccess").style.display = "block";
+        setTimeout(() => {
+          document.getElementById("copySuccess").style.display = "none";
+        }, 2000);
+      });
+    });
+  });
+</script>
+<% } %>
 
 <script>
   document.getElementById('profilePhoto').addEventListener('change', function(event) {

@@ -70,7 +70,7 @@ router.get("/aspirant/:id", async (req, res) => {
       newStudentId: req.flash("newStudentId")[0] || "",
       aspirant: await require("../utils/getAspirant")(req.params.id),
       user: "",
-
+      newPassword: req.flash("newPassword")[0] || "",
       academicYears: await require("../utils/getAcademicYears")(),
       countries: Country.getAllCountries(),
       states: State.getAllStates(),
