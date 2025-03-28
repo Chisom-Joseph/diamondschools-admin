@@ -230,6 +230,29 @@
   </div>
 </div>
 
+<!-- Delete Aspirant Modal -->
+<div class="modal modal-sm fade" id="deleteAspirant" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=delete-aspirant" method="POST">
+        <input type="hidden" class="aspirantId" name="aspirantId">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Aspirant</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Aspirant: <strong class="aspirant-to-delete"></strong></p>
+          <p class="mb-0 text-center">Are you sure you want to delete this aspirant? This action can not be reversed</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete Aspirant</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Modal -->
 <% if(newPassword && newPasswordFor) { %>
 <div class="modal modal-sm fade" id="newPassword" tabindex="-1" aria-hidden="true">
@@ -454,6 +477,26 @@
         const examinationNumber = blockButton.getAttribute("data-regnumber");
         const aspirantToBlock = document.querySelector(".aspirant-to-block");
         aspirantToBlock.textContent = examinationNumber
+      }
+
+      // Delete aspirant
+      const deleteButton = event.target.closest(".delete-btn");
+      if (deleteButton) {
+        const modalElement = document.getElementById('deleteAspirant');
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static'
+        });
+        modal.show();
+
+        const aspirantId = deleteButton.getAttribute("data-id");
+
+        document.querySelectorAll(".aspirantId").forEach(aspirantField => {
+          aspirantField.value = aspirantId || "";
+        });
+
+        const registrationNumber = deleteButton.getAttribute("data-regnumber");
+        const aspirantToDelete = document.querySelector(".aspirant-to-delete");
+        aspirantToDelete.textContent = registrationNumber
       }
     })
   });
