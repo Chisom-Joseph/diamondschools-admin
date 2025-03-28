@@ -37,12 +37,12 @@ module.exports = async (req, res) => {
       status: "success",
       section: "add",
       message: `Aspirant ${
-        req.body.aspirantId ? aspirant.registrationNumber : ""
+        req.body.aspirantId ? aspirant.examnitaionNumber : ""
       } password reset successfully`,
     });
     req.flash("form", "");
     req.flash("newPassword", password);
-    req.flash("newPasswordFor", aspirant.registrationNumber);
+    req.flash("newPasswordFor", aspirant.examnitaionNumber);
     req.flash("status", 200);
     res.redirect(req.baseUrl + req.path);
   } catch (error) {
