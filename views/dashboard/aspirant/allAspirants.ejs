@@ -413,6 +413,21 @@
 </script>
 
 <script>
+  document.getElementById('profilePhoto').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewImage');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
+<script>
   const form = JSON.parse('<%- JSON.stringify(form) %>');
   const states = JSON.parse(`<%- JSON.stringify(states) %>`);
   const userState = "";
