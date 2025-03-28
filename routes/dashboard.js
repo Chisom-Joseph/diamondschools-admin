@@ -33,6 +33,8 @@ router.get("/all-aspirants", async (req, res) => {
       countries: Country.getAllCountries(),
       states: State.getAllStates(),
       form: req.flash("form")[0] || "",
+      newPassword: req.flash("newPassword")[0] || "",
+      newPasswordFor: req.flash("newPasswordFor")[0] || "",
     });
   } catch (error) {
     console.error("ERROR RENDERING ALL ASPIRANTS PAGE");

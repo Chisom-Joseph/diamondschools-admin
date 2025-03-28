@@ -184,7 +184,82 @@
   </div>
 </div>
 
+<!-- Reset Password Modal -->
+<div class="modal modal-sm fade" id="resetPassword" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=reset-aspirant-password" method="POST">
+        <input type="hidden" class="aspirantId" name="aspirantId">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to reset aspirant's password?</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Reset Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<% if(newPassword && newPasswordFor) { %>
+<div class="modal modal-sm fade" id="newPassword" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=reset-aspirant-password" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">New Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3 text-center">
+          <p class="mb-0">Aspirant: <strong><%= newPasswordFor %></strong></p>
+          <p class="mb-0">New Password: <strong id="passwordText"><%= newPassword %></strong></p>
+          <p id="copySuccess" class="text-success mt-2" style="display: none;">Password copied!</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="copyPassword">Copy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var modalElement = document.getElementById('newPassword');
+    var modal = new bootstrap.Modal(modalElement, {
+      backdrop: 'static'
+    });
+    modal.show();
+
+    document.getElementById("copyPassword").addEventListener("click", function() {
+      var passwordText = document.getElementById("passwordText").innerText;
+      navigator.clipboard.writeText(passwordText).then(() => {
+        document.getElementById("copySuccess").style.display = "block";
+        setTimeout(() => {
+          document.getElementById("copySuccess").style.display = "none";
+        }, 2000);
+      });
+    });
+  });
+</script>
+<% } %>
+
+<link rel="stylesheet" href="/DataTables/datatables.min.css">
+<link rel="stylesheet" href="/DataTables/responsive.bootstrap.min.css">
+
+<script src="/DataTables/jquery-3.7.1.js"></script>
+<script src="/DataTables/bootstrap.bundle.min.js"></script>
 <script src="/DataTables/datatables.min.js"></script>
+<script src="/DataTables/dataTables.bootstrap5.js"></script>
+<script src="/DataTables/dataTables.responsive.min.js"></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     new DataTable('#example', {
@@ -316,6 +391,23 @@
         // Preview profile image
         document.getElementById("previewImage").src = editButton.getAttribute("data-profile") || "/img/profileImage/default.png";
       }
+
+      // Reset aspirant password
+      const resetButton = event.target.closest(".reset-btn");
+      if (resetButton) {
+        const modalElement = document.getElementById('resetPassword');
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static'
+        });
+        modal.show();
+
+        const aspirantId = resetButton.getAttribute("data-id");
+
+        document.querySelectorAll(".aspirantId").forEach(aspirantField => {
+          aspirantField.value = aspirantId || "";
+        });
+      }
+
     })
   });
 </script>
