@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
       status: "success",
       section: "add",
       message: `Aspirant ${
-        req.body.aspirantId ? aspirant.registrationNumber : ""
+        req.body.aspirantId ? aspirant.examnitaionNumber : ""
       } updated successfully`,
     });
     req.flash("form", "");
