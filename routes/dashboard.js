@@ -23,9 +23,16 @@ router.get("/", async (req, res) => {
 // All aspirants
 router.get("/all-aspirants", async (req, res) => {
   try {
+    const { Country, State } = require("country-state-city");
     const status = req.flash("status")[0] || 200;
     res.status(status).render("dashboard/aspirant/allAspirants.ejs", {
       alert: req.flash("alert")[0] || "",
+      academicYears: await require("../utils/getAcademicYears")(),
+      religions: await require("../utils/getReligions")(),
+      classes: await require("../utils/getClasses")(),
+      countries: Country.getAllCountries(),
+      states: State.getAllStates(),
+      form: req.flash("form")[0] || "",
     });
   } catch (error) {
     console.error("ERROR RENDERING ALL ASPIRANTS PAGE");
@@ -33,6 +40,7 @@ router.get("/all-aspirants", async (req, res) => {
     require("../utils/showErrorPage")(500, {}, res);
   }
 });
+router.post("/all-aspirants", require("../controllers/dashboard/aspirant/"));
 // Add aspirant
 router.get("/add-aspirant", async (req, res) => {
   try {
