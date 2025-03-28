@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
       status: "success",
       section: "add",
       message: `Aspirant ${
-        req.body.aspirantId ? aspirant.examnitaionNumber : ""
+        req.body.aspirantId ? aspirant.examinationNumber : ""
       } ${newBlockedStatus ? "blocked" : "unblocked"} successfully`,
     });
     req.flash("form", "");
