@@ -206,6 +206,30 @@
   </div>
 </div>
 
+<!-- Block Aspirant Modal -->
+<div class="modal modal-sm fade" id="blockAspirant" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=block-aspirant" method="POST">
+        <input type="hidden" class="aspirantId" name="aspirantId">
+        <div class="modal-header">
+          <h5 class="modal-title">Block Aspirant</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Aspirant: <strong class="aspirant-to-block"></strong></p>
+          <p class="mb-0 text-center">Are you sure you want to block this aspirant?
+          </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning block-aspirant-submit"></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Modal -->
 <% if(newPassword && newPasswordFor) { %>
 <div class="modal modal-sm fade" id="newPassword" tabindex="-1" aria-hidden="true">
@@ -331,10 +355,10 @@
                   </button>
               </div>
               <div class="mb-0 d-flex gap-1 flex-wrap">
-                <button class="btn btn-sm btn-warning block-btn" data-id="${row.id}" data-regnumber="${row.registrationNumber}" data-blocked="${row.blocked}" style="font-size: 10px; padding: 2px 5px;">
+                <button class="btn btn-sm btn-warning block-btn" data-id="${row.id}" data-regnumber="${row.examinationNumber}" data-blocked="${row.blocked}" style="font-size: 10px; padding: 2px 5px;">
                   <i class="fas fa-ban"></i>
                 </button>
-                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}" data-regnumber="${row.registrationNumber}" style="font-size: 10px; padding: 2px 5px;">
+                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}" data-regnumber="${row.examinationNumber}" style="font-size: 10px; padding: 2px 5px;">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -408,6 +432,29 @@
         });
       }
 
+      // Block aspirant
+      const blockButton = event.target.closest(".block-btn");
+      if (blockButton) {
+        const modalElement = document.getElementById('blockAspirant');
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static'
+        });
+        modal.show();
+
+        const aspirantId = blockButton.getAttribute("data-id");
+
+        document.querySelectorAll(".aspirantId").forEach(aspirantField => {
+          aspirantField.value = aspirantId || "";
+        });
+
+        const isBlocked = blockButton.getAttribute("data-blocked") === "true";
+        const blockSubmitButton = document.querySelector(".block-aspirant-submit");
+        blockSubmitButton.textContent = isBlocked ? "Unblock Aspirant" : "Block Aspirant";
+
+        const examinationNumber = blockButton.getAttribute("data-regnumber");
+        const aspirantToBlock = document.querySelector(".aspirant-to-block");
+        aspirantToBlock.textContent = examinationNumber
+      }
     })
   });
 </script>
