@@ -57,6 +57,7 @@ router.post("/add-aspirant", require("../controllers/dashboard/aspirant"));
 // Aspirant
 router.get("/aspirant/:id", async (req, res) => {
   try {
+    const { Country, State } = require("country-state-city");
     const aspirant = await require("../utils/getAspirant")(req.params.id);
     if (Object.keys(aspirant).length === 0) {
       return res.status(404).render("error.ejs", { error: "" });
@@ -69,6 +70,13 @@ router.get("/aspirant/:id", async (req, res) => {
       newStudentId: req.flash("newStudentId")[0] || "",
       aspirant: await require("../utils/getAspirant")(req.params.id),
       user: "",
+
+      academicYears: await require("../utils/getAcademicYears")(),
+      countries: Country.getAllCountries(),
+      states: State.getAllStates(),
+      // currentCountryStates: State.getStatesOfCountry(aspirant.country) || [],
+      religions: await require("../utils/getReligions")(),
+      classes: await require("../utils/getClasses")(),
     });
   } catch (error) {
     console.error("ERROR RENDERING ASPIRANT PAGE");

@@ -32,7 +32,7 @@
               <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit"><i class="far fa-edit"></i>
                 Edit </button>
               <% if(!aspirant.isStudent) { %>
-              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary"><i class="fas fa-check"></i> Make Student</button>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary"><i class="fas fa-check"></i> Make Student</button>
               <% } %>
               <button class="btn btn-warning" disabled><i class="fas fa-ban"></i> Block</button>
               <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
@@ -171,4 +171,159 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal modal-lg fade" id="edit" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Aspirant</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body m-3">
+        <form action="?action=edit-aspirant-info" method="POST">
+          <div class="row">
+            <h4 class="mt-3">Aspirant's Info</h4>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="firstName">First Name</label>
+              <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" value="<%= form.firstName || aspirant.firstName %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="middleName">Middle Name</label>
+              <input type="text" class="form-control" id="middleName" placeholder="Middle Name" name="middleName" value="<%= form.middleName || aspirant.middleName %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="lastName">Last Name</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" value="<%= form.lastName || aspirant.lastName %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="academicYear">Academic Year</label>
+              <select name="academicYear" class="form-select" name="academicYear" <%=academicYears.length> 0 ? "" :
+                  "disabled" %>>
+                <option selected disabled hidden>Choose Academic Year</option>
+                <% if(academicYears.length> 0){ %>
+                <% academicYears.forEach(academicYear=> { %>
+                <option value="<%= academicYear.id %>" <%=form.academicYear===academicYear.id ||
+                        aspirant.AcademicYearId===academicYear.id ? "selected" : "" %>><%= academicYear.year %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option selected disabled hidden>No Academic Year Found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="country">Nationality</label>
+              <select id="country" class="form-select" name="country" <%=countries.length> 0 ? "" : "disabled" %>>
+                <option selected disabled hidden>Choose Nationality</option>
+                <% if(countries.length> 0){ %>
+                <% countries.forEach(country=> { %>
+                <option value="<%= country.isoCode %>" <%=form.country===country.isoCode ||
+                        aspirant.country===country.name ? "selected" : "" %>><%= country.name %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option selected disabled hidden>No Country Found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="stateOfOrigin">State Of Origin</label>
+              <select id="stateOfOrigin" class="form-select" name="stateOfOrigin" disabled>
+                <option selected disabled hidden>Choose State</option>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="religion">Religion</label>
+              <select id="religion" class="form-select" name="religion" <%=religions.length> 0 ? "" : "disabled" %>>
+                <option selected disabled hidden>Choose Religion</option>
+                <% if(religions.length> 0){ %>
+                <% religions.forEach(religion=> { %>
+                <option value="<%= religion.name %>" <%=form.religion===religion.name ||
+                        aspirant.religion===religion.name ? "selected" : "" %>><%= religion.name %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option selected disabled hidden>No Religion Found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="dateOfBirth">Date Of Birth</label>
+              <input id="dateOfBirth" type="date" class="form-control" name="dateOfBirth" value="<%= form.dateOfBirth || aspirant.dateOfBirth %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="gender">Gender</label>
+              <select class="form-control" id="gender" name="gender" value="<%= form.gender %>">
+                <option selected disabled hidden>Select Gender</option>
+                <option value="male" <%=form.gender==="male" || aspirant.gender==="male" ? "selected" : "" %>>Male
+                </option>
+                <option value="female" <%=form.gender==="female" || aspirant.gender==="female" ? "selected" : "" %>>Female</option>
+                <option value="other" <%=form.gender==="other" || aspirant.gender==="other" ? "selected" : "" %>>Other
+                </option>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="class">Class</label>
+              <select class="form-control" id="class" name="class" <%=classes.length <=0 ? "disabled" : "" %>>
+                <% if(classes.length> 0) { %>
+                <option disabled selected hidden>Select class</option>
+                <% classes.map((classItem)=> { %>
+                <option value="<%= classItem.id %>" <%=form.class===classItem.id || aspirant.ClassId===classItem.id
+                        ? "selected" : "" %>><%= classItem.name %>
+                </option>
+                <% }) %>
+                <% } else { %>
+                <option disabled selected hidden>No classes found</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-12">
+              <label class="form-label" for="address">Address</label>
+              <textarea id="address" class="form-control" name="address" placeholder="Your Present Address"><%= form.address || aspirant.address %></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <form action="?action=edit-aspirant-photo" method="POST" enctype="multipart/form-data">
+          <div class="row">
+            <h4 class="mt-3">Profile Photo</h4>
+            <div class="mb-3 col-md-6">
+              <label class="form-label" for="profilePhoto">Profile Photo</label>
+              <input type="file" class="form-control mb-3" id="profilePhoto" name="profilePhoto" accept="image/png, image/jpg, image/jpeg">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+            <div class="mb-3 col-md-6">
+              <img id="previewImage" src="<%= aspirant.profileImageUrl %>" alt="Profile Image" class="img-thumbnail" style="max-width: 150px;">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('profilePhoto').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewImage');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
+<script>
+  const form = JSON.parse('<%- JSON.stringify(form) %>');
+  const states = JSON.parse(`<%- JSON.stringify(states) %>`);
+  const userState = JSON.parse(`<%- JSON.stringify(aspirant.stateOfOrigin) %>`) || "";
+</script>
 <%- include("../../partials/footer") %>
