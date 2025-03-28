@@ -34,7 +34,9 @@
               <% if(!aspirant.isStudent) { %>
               <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary"><i class="fas fa-check"></i> Make Student</button>
               <% } %>
-              <button class="btn btn-warning" disabled><i class="fas fa-ban"></i> Block</button>
+              <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#blockAspirant"><i class="fas fa-ban"></i>
+                <%= aspirant.blocked ? "Unblock" : "Block" %>
+              </button>
               <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Delete Aspirant</button>
             </div>
           </div>
@@ -56,7 +58,9 @@
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   <div class="alert-message pr-5">
                     <strong>Sucess!</strong> <%- alert.message %>
+                    <% if(newStudentId) { %>
                     <a href="/dashboard/student/<%= newStudentId %>">View New Student</a>
+                    <% } %>
                   </div>
                 </div>
               </div>
@@ -302,6 +306,30 @@
       <div class="modal-footer d-flex justify-content-center">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal modal-sm fade" id="blockAspirant" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form action="?action=block-aspirant" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Block Aspirant</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body m-3">
+          <p class="mb-0 text-center">Are you sure you want to block this aspirant?
+          </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning">
+            <%= aspirant.blocked ? "Unblock" : "Block" %> Aspirant
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
