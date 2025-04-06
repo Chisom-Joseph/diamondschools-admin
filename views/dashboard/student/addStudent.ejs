@@ -3,7 +3,7 @@
   <div class="container-fluid p-0">
 
     <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Add Student</h1><a class="badge bg-primary ms-2" href="/dashboard/all-students">All Students <i class="fas fa-fw fa-external-link-alt"></i></a>
+      <h1 class="h3 d-inline align-middle">Add Student</h1><a data-testId="allStudentsLink" class="badge bg-primary ms-2" href="/dashboard/all-students">All Students <i class="fas fa-fw fa-external-link-alt"></i></a>
     </div>
 
     <div class="row">
@@ -48,8 +48,8 @@
                 </div>
                 <div class="mb-3 col-md-6">
                   <label class="form-label" for="academicYear">Academic Year</label>
-                  <select name="academicYear" class="form-select" name="academicYear" <%=academicYears.length>
-                              0 ? "" : "disabled" %>>
+                  <select name="academicYear" class="form-select" name="academicYear" <%= academicYears.length === 0 ? "disabled" : "" %>>
+                    0 ? "" : "disabled" %>>
                     <option selected disabled hidden>Choose Academic Year</option>
                     <% if(academicYears.length> 0){ %>
                     <% academicYears.forEach(academicYear=> { %>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="mb-3 col-md-6">
                   <label class="form-label" for="profilePhoto">Profile Photo</label>
-                  <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo" name="profilePhoto" accept="png,jpg,jpeg">
+                  <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo" name="profilePhoto" accept="image/png, image/jpg, image/jpeg">
                 </div>
                 <div class="mb-3 col-md-6">
                   <label class="form-label" for="dateOfBirth">Date Of Birth</label>
