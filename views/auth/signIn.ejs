@@ -34,11 +34,11 @@
                   <% } %>
                   <div class="mb-3">
                     <label for="username" class="form-label">Username or Email</label>
-                    <input id="username" class="form-control form-control-lg" type="username" name="username" placeholder="Enter your Username or email" value="<%- form.username %>" />
+                    <input data-testId="username" id="username" class="form-control form-control-lg" type="username" name="username" placeholder="Enter your Username or email" value="<%- form.username %>" />
                   </div>
                   <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input id="password" class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
+                    <input data-testId="password" id="password" class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
                   </div>
                   <div>
                     <div class="form-check align-items-center">
@@ -47,7 +47,7 @@
                     </div>
                   </div>
                   <div class="d-grid gap-2 mt-3">
-                    <button class="btn btn-lg btn-primary">Sign in</button=>
+                    <button data-testId="loginButton" class="btn btn-lg btn-primary">Sign in</button=>
                   </div>
                 </form>
               </div>

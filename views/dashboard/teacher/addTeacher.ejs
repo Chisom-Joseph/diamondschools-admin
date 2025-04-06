@@ -1,136 +1,129 @@
 <%- include("../../partials/header") %>
-  <main class="content">
-    <div class="container-fluid p-0">
+<main class="content">
+  <div class="container-fluid p-0">
 
-      <div class="mb-3">
-        <h1 class="h3 d-inline align-middle">Add Teacher</h1><a class="badge bg-primary ms-2"
-          href="/dashboard/all-teachers">All Teachers <i class="fas fa-fw fa-external-link-alt"></i></a>
-      </div>
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Add Teacher</h1><a class="badge bg-primary ms-2" href="/dashboard/all-teachers">All Teachers <i class="fas fa-fw fa-external-link-alt"></i></a>
+    </div>
 
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">Teacher Registration Form</h5>
-            </div>
-            <div class="card-body">
-              <form method="POST" action="?action=add" enctype="multipart/form-data">
-                <% if(alert.status==="error" ) { %>
-                  <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    <div class="alert-message">
-                      <strong>Error!</strong> <%- alert.message %>
-                    </div>
-                  </div>
-                  <% } %>
-                    <% if(alert.status==="success" ) { %>
-                      <div class="alert alert-success alert-dismissible" role="alert">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        <div class="alert-message pr-5">
-                          <strong>Sucess!</strong> <%- alert.message %>
-                            <a href="/dashboard/teacher/<%= newTeacherId %>">View New Teacher</a>
-                        </div>
-                      </div>
-                      <% } %>
-                        <!-- Personal Information -->
-                        <h4 class="mt-3">Personal Information</h4>
-                        <div class="row">
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="firstName">First Name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="First Name"
-                              name="firstName" value="<%= form.firstName %>">
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="middleName">Middle Name</label>
-                            <input type="text" class="form-control" id="middleName" placeholder="Middle Name"
-                              name="middleName" value="<%= form.middleName %>">
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="lastName">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Last Name"
-                              name="lastName" value="<%= form.lastName %>">
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="email">email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Last Name" name="email"
-                              value="<%= form.email %>">
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="country">Nationality</label>
-                            <select id="country" class="form-select" name="country" <%=countries.length> 0 ? "" :
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Teacher Registration Form</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="?action=add" enctype="multipart/form-data">
+              <% if(alert.status==="error" ) { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status==="success" ) { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Sucess!</strong> <%- alert.message %>
+                  <a href="/dashboard/teacher/<%= newTeacherId %>">View New Teacher</a>
+                </div>
+              </div>
+              <% } %>
+              <!-- Personal Information -->
+              <h4 class="mt-3">Personal Information</h4>
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="firstName">First Name</label>
+                  <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" value="<%= form.firstName %>">
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="middleName">Middle Name</label>
+                  <input type="text" class="form-control" id="middleName" placeholder="Middle Name" name="middleName" value="<%= form.middleName %>">
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="lastName">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" value="<%= form.lastName %>">
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="email">email</label>
+                  <input type="email" class="form-control" id="email" placeholder="Last Name" name="email" value="<%= form.email %>">
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="country">Nationality</label>
+                  <select id="country" class="form-select" name="country" <%=countries.length> 0 ? "" :
                               "disabled" %>>
-                              <option selected disabled hidden>Choose Nationality</option>
-                              <% if(countries.length> 0){ %>
-                                <% countries.forEach(country=> { %>
-                                  <option value="<%= country.isoCode %>" <%=form.country===country.isoCode ? "selected"
+                    <option selected disabled hidden>Choose Nationality</option>
+                    <% if(countries.length> 0){ %>
+                    <% countries.forEach(country=> { %>
+                    <option value="<%= country.isoCode %>" <%=form.country===country.isoCode ? "selected"
                                     : "" %>><%= country.name %>
-                                  </option>
-                                  <% }) %>
-                                    <% } else { %>
-                                      <option selected disabled hidden>No Country Found</option>
-                                      <% } %>
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="stateOfOrigin">State Of Origin</label>
-                            <select id="stateOfOrigin" class="form-select" name="stateOfOrigin" disabled>
-                              <option selected disabled hidden>Choose State</option>
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="religion">Religion</label>
-                            <select id="religion" class="form-select" name="religion" <%=religions.length> 0 ? "" :
+                    </option>
+                    <% }) %>
+                    <% } else { %>
+                    <option selected disabled hidden>No Country Found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="stateOfOrigin">State Of Origin</label>
+                  <select id="stateOfOrigin" class="form-select" name="stateOfOrigin" disabled>
+                    <option selected disabled hidden>Choose State</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="religion">Religion</label>
+                  <select id="religion" class="form-select" name="religion" <%=religions.length> 0 ? "" :
                               "disabled" %>>
-                              <option selected disabled hidden>Choose Religion</option>
-                              <% if(religions.length> 0){ %>
-                                <% religions.forEach(religion=> { %>
-                                  <option value="<%= religion.name %>" <%=form.religion===religion.name ? "selected"
+                    <option selected disabled hidden>Choose Religion</option>
+                    <% if(religions.length> 0){ %>
+                    <% religions.forEach(religion=> { %>
+                    <option value="<%= religion.name %>" <%=form.religion===religion.name ? "selected"
                                     : "" %>><%= religion.name %>
-                                  </option>
-                                  <% }) %>
-                                    <% } else { %>
-                                      <option selected disabled hidden>No Religion Found</option>
-                                      <% } %>
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="profilePhoto">Profile Photo</label>
-                            <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo"
-                              name="profilePhoto" accept="png,jpg,jpeg">
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="gender">Gender</label>
-                            <select class="form-control" id="gender" name="gender" value="<%= form.gender %>">
-                              <option selected disabled hidden>Select Gender</option>
-                              <option value="male" <%=form.gender==="male" ? "selected" : "" %>>Male</option>
-                              <option value="female" <%=form.gender==="female" ? "selected" : "" %>>Female</option>
-                              <option value="other" <%=form.gender==="other" ? "selected" : "" %>>Other</option>
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-12">
-                            <label class="form-label" for="address">Address</label>
-                            <textarea id="address" class="form-control" name="address"
-                              placeholder="Your Present Address"><%= form.address %></textarea>
-                          </div>
-                        </div>
+                    </option>
+                    <% }) %>
+                    <% } else { %>
+                    <option selected disabled hidden>No Religion Found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="profilePhoto">Profile Photo</label>
+                  <input type="file" class="form-control" id="profilePhoto" placeholder="Select Profile Photo" name="profilePhoto" accept="png,jpg,jpeg">
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="gender">Gender</label>
+                  <select class="form-control" id="gender" name="gender" value="<%= form.gender %>">
+                    <option selected disabled hidden>Select Gender</option>
+                    <option value="male" <%=form.gender==="male" ? "selected" : "" %>>Male</option>
+                    <option value="female" <%=form.gender==="female" ? "selected" : "" %>>Female</option>
+                    <option value="other" <%=form.gender==="other" ? "selected" : "" %>>Other</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="address">Address</label>
+                  <textarea id="address" class="form-control" name="address" placeholder="Your Present Address"><%= form.address %></textarea>
+                </div>
+              </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
 
-            </div>
           </div>
         </div>
       </div>
-
-
     </div>
-  </main>
 
-  <script>
-    const form = JSON.parse('<%- JSON.stringify(form) %>');
-    const states = JSON.parse(`<%- JSON.stringify(states) %>`);
-    const userState = "";
-  </script>
 
-  <%- include("../../partials/footer") %>
+  </div>
+</main>
+
+<script>
+  const form = JSON.parse('<%- JSON.stringify(form) %>');
+  const states = JSON.parse(`<%- JSON.stringify(states) %>`);
+  const userState = "";
+</script>
+<script src="/js/custom.js"></script>
+<%- include("../../partials/footer") %>

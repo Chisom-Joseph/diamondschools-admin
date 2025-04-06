@@ -7,6 +7,8 @@ module.exports = defineConfig({
     },
     env: {
       BASE_URL: "http://localhost:2395",
+      USERNAME: "xukato",
+      PASSWORD: "1111111111",
     },
   },
 });
