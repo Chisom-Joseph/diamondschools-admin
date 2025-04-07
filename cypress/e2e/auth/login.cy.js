@@ -1,6 +1,7 @@
 describe("Login Page", () => {
   beforeEach(() => {
     cy.visit(Cypress.env("BASE_URL") + "/auth/sign-in");
+    cy.viewport(1280, 720);
   });
 
   it("Should load Sign-in page", () => {
@@ -58,7 +59,13 @@ describe("Login Page", () => {
     cy.get("[data-testId=loginButton]").click();
     cy.contains("Admin Dashboard").should("exist");
     cy.url().should("include", "/dashboard");
-  });
 
-  it("Should logout successfully", () => {});
+    cy.log("User logged in successfully");
+    cy.get("[data-testId=logoutLink]").click();
+    cy.contains("Are you sure you want to logout?").should("exist");
+    cy.get("[data-testId=logoutButton]").click();
+    cy.url().should("include", "/sign-in");
+    cy.get("[data-testId=username]").should("have.value", "");
+    cy.get("[data-testId=password]").should("have.value", "");
+  });
 });
