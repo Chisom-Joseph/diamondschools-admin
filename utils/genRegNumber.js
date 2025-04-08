@@ -2,35 +2,36 @@ const { Student } = require("../models");
 
 module.exports = async (academicYear) => {
   try {
-    let count = 1;
-    const genRegNumber = async () => {
-      const prefix = "DNPSS";
-      const year = academicYear.split("/")[0];
+    const prefix = "DNPSS";
+    const year = academicYear.split("/")[0];
 
-      const studentsCount = await Student.count();
-      const studentsNumber = studentsCount + count;
-
-      const padRegistrationNumber = (number) => {
-        return String(number).padStart(3, "0");
-      };
-
-      const registrationNumber = `${prefix}-${year}-${padRegistrationNumber(
-        studentsNumber
-      )}`;
-
-      const studentsNumberExsits = await Student.findOne({
-        where: {
-          registrationNumber,
+    // Find the latest registration number for the given year
+    const lastStudent = await Student.findOne({
+      where: {
+        registrationNumber: {
+          [require("sequelize").Op.like]: `${prefix}-${year}-%`,
         },
-      });
-      if (studentsNumberExsits) {
-        count++;
-        return await genRegNumber();
-      }
+      },
+      order: [["registrationNumber", "DESC"]],
+    });
 
-      return registrationNumber;
+    let nextNumber = 1;
+
+    if (lastStudent) {
+      const lastReg = lastStudent.registrationNumber;
+      const lastNumber = parseInt(lastReg.split("-")[2], 10);
+      nextNumber = lastNumber + 1;
+    }
+
+    const padRegistrationNumber = (number) => {
+      return String(number).padStart(3, "0");
     };
-    return await genRegNumber();
+
+    const registrationNumber = `${prefix}-${year}-${padRegistrationNumber(
+      nextNumber
+    )}`;
+
+    return registrationNumber;
   } catch (error) {
     console.log(`ERROR GENERATING REGISTRATION NUMBER: ${error}`);
     return null;
