@@ -18,6 +18,11 @@ const sessionStore = new SequelizeStore({
   expiration: 7 * 24 * 60 * 60 * 1000,
 });
 
+if (!process.env.SESSION_SECRET) {
+  console.error("❌ SESSION_SECRET is not set in environment variables!");
+  process.exit(1);
+}
+
 app.set("trust proxy", 1);
 app.use(
   session({
