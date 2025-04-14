@@ -67,7 +67,13 @@ db.sequelize
       database_port: config.port,
     });
     if (isProduction) {
-      sessionStore.sync().then(() => console.log("Session store synced!"));
+      sessionStore
+        .sync()
+        .then(() => console.log("Session store synced!"))
+        .catch((error) => {
+          console.error("❌ Failed to sync session store:", error);
+          process.exit(1);
+        });
     }
     app.listen(PORT, async () => {
       console.log(`Server is Up and Running on http://localhost:${PORT}/`);
