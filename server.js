@@ -74,4 +74,8 @@ db.sequelize
       await seedFeatures();
     });
   })
-  .catch((error) => console.log(error));
+  .catch((error) => {
+    console.error("❌ DB Auth failed:");
+    console.log(error);
+    process.exit(1);
+  });
