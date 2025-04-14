@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(require("./routes"));
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(404).render("error.ejs", { error: "" });
 });
 
 console.log("Waiting for database connection...");
