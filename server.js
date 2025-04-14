@@ -44,7 +44,7 @@ console.log("Waiting for database connection...");
 db.sequelize
   .sync({
     force: false,
-    alter: process.env.NODE_ENV === "production",
+    alter: process.env.ALTER === "true",
     benchmark: true,
   })
   .then(({ options, config }) => {
