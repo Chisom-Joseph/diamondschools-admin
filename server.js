@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-const PORT = 2395 || process.env.PORT;
+const PORT = process.env.PORT || 2395;
 const db = require("./models");
 const session = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
