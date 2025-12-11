@@ -45,9 +45,17 @@ module.exports = async (req, res) => {
     }
     const classId = student.ClassId;
 
-    // Fetch all results for this subject and term
+    // Fetch all results for this subject and term scoped to the student's class
     const existingResults = await Result.findAll({
-      where: { SubjectId: subjectId, TermId: termId },
+      where: {
+        SubjectId: subjectId,
+        TermId: termId,
+        StudentId: {
+          [Sequelize.Op.in]: Sequelize.literal(
+            `(SELECT id FROM \`Students\` WHERE \`ClassId\` = '${classId}')`
+          ),
+        },
+      },
       attributes: ["id", "totalScore", "StudentId"],
       order: [["totalScore", "DESC"]],
     });
@@ -69,15 +77,16 @@ module.exports = async (req, res) => {
 
     // Add the new score and recalculate stats
     scores.push(totalScore);
-    const validScores = scores.filter((s) => s !== null && s !== undefined);
+    const validScores = scores.filter(
+      (s) => s !== null && s !== undefined && !Number.isNaN(Number(s))
+    );
     const classAverage =
       validScores.length > 0
-        ? validScores.reduce((sum, score) => sum + score, 0) /
-          validScores.length
+        ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length
         : 0;
     console.log(`classAverage: ${classAverage}`);
-    const classLowest = Math.min(...scores);
-    const classHighest = Math.max(...scores);
+    const classLowest = validScores.length > 0 ? Math.min(...validScores) : 0;
+    const classHighest = validScores.length > 0 ? Math.max(...validScores) : 0;
 
     // Update or create ClassStats
     let classStats = await ClassStats.findOne({
@@ -167,7 +176,7 @@ module.exports = async (req, res) => {
 
     // Ensure StudentTermPerformance exists
     let studentTermPerformance = await StudentTermPerformance.findOne({
-      where: { StudentId: studentId, TermId: termId },
+      where: { StudentId: studentId, TermId: termId, ClassId: classId },
     });
 
     // Calculate student average score
