@@ -26,6 +26,24 @@
     </div>
 
     <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <% if(student && Object.keys(student).length > 0) { %>
+            <div class="d-flex flex-wrap" style="gap: 1em 2em;">
+              <p><b>NAME:</b> <span class="border border-2 p-1 px-3"><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></span></p>
+              <p><b>REG NO:</b> <span class="border border-2 p-1 px-3"><%= student.registrationNumber %></span></p>
+              <p><b>CLASS:</b> <span class="border border-2 p-1 px-3"><%= student.Class ? student.Class.name : "" %></span></p>
+              <p><b>TERM:</b> <span class="border border-2 p-1 px-3"><%= term && term.name ? term.name : "" %></span></p>
+              <p><b>YEAR:</b> <span class="border border-2 p-1 px-3"><%= academicYear && academicYear.year ? academicYear.year : "" %></span></p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="col-md-3 col-xl-2">
 
         <div class="card">

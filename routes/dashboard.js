@@ -441,11 +441,19 @@ router.post("/term", require("../controllers/dashboard/term"));
 router.get("/result", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
+    const term = await require("../utils/getTerm")(req.query.term);
+    const academicYear = term?.AcademicYearId
+      ? await require("../utils/getAcademicYearById")(term.AcademicYearId)
+      : {};
+    const student = await require("../utils/getStudent")(req.query.student);
     res.status(status).render("dashboard/result/result.ejs", {
       alert: req.flash("alert")[0] || "",
       academicYears: await require("../utils/getAcademicYearsWithTerms")(),
       form: req.flash("form")[0] || "",
       selectedTerm: req.query.term,
+      student,
+      term,
+      academicYear,
       ...(await require("../utils/getStudentSubjects")(
         req.query.student,
         req.query.term
