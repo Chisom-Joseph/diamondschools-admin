@@ -446,6 +446,19 @@ router.get("/result", async (req, res) => {
       ? await require("../utils/getAcademicYearById")(term.AcademicYearId)
       : {};
     const student = await require("../utils/getStudent")(req.query.student);
+    const viewResults = await require("../utils/getResults")(req.query.term, req.query.student);
+    const stp = await require("../utils/getStudentTermPerformance")({
+      termId: req.query.term,
+      studentId: req.query.student,
+    });
+    const toOrdinal = (n) => {
+      const s = ["th", "st", "nd", "rd"], v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+    if (stp && stp.position) stp.position = toOrdinal(stp.position);
+    const outOf = await require("../models").StudentTermPerformance.count({
+      where: { ClassId: stp?.ClassId || student.ClassId, TermId: req.query.term },
+    });
     res.status(status).render("dashboard/result/result.ejs", {
       alert: req.flash("alert")[0] || "",
       academicYears: await require("../utils/getAcademicYearsWithTerms")(),
@@ -454,15 +467,13 @@ router.get("/result", async (req, res) => {
       student,
       term,
       academicYear,
+      results: viewResults,
+      outOf,
       ...(await require("../utils/getStudentSubjects")(
         req.query.student,
         req.query.term
       )),
-      getStudentTermPerformance:
-        await require("../utils/getStudentTermPerformance")({
-          termId: req.query.term,
-          studentId: req.query.student,
-        }),
+      getStudentTermPerformance: stp,
     });
   } catch (error) {
     console.error("ERROR RENDERING RESULT PAGE");

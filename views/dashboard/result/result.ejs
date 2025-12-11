@@ -69,6 +69,57 @@
             <div class="card">
               <div class="card-body h-100">
                 <% if(selectedTerm) { %>
+                <% if(results.length > 0) { %>
+                <div class="d-flex flex-wrap mb-3" style="gap: 1em 2em;">
+                  <p><b>TOTAL:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.totalScore %></span></p>
+                  <p><b>AVERAGE:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.averageScore %></span></p>
+                  <p><b>POSITION:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.position %></span></p>
+                  <p><b>OUT OF:</b> <span class="border border-2 p-1 px-3"><%= outOf %></span></p>
+                  <p><b>REMARK:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.overallRemark %></span></p>
+                </div>
+                <div class="custom-table-responsive" style="">
+                  <table class="table table-bordered table-striped" style="width: 100%;">
+                    <thead class="table-dark">
+                      <tr>
+                        <th class="vertical-header">No</th>
+                        <th class="vertical-header">Subjects</th>
+                        <th class="vertical-header">First Test (10)</th>
+                        <th class="vertical-header">Presentation (5)</th>
+                        <th class="vertical-header">Mid-term test (10)</th>
+                        <th class="vertical-header">Project (10)</th>
+                        <th class="vertical-header">Note (5)</th>
+                        <th class="vertical-header">Exam score (60)</th>
+                        <th class="vertical-header">Total score (100)</th>
+                        <th class="vertical-header">Grade</th>
+                        <th class="vertical-header">Position</th>
+                        <th class="vertical-header">Class lowest score</th>
+                        <th class="vertical-header">Class highest score</th>
+                        <th class="vertical-header">Remark</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% results.map((result, index) => { %>
+                      <tr>
+                        <td><%= ++index %></td>
+                        <td><%= result.Subject ? result.Subject.name : "N/A" %></td>
+                        <td><%= result.firstTest %></td>
+                        <td><%= result.presentation %></td>
+                        <td><%= result.midTermTest %></td>
+                        <td><%= result.project %></td>
+                        <td><%= result.note %></td>
+                        <td><%= result.examScore %></td>
+                        <td><%= result.totalScore %></td>
+                        <td><%= result.grade %></td>
+                        <td><%= result.position %></td>
+                        <td><%= result.dataValues.classStats.classLowest %></td>
+                        <td><%= result.dataValues.classStats.classHighest %></td>
+                        <td><%= result.remark %></td>
+                      </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+                <% } %>
                 <% if(subjects.length > 0) { %>
                 <% subjects.forEach(subject => { 
                 let result = resultsMap[subject.id] || {}; // Get existing result or empty object
@@ -265,6 +316,12 @@
     });
   });
 </script>
+
+<style>
+  .custom-table-responsive {
+    overflow-x: auto;
+  }
+</style>
 
 
 <%- include("../../partials/footer") %>
