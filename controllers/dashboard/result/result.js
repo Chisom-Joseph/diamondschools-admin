@@ -118,6 +118,7 @@ module.exports = async (req, res) => {
         project,
         note,
         examScore,
+        resultClassId: classId,
         date: new Date().toISOString(),
       });
     } else {
@@ -134,6 +135,7 @@ module.exports = async (req, res) => {
         project,
         note,
         examScore,
+        resultClassId: classId,
         position: 0, // Temporary position
         date: new Date().toISOString(),
       });
