@@ -9,7 +9,7 @@ module.exports = async ({ studentId, classId, termId }) => {
     }
 
     const where = resolvedClassId
-      ? { StudentId: studentId, TermId: termId, ClassId: resolvedClassId }
+      ? { StudentId: studentId, TermId: termId, }
       : { StudentId: studentId, TermId: termId };
 
     const studentTermPerformance = await StudentTermPerformance.findOne({ where });

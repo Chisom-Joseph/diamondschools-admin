@@ -43,29 +43,34 @@ module.exports = async (req, res) => {
       console.error("Student not found");
       return;
     }
-    const classId = student.ClassId;
+    const stpForClass = await StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
+    const classId = stpForClass?.ClassId || student.ClassId;
 
     // Fetch all results for this subject and term scoped to the student's class
+    const classStps = await StudentTermPerformance.findAll({
+      where: { TermId: termId, ClassId: classId },
+      attributes: ["id"],
+      raw: true,
+    });
+    const stpIds = classStps.map((r) => r.id);
     const existingResults = await Result.findAll({
       where: {
         SubjectId: subjectId,
-        TermId: termId,
-        StudentId: {
-          [Sequelize.Op.in]: Sequelize.literal(
-            `(SELECT id FROM \`Students\` WHERE \`ClassId\` = '${classId}')`
-          ),
-        },
+        StudentTermPerformanceId: { [Sequelize.Op.in]: stpIds },
       },
-      attributes: ["id", "totalScore", "StudentId"],
+      attributes: ["id", "totalScore", "StudentTermPerformanceId"],
       order: [["totalScore", "DESC"]],
     });
 
     let scores = existingResults.map((r) => r.totalScore);
 
     // Find the student's existing result (if any)
-    let existingResult = await Result.findOne({
-      where: { StudentId: studentId, SubjectId: subjectId, TermId: termId },
-    });
+    const stpForStudent = await StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
+    let existingResult = stpForStudent
+      ? await Result.findOne({
+          where: { StudentTermPerformanceId: stpForStudent.id, SubjectId: subjectId },
+        })
+      : null;
 
     if (existingResult) {
       // Remove old score from the ranking list
@@ -118,41 +123,35 @@ module.exports = async (req, res) => {
         project,
         note,
         examScore,
-        resultClassId: classId,
         date: new Date().toISOString(),
       });
     } else {
-      existingResult = await Result.create({
-        StudentId: studentId,
-        SubjectId: subjectId,
-        TermId: termId,
-        totalScore,
-        grade,
-        remark,
-        firstTest,
-        presentation,
-        midTermTest,
-        project,
-        note,
-        examScore,
-        resultClassId: classId,
-        position: 0, // Temporary position
-        date: new Date().toISOString(),
-      });
+      if (stpForStudent) {
+        existingResult = await Result.create({
+          StudentTermPerformanceId: stpForStudent.id,
+          SubjectId: subjectId,
+          totalScore,
+          grade,
+          remark,
+          firstTest,
+          presentation,
+          midTermTest,
+          project,
+          note,
+          examScore,
+          position: 0, // Temporary position
+          date: new Date().toISOString(),
+        });
+      }
     }
 
-    // Fetch updated results after saving
+    // Fetch updated class results for this subject using StudentTermPerformance IDs
     const results = await Result.findAll({
       where: {
         SubjectId: subjectId,
-        TermId: termId,
-        StudentId: {
-          [Sequelize.Op.in]: Sequelize.literal(
-            `(SELECT id FROM \`Students\` WHERE \`ClassId\` = '${classId}')`
-          ),
-        },
+        StudentTermPerformanceId: { [Sequelize.Op.in]: stpIds },
       },
-      attributes: ["id", "totalScore", "StudentId"],
+      attributes: ["id", "totalScore", "StudentTermPerformanceId"],
       order: [["totalScore", "DESC"]],
     });
 
@@ -182,24 +181,24 @@ module.exports = async (req, res) => {
     });
 
     // Calculate student average score
-    const studentResults = await Result.findAll({
-      where: { StudentId: studentId, TermId: termId },
-      attributes: [
-        [Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"],
-      ],
-      raw: true,
-    });
+    const studentResults = stpForStudent
+      ? await Result.findAll({
+          where: { StudentTermPerformanceId: stpForStudent.id },
+          attributes: [[Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"]],
+          raw: true,
+        })
+      : [{ averageScore: 0 }];
     const averageScore = studentResults[0].averageScore || 0;
 
-    const totalScoreSum = await Result.sum("totalScore", {
-      where: { StudentId: studentId, TermId: termId },
-    });
+    const totalScoreSum = stpForStudent
+      ? await Result.sum("totalScore", { where: { StudentTermPerformanceId: stpForStudent.id } })
+      : 0;
 
     if (!studentTermPerformance) {
       studentTermPerformance = await StudentTermPerformance.create({
         StudentId: studentId,
         TermId: termId,
-        ClassId: student.ClassId,
+        ClassId: classId,
         totalScore: totalScoreSum,
         averageScore,
         position: 0, // Temporary position
@@ -213,7 +212,7 @@ module.exports = async (req, res) => {
 
     // Fetch all student term performances for ranking
     const studentTermPerformances = await StudentTermPerformance.findAll({
-      where: { TermId: termId, ClassId: student.ClassId },
+      where: { TermId: termId, ClassId: classId },
       attributes: ["id", "StudentId", "totalScore"],
       order: [["totalScore", "DESC"]],
     });

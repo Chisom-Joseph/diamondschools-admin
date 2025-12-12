@@ -6,6 +6,9 @@ module.exports = (req, res) => {
     case "remarks":
       require("./remarks")(req, res);
       break;
+    case "termPerformance":
+      require("./termPerformance")(req, res);
+      break;
     default:
       req.flash("alert", {
         status: "error",
@@ -18,8 +21,6 @@ module.exports = (req, res) => {
         `${req.body.form === "results" ? "results" : "remarks"}`
       );
       req.flash("status", 400);
-      return res.redirect(
-        `/dashboard/result?student=${req.params.student}&term=${req.params.term}`
-      );
+      return res.redirect(req.originalUrl);
   }
 };

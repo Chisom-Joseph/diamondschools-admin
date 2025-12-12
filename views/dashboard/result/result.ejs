@@ -33,7 +33,7 @@
             <div class="d-flex flex-wrap" style="gap: 1em 2em;">
               <p><b>NAME:</b> <span class="border border-2 p-1 px-3"><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></span></p>
               <p><b>REG NO:</b> <span class="border border-2 p-1 px-3"><%= student.registrationNumber %></span></p>
-              <p><b>CLASS:</b> <span class="border border-2 p-1 px-3"><%= student.Class ? student.Class.name : "" %></span></p>
+              <p><b>CLASS:</b> <span class="border border-2 p-1 px-3"><%= (student.Class ? student.Class.name : "") %></span></p>
               <p><b>TERM:</b> <span class="border border-2 p-1 px-3"><%= term && term.name ? term.name : "" %></span></p>
               <p><b>YEAR:</b> <span class="border border-2 p-1 px-3"><%= academicYear && academicYear.year ? academicYear.year : "" %></span></p>
             </div>
@@ -64,14 +64,26 @@
             <div class="card">
               <div class="card-body h-100">
                 <% if(selectedTerm) { %>
-                <% if(results.length > 0) { %>
                 <div class="d-flex flex-wrap mb-3" style="gap: 1em 2em;">
-                  <p><b>TOTAL:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.totalScore %></span></p>
-                  <p><b>AVERAGE:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.averageScore %></span></p>
-                  <p><b>POSITION:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.position %></span></p>
+                  <p><b>TOTAL:</b> <span class="border border-2 p-1 px-3"><%= (getStudentTermPerformance && getStudentTermPerformance.totalScore != null) ? getStudentTermPerformance.totalScore : 0 %></span></p>
+                  <p><b>AVERAGE:</b> <span class="border border-2 p-1 px-3"><%= (getStudentTermPerformance && getStudentTermPerformance.averageScore != null) ? getStudentTermPerformance.averageScore : 0 %></span></p>
+                  <p><b>POSITION:</b> <span class="border border-2 p-1 px-3"><%= (getStudentTermPerformance && getStudentTermPerformance.position != null) ? getStudentTermPerformance.position : '' %></span></p>
                   <p><b>OUT OF:</b> <span class="border border-2 p-1 px-3"><%= outOf %></span></p>
-                  <p><b>REMARK:</b> <span class="border border-2 p-1 px-3"><%= getStudentTermPerformance.overallRemark %></span></p>
+                  <p><b>REMARK:</b> <span class="border border-2 p-1 px-3"><%= (getStudentTermPerformance && getStudentTermPerformance.overallRemark != null) ? getStudentTermPerformance.overallRemark : '' %></span></p>
+                  <form method="POST" action="/dashboard/result/class?student=<%= student.id %>&term=<%= selectedTerm %>" class="d-flex align-items-center" style="gap: .5em;">
+                    <input type="hidden" name="form" value="termPerformance">
+                    <input type="hidden" name="student" value="<%= student.id %>">
+                    <input type="hidden" name="term" value="<%= selectedTerm %>">
+                    <label class="form-label mb-0" for="resultClass"><b>CLASS:</b></label>
+                    <select id="resultClass" name="classId" class="form-select" style="max-width: 220px;">
+                      <% classes.forEach(c => { %>
+                        <option value="<%= c.id %>" <%= c.id == activeResultClassId ? 'selected' : '' %>><%= c.name %></option>
+                      <% }) %>
+                    </select>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" <%= !selectedTerm ? 'disabled' : '' %>>Update</button>
+                  </form>
                 </div>
+                <% if(results.length > 0) { %>
                 <div class="custom-table-responsive" style="">
                   <table class="table table-bordered table-striped" style="width: 100%;">
                     <thead class="table-dark">
@@ -286,27 +298,32 @@
     });
 
     document.querySelectorAll("form").forEach((form) => {
+      const firstTestEl = form.querySelector("[name='firstTest']");
+      if (!firstTestEl) return;
       form.addEventListener("input", function() {
-        let firstTest = parseFloat(form.querySelector("[name='firstTest']").value) || 0;
-        let presentation = parseFloat(form.querySelector("[name='presentation']").value) || 0;
-        let midTermTest = parseFloat(form.querySelector("[name='midTermTest']").value) || 0;
-        let project = parseFloat(form.querySelector("[name='project']").value) || 0;
-        let note = parseFloat(form.querySelector("[name='note']").value) || 0;
-        let exam = parseFloat(form.querySelector("[name='examScore']").value) || 0;
+        const getVal = (name) => {
+          const el = form.querySelector(`[name='${name}']`);
+          return el ? parseFloat(el.value) || 0 : 0;
+        };
+        const firstTest = getVal('firstTest');
+        const presentation = getVal('presentation');
+        const midTermTest = getVal('midTermTest');
+        const project = getVal('project');
+        const note = getVal('note');
+        const exam = getVal('examScore');
 
-        // Calculate total score
-        let totalScore = firstTest + presentation + midTermTest + project + note + exam;
-        form.querySelector("[name='totalScore']").value = totalScore;
+        const totalScore = firstTest + presentation + midTermTest + project + note + exam;
+        const totalEl = form.querySelector("[name='totalScore']");
+        const gradeEl = form.querySelector("[name='grade']");
+        if (totalEl) totalEl.value = totalScore;
 
-        // Assign grade based on total score
         let grade;
         if (totalScore >= 70) grade = "A";
         else if (totalScore >= 60) grade = "B";
         else if (totalScore >= 50) grade = "C";
         else if (totalScore >= 40) grade = "D";
         else grade = "F";
-
-        form.querySelector("[name='grade']").value = grade;
+        if (gradeEl) gradeEl.value = grade;
       });
     });
   });

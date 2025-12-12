@@ -20,10 +20,13 @@ module.exports = async (studentId, termId) => {
     });
 
     // Fetch existing results for this student & term
-    const results = await Result.findAll({
-      where: { StudentId: studentId, TermId: termId },
-      include: [{ model: Subject, attributes: ["id", "name"] }],
-    });
+    const stp = await require("../models").StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
+    const results = stp
+      ? await Result.findAll({
+          where: { StudentTermPerformanceId: stp.id },
+          include: [{ model: Subject, attributes: ["id", "name"] }],
+        })
+      : [];
 
     // Map results to easily find scores for each subject
     const resultsMap = {};

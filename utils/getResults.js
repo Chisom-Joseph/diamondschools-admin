@@ -1,20 +1,17 @@
-const { Result, Subject, Student, ClassStats } = require("../models");
+const { Result, Subject, Student, ClassStats, StudentTermPerformance } = require("../models");
 
 module.exports = async (termId, studentId) => {
   try {
     if (!termId || !studentId) return [];
 
+    const stp = await StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
+    if (!stp) return [];
     const results = await Result.findAll({
-      where: {
-        StudentId: studentId,
-        TermId: termId,
-      },
-      include: [
-        {
-          model: Subject,
-          attributes: ["id", "name"],
-        },
-      ],
+      where: { StudentTermPerformanceId: stp.id },
+      include: [{
+        model: Subject,
+        attributes: ["id", "name"],
+      }],
       order: [[Subject, "name", "ASC"]],
     });
 
@@ -22,6 +19,7 @@ module.exports = async (termId, studentId) => {
 
     const student = await Student.findByPk(studentId);
     const fallbackClassId = student ? student.ClassId : null;
+    const effectiveClassId = stp?.ClassId || fallbackClassId;
 
     const toOrdinal = (n) => {
       const s = ["th", "st", "nd", "rd"], v = n % 100;
@@ -31,7 +29,7 @@ module.exports = async (termId, studentId) => {
     for (const result of results) {
       const classStats = await ClassStats.findOne({
         where: {
-          ClassId: result.resultClassId || fallbackClassId,
+          ClassId: effectiveClassId,
           SubjectId: result.SubjectId,
           TermId: termId,
         },

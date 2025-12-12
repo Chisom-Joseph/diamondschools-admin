@@ -446,19 +446,30 @@ router.get("/result", async (req, res) => {
       ? await require("../utils/getAcademicYearById")(term.AcademicYearId)
       : {};
     const student = await require("../utils/getStudent")(req.query.student);
-    const viewResults = await require("../utils/getResults")(req.query.term, req.query.student);
-    const stp = await require("../utils/getStudentTermPerformance")({
-      termId: req.query.term,
-      studentId: req.query.student,
-    });
+    const hasTerm = !!req.query.term;
+    const viewResults = hasTerm
+      ? await require("../utils/getResults")(req.query.term, req.query.student)
+      : [];
+    const stp = hasTerm
+      ? await require("../utils/getStudentTermPerformance")({
+          termId: req.query.term,
+          studentId: req.query.student,
+        })
+      : {};
+      console.log("STP")
+      console.log(stp)
     const toOrdinal = (n) => {
       const s = ["th", "st", "nd", "rd"], v = n % 100;
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
     if (stp && stp.position) stp.position = toOrdinal(stp.position);
-    const outOf = await require("../models").StudentTermPerformance.count({
-      where: { ClassId: stp?.ClassId || student.ClassId, TermId: req.query.term },
-    });
+    const outOf = hasTerm
+      ? await require("../models").StudentTermPerformance.count({
+          where: { ClassId: stp?.ClassId || student.ClassId, TermId: req.query.term },
+        })
+      : 0;
+    const displayClass = await require("../utils/getClass")(stp?.ClassId || student.ClassId);
+    const activeResultClassId = stp?.ClassId || student.ClassId;
     res.status(status).render("dashboard/result/result.ejs", {
       alert: req.flash("alert")[0] || "",
       academicYears: await require("../utils/getAcademicYearsWithTerms")(),
@@ -469,11 +480,14 @@ router.get("/result", async (req, res) => {
       academicYear,
       results: viewResults,
       outOf,
+      classes: await require("../utils/getClasses")(),
       ...(await require("../utils/getStudentSubjects")(
         req.query.student,
         req.query.term
       )),
       getStudentTermPerformance: stp,
+      displayClass,
+      activeResultClassId,
     });
   } catch (error) {
     console.error("ERROR RENDERING RESULT PAGE");
@@ -482,6 +496,7 @@ router.get("/result", async (req, res) => {
   }
 });
 router.post("/result", require("../controllers/dashboard/result"));
+router.post("/result/class", require("../controllers/dashboard/result/termPerformance"));
 
 // CBT Result
 router.get("/cbt-result", async (req, res) => {
