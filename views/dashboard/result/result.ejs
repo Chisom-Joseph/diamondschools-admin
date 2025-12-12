@@ -30,12 +30,30 @@
         <div class="card">
           <div class="card-body">
             <% if(student && Object.keys(student).length > 0) { %>
-            <div class="d-flex flex-wrap" style="gap: 1em 2em;">
-              <p><b>NAME:</b> <span class="border border-2 p-1 px-3"><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></span></p>
-              <p><b>REG NO:</b> <span class="border border-2 p-1 px-3"><%= student.registrationNumber %></span></p>
-              <p><b>CLASS:</b> <span class="border border-2 p-1 px-3"><%= (student.Class ? student.Class.name : "") %></span></p>
-              <p><b>TERM:</b> <span class="border border-2 p-1 px-3"><%= term && term.name ? term.name : "" %></span></p>
-              <p><b>YEAR:</b> <span class="border border-2 p-1 px-3"><%= academicYear && academicYear.year ? academicYear.year : "" %></span></p>
+            <div class="mb-2">
+              <h6 class="text-uppercase text-muted mb-2">Student Info</h6>
+              <div class="d-flex flex-wrap align-items-center" style="gap: .75em 1em;">
+                <div class="d-inline-flex align-items-center bg-light border rounded px-3 py-2">
+                  <span class="text-uppercase text-muted small">Name</span>
+                  <span class="badge bg-primary ms-2"><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></span>
+                </div>
+                <div class="d-inline-flex align-items-center bg-light border rounded px-3 py-2">
+                  <span class="text-uppercase text-muted small">Reg No</span>
+                  <span class="badge bg-secondary ms-2"><%= student.registrationNumber %></span>
+                </div>
+                <div class="d-inline-flex align-items-center bg-light border rounded px-3 py-2">
+                  <span class="text-uppercase text-muted small">Class</span>
+                  <span class="badge bg-info text-dark ms-2"><%= (student.Class ? student.Class.name : "") %></span>
+                </div>
+                <div class="d-inline-flex align-items-center bg-light border rounded px-3 py-2">
+                  <span class="text-uppercase text-muted small">Term</span>
+                  <span class="badge bg-warning text-dark ms-2"><%= term && term.name ? term.name : "" %></span>
+                </div>
+                <div class="d-inline-flex align-items-center bg-light border rounded px-3 py-2">
+                  <span class="text-uppercase text-muted small">Year</span>
+                  <span class="badge bg-success ms-2"><%= academicYear && academicYear.year ? academicYear.year : "" %></span>
+                </div>
+              </div>
             </div>
             <% } %>
           </div>
