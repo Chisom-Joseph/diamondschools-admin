@@ -11,6 +11,9 @@
             <h5 class="card-title">Striped Rows</h5>
           </div>
           <div class="card-body">
+            <!-- Alert Container for Success/Error Messages -->
+            <div id="alertContainer"></div>
+
             <table id="example" class="datatable" style="width:100%">
               <thead>
                 <tr>
@@ -22,6 +25,7 @@
                   <th>Correct</th>
                   <th>Total</th>
                   <th>Score %</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
             </table>
@@ -33,10 +37,30 @@
   </div>
 </main>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal modal-sm fade" id="deleteCbtResultModal" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete CBT Result</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body m-3">
+        <p class="mb-0 text-center">Are you sure you want to delete this CBT result?</p>
+        <p class="mb-0 text-center text-danger"><strong>This action cannot be undone.</strong></p>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Result</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/DataTables/datatables.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    new DataTable('#example', {
+    const dataTable = new DataTable('#example', {
       serverSide: true,
       ajax: '/api/get-cbt-results',
       columns: [{
@@ -66,9 +90,85 @@
         },
         {
           data: 'scorePercentage'
+        },
+        {
+          data: null,
+          orderable: false,
+          searchable: false,
+          render: (data, type, row) => {
+            return `<button class="btn btn-danger btn-sm delete-cbt-result" data-id="${row.id}" title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>`;
+          }
         }
       ]
     });
+
+    let resultIdToDelete = null;
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteCbtResultModal'));
+
+    // Handle delete button click - show modal
+    $('#example').on('click', '.delete-cbt-result', function() {
+      resultIdToDelete = $(this).data('id');
+      deleteModal.show();
+    });
+
+    // Handle confirm delete button click
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+      if (!resultIdToDelete) return;
+
+      $.ajax({
+        url: '/api/delete-cbt-result',
+        type: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify({ id: resultIdToDelete }),
+        success: function(response) {
+          deleteModal.hide();
+          
+          if (response.success) {
+            // Show success alert
+            showAlert('success', response.message || 'CBT result deleted successfully');
+            // Reload the DataTable
+            dataTable.ajax.reload();
+          } else {
+            showAlert('error', response.message || 'Failed to delete CBT result');
+          }
+          
+          resultIdToDelete = null;
+        },
+        error: function(xhr) {
+          deleteModal.hide();
+          const errorMessage = xhr.responseJSON?.message || 'An error occurred while deleting the CBT result';
+          showAlert('error', errorMessage);
+          resultIdToDelete = null;
+        }
+      });
+    });
+
+    // Function to show Bootstrap alerts
+    function showAlert(type, message) {
+      const alertContainer = document.getElementById('alertContainer');
+      const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+      const alertTitle = type === 'success' ? 'Success!' : 'Error!';
+      
+      const alertHTML = `
+        <div class="col-12">
+          <div class="alert ${alertClass} alert-dismissible" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-message">
+              <strong>${alertTitle}</strong> ${message}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      alertContainer.innerHTML = alertHTML;
+      
+      // Auto-dismiss after 5 seconds
+      setTimeout(() => {
+        alertContainer.innerHTML = '';
+      }, 5000);
+    }
   });
 </script>
 

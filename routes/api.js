@@ -32,5 +32,6 @@ router.get("/get-term/:id", require(`../controllers/api/getTerm`));
 
 // Cbt results
 router.get("/get-cbt-results", require(`../controllers/api/getCbtResults`));
+router.delete("/delete-cbt-result", require(`../controllers/api/deleteCbtResult`));
 
 module.exports = router;
