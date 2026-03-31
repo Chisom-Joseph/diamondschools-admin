@@ -270,6 +270,7 @@ router.get("/site-settings", async (req, res) => {
     res.status(status).render("dashboard/siteSettings.ejs", {
       alert: req.flash("alert")[0] || "",
       form: req.flash("form")[0] || "",
+      paymentSettings: await require("../utils/getPaymentSettings")(),
     });
   } catch (error) {
     console.error("ERROR RENDERING SITE SETTINGS PAGE");
@@ -277,6 +278,7 @@ router.get("/site-settings", async (req, res) => {
     require("../utils/showErrorPage")(500, {}, res);
   }
 });
+router.post("/site-settings", require("../controllers/dashboard/paymentSettings"));
 
 // class
 router.get("/class", async (req, res) => {
