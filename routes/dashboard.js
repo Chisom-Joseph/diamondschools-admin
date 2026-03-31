@@ -267,9 +267,13 @@ router.post("/add-teacher", require("../controllers/dashboard/teacher"));
 router.get("/site-settings", async (req, res) => {
   try {
     const status = req.flash("status")[0] || 200;
+    const siteSettings = await require("../utils/getSiteSettings")();
+    // Merge with defaults if empty
+    const form = req.flash("form")[0] || siteSettings;
     res.status(status).render("dashboard/siteSettings.ejs", {
-      alert: req.flash("alert")[0] || "",
-      form: req.flash("form")[0] || "",
+      alert: req.flash("alert")[0] || { status: "", message: "", section: "" },
+      form,
+      siteSettings,
       paymentSettings: await require("../utils/getPaymentSettings")(),
     });
   } catch (error) {
@@ -278,7 +282,7 @@ router.get("/site-settings", async (req, res) => {
     require("../utils/showErrorPage")(500, {}, res);
   }
 });
-router.post("/site-settings", require("../controllers/dashboard/paymentSettings"));
+router.post("/site-settings", require("../controllers/dashboard/siteSettings"));
 
 // class
 router.get("/class", async (req, res) => {

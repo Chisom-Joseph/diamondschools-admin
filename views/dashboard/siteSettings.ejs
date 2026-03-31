@@ -13,8 +13,8 @@
             <h5 class="card-title">Site information</h5>
           </div>
           <div class="card-body">
-            <form method="POST" action="?action=add">
-              <% if(alert.status === "error" && alert.section === "site_settings") { %>
+            <form method="POST" action="">
+              <% if(alert && alert.status === "error" && alert.section === "site_settings") { %>
               <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message">
@@ -22,7 +22,7 @@
                 </div>
               </div>
               <% } %>
-              <% if(alert.status === "success" && alert.section === "site_settings") { %>
+              <% if(alert && alert.status === "success" && alert.section === "site_settings") { %>
               <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message pr-5">
@@ -30,31 +30,71 @@
                 </div>
               </div>
               <% } %>
-              <!-- Personal Information -->
-              <h4 class="mt-3">Site settings and meta data</h4>
+              <!-- Site Information -->
+              <h4 class="mt-3">Site Settings and Meta Data</h4>
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="name">School/Site Name *</label>
+                  <input type="text" class="form-control" id="name" placeholder="e.g. Diamond Schools" name="name" value="<%= form.name || '' %>" required>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="title">Site Title</label>
+                  <input type="text" class="form-control" id="title" placeholder="e.g. Diamond Schools - Excellence in Education" name="title" value="<%= form.title || form.name || '' %>">
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="email">Email Address *</label>
+                  <input type="email" class="form-control" id="email" placeholder="school@email.com" name="email" value="<%= form.email || '' %>" required>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="phone1">Primary Phone *</label>
+                  <input type="text" class="form-control" id="phone1" placeholder="07057430682" name="phone1" value="<%= form.phone1 || '' %>" required>
+                </div>
+              </div>
               <div class="row">
                 <div class="mb-3 col-md-4">
-                  <label class="form-label" for="siteName">Site Name</label>
-                  <input type="text" class="form-control" id="siteName" placeholder="Site Name" name="siteName" value="<%= form.siteName %>">
+                  <label class="form-label" for="phone2">Secondary Phone</label>
+                  <input type="text" class="form-control" id="phone2" placeholder="08026125461" name="phone2" value="<%= form.phone2 || '' %>">
                 </div>
                 <div class="mb-3 col-md-4">
-                  <label class="form-label" for="siteDescription">Site Description</label>
-                  <input type="text" class="form-control" id="siteDescription" placeholder="Site Description" name="siteDescription" value="<%= form.siteDescription %>">
+                  <label class="form-label" for="phone3">Tertiary Phone</label>
+                  <input type="text" class="form-control" id="phone3" placeholder="08130331977" name="phone3" value="<%= form.phone3 || '' %>">
                 </div>
                 <div class="mb-3 col-md-4">
-                  <label class="form-label" for="siteEmail">Site Email</label>
-                  <input type="email" class="form-control" id="siteEmail" placeholder="Site Email" name="siteEmail" value="<%= form.siteEmail %>">
+                  <label class="form-label" for="keywords">Site Keywords</label>
+                  <input type="text" class="form-control" id="keywords" placeholder="education, school, excellence" name="keywords" value="<%= form.keywords || '' %>">
                 </div>
               </div>
               <div class="row">
                 <div class="mb-3 col-md-12">
-                  <label class="form-label" for="siteKeywords">Site Keywords</label>
-                  <textarea class="form-control" id="siteKeywords" name="siteKeywords"><%= form.siteKeywords %></textarea>
+                  <label class="form-label" for="description">Site Description *</label>
+                  <textarea class="form-control" id="description" name="description" rows="3" required><%= form.description || '' %></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="address">School Address *</label>
+                  <textarea class="form-control" id="address" name="address" rows="2" required><%= form.address || '' %></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="favicon">Favicon URL</label>
+                  <input type="text" class="form-control" id="favicon" placeholder="/assets/img/logo/favicon.png" name="favicon" value="<%= form.favicon || '' %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="logo">Logo URL</label>
+                  <input type="text" class="form-control" id="logo" placeholder="/assets/img/logo/logo.png" name="logo" value="<%= form.logo || '' %>">
+                </div>
+                <div class="mb-3 col-md-4">
+                  <label class="form-label" for="logoLight">Light Logo URL</label>
+                  <input type="text" class="form-control" id="logoLight" placeholder="/assets/img/logo/logo-light.png" name="logoLight" value="<%= form.logoLight || '' %>">
                 </div>
               </div>
 
               <!-- Submit Button -->
-              <button type="submit" class="btn btn-primary" disabled>Submit</button>
+              <button type="submit" class="btn btn-primary mt-3">Save Site Settings</button>
             </form>
 
           </div>
@@ -70,7 +110,7 @@
           </div>
           <div class="card-body">
             <form method="POST" action="?action=update">
-              <% if(alert.status === "error" && alert.section === "payment_settings") { %>
+              <% if(alert && alert.status === "error" && alert.section === "payment_settings") { %>
               <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message">
@@ -78,7 +118,7 @@
                 </div>
               </div>
               <% } %>
-              <% if(alert.status === "success" && alert.section === "payment_settings") { %>
+              <% if(alert && alert.status === "success" && alert.section === "payment_settings") { %>
               <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message pr-5">
