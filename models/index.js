@@ -26,6 +26,7 @@ const StudentTermPerformance = require("./StudentTermPerformance");
 const FeatureFlag = require("./FeatureFlag");
 const FeatureAccess = require("./FeatureAccess");
 const PaymentSettings = require("./PaymentSettings");
+const SiteSettings = require("./SiteSettings");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -72,6 +73,7 @@ db.StudentTermPerformance = StudentTermPerformance(sequelize, DataTypes);
 db.FeatureFlag = FeatureFlag(sequelize, DataTypes);
 db.FeatureAccess = FeatureAccess(sequelize, DataTypes);
 db.PaymentSettings = PaymentSettings(sequelize, DataTypes);
+db.SiteSettings = SiteSettings(sequelize, DataTypes);
 
 // Relations
 db.Student.belongsTo(db.Class, { onDelete: "SET NULL" });
