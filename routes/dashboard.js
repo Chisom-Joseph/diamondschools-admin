@@ -282,7 +282,13 @@ router.get("/site-settings", async (req, res) => {
     require("../utils/showErrorPage")(500, {}, res);
   }
 });
-router.post("/site-settings", require("../controllers/dashboard/siteSettings"));
+router.post("/site-settings", (req, res) => {
+  if (req.query.action === "update") {
+    require("../controllers/dashboard/paymentSettings")(req, res);
+  } else {
+    require("../controllers/dashboard/siteSettings")(req, res);
+  }
+});
 
 // class
 router.get("/class", async (req, res) => {
