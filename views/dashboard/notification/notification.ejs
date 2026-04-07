@@ -3,18 +3,145 @@
   <div class="container-fluid p-0">
 
     <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Notification</h1>
+      <h1 class="h3 d-inline align-middle">Notifications</h1>
     </div>
 
     <div class="row">
-      <div class="col-md-12">
+      <!-- Create Notification -->
+      <div class="col-md-8">
         <div class="card">
           <div class="card-header">
-            <h5 class="card-title">Notification information</h5>
+            <h5 class="card-title">Create Notification</h5>
           </div>
-          <div class="card-body">
+          <div class="card-body pt-0">
             <form method="POST" action="?action=add">
-              <% if(alert.status === "error") { %>
+              <% if(alert.status === "error" && alert.section === "add") { %>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Error!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <% if(alert.status === "success" && alert.section === "add") { %>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message pr-5">
+                  <strong>Success!</strong> <%- alert.message %>
+                </div>
+              </div>
+              <% } %>
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="userType">Recipient Type</label>
+                  <select class="form-control" id="userType" name="userType" <%= users.length <= 0 ? "disabled" : "" %>>
+                    <% if(users.length > 0) { %>
+                    <option disabled selected hidden>Select Recipient Type</option>
+                    <% users.map((user) => { %>
+                    <option value="<%= user.id %>" <%- formSection === "add" && form.userType === user.id ? "selected" : "" %>><%= user.name %></option>
+                    <% }) %>
+                    <% } else { %>
+                    <option disabled selected hidden>No options found</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="mb-3 col-md-12" id="studentSelectWrapper" style="display:none;">
+                  <label class="form-label">Select Students</label>
+                  <input type="text" class="form-control mb-2" id="studentSearch" placeholder="Search by name, reg number, class, gender...">
+                  <div class="d-flex align-items-center gap-3 mb-2">
+                    <small class="text-muted"><span id="studentSelectedCount">0</span> selected</small>
+                    <a href="#" id="studentSelectAll" class="small">Select All</a>
+                    <a href="#" id="studentDeselectAll" class="small">Deselect All</a>
+                  </div>
+                  <div id="studentList" class="border rounded p-2" style="max-height:250px;overflow-y:auto;">
+                    <% students.forEach((student) => { %>
+                    <div class="searchable-item form-check py-1 px-2 rounded" data-search="<%= (student.firstName + ' ' + (student.middleName || '') + ' ' + student.lastName + ' ' + student.registrationNumber + ' ' + (student.Class ? student.Class.name : '') + ' ' + student.gender).toLowerCase() %>">
+                      <input class="form-check-input student-checkbox" type="checkbox" name="userIds" value="<%= student.id %>" id="student-<%= student.id %>">
+                      <label class="form-check-label w-100" for="student-<%= student.id %>" style="cursor:pointer;">
+                        <strong><%= student.firstName %> <%= student.middleName ? student.middleName + ' ' : '' %><%= student.lastName %></strong>
+                        <span class="text-muted ms-2" style="font-size:0.85em;"><%= student.registrationNumber %></span>
+                        <% if(student.Class) { %>
+                        <span class="badge bg-secondary ms-1"><%= student.Class.name %></span>
+                        <% } %>
+                        <span class="badge bg-light text-dark ms-1" style="font-size:0.75em;"><%= student.gender %></span>
+                      </label>
+                    </div>
+                    <% }) %>
+                    <div id="studentNoResults" class="text-muted text-center py-2" style="display:none;">No students found</div>
+                  </div>
+                </div>
+                <div class="mb-3 col-md-12" id="aspirantSelectWrapper" style="display:none;">
+                  <label class="form-label">Select Aspirants</label>
+                  <input type="text" class="form-control mb-2" id="aspirantSearch" placeholder="Search by name, exam number, class, gender...">
+                  <div class="d-flex align-items-center gap-3 mb-2">
+                    <small class="text-muted"><span id="aspirantSelectedCount">0</span> selected</small>
+                    <a href="#" id="aspirantSelectAll" class="small">Select All</a>
+                    <a href="#" id="aspirantDeselectAll" class="small">Deselect All</a>
+                  </div>
+                  <div id="aspirantList" class="border rounded p-2" style="max-height:250px;overflow-y:auto;">
+                    <% aspirants.forEach((aspirant) => { %>
+                    <div class="searchable-item form-check py-1 px-2 rounded" data-search="<%= (aspirant.firstName + ' ' + (aspirant.middleName || '') + ' ' + aspirant.lastName + ' ' + aspirant.examinationNumber + ' ' + (aspirant.Class ? aspirant.Class.name : '') + ' ' + aspirant.gender).toLowerCase() %>">
+                      <input class="form-check-input aspirant-checkbox" type="checkbox" name="userIds" value="<%= aspirant.id %>" id="aspirant-<%= aspirant.id %>">
+                      <label class="form-check-label w-100" for="aspirant-<%= aspirant.id %>" style="cursor:pointer;">
+                        <strong><%= aspirant.firstName %> <%= aspirant.middleName ? aspirant.middleName + ' ' : '' %><%= aspirant.lastName %></strong>
+                        <span class="text-muted ms-2" style="font-size:0.85em;"><%= aspirant.examinationNumber %></span>
+                        <% if(aspirant.Class) { %>
+                        <span class="badge bg-secondary ms-1"><%= aspirant.Class.name %></span>
+                        <% } %>
+                        <span class="badge bg-light text-dark ms-1" style="font-size:0.75em;"><%= aspirant.gender %></span>
+                      </label>
+                    </div>
+                    <% }) %>
+                    <div id="aspirantNoResults" class="text-muted text-center py-2" style="display:none;">No aspirants found</div>
+                  </div>
+                </div>
+                <div class="mb-3 col-md-12" id="teacherSelectWrapper" style="display:none;">
+                  <label class="form-label">Select Teachers</label>
+                  <input type="text" class="form-control mb-2" id="teacherSearch" placeholder="Search by name, email...">
+                  <div class="d-flex align-items-center gap-3 mb-2">
+                    <small class="text-muted"><span id="teacherSelectedCount">0</span> selected</small>
+                    <a href="#" id="teacherSelectAll" class="small">Select All</a>
+                    <a href="#" id="teacherDeselectAll" class="small">Deselect All</a>
+                  </div>
+                  <div id="teacherList" class="border rounded p-2" style="max-height:250px;overflow-y:auto;">
+                    <% teachers.forEach((teacher) => { %>
+                    <div class="searchable-item form-check py-1 px-2 rounded" data-search="<%= (teacher.firstName + ' ' + teacher.lastName + ' ' + teacher.email).toLowerCase() %>">
+                      <input class="form-check-input teacher-checkbox" type="checkbox" name="userIds" value="<%= teacher.id %>" id="teacher-<%= teacher.id %>">
+                      <label class="form-check-label w-100" for="teacher-<%= teacher.id %>" style="cursor:pointer;">
+                        <strong><%= teacher.firstName %> <%= teacher.lastName %></strong>
+                        <span class="text-muted ms-2" style="font-size:0.85em;"><%= teacher.email %></span>
+                      </label>
+                    </div>
+                    <% }) %>
+                    <div id="teacherNoResults" class="text-muted text-center py-2" style="display:none;">No teachers found</div>
+                  </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="title">Title</label>
+                  <input type="text" class="form-control" id="title" placeholder="Title" name="title" value="<%= formSection === "add" ? form.title || "" : "" %>">
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="message">Message</label>
+                  <textarea class="form-control" id="message" name="message" rows="3" placeholder="Enter notification message"><%= formSection === "add" ? form.message || "" : "" %></textarea>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Send Notification</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Notification -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Delete Notification</h5>
+          </div>
+          <div class="card-body pt-0">
+            <form method="POST" action="?action=delete">
+              <% if(alert.status === "error" && alert.section === "delete") { %>
               <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message">
@@ -22,56 +149,192 @@
                 </div>
               </div>
               <% } %>
-              <% if(alert.status === "success") { %>
+              <% if(alert.status === "success" && alert.section === "delete") { %>
               <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <div class="alert-message pr-5">
-                  <strong>Sucess!</strong> <%- alert.message %>
+                  <strong>Success!</strong> <%- alert.message %>
                 </div>
               </div>
               <% } %>
-              <!-- Personal Information -->
-              <h4 class="mt-3">Notification Information</h4>
               <div class="row">
-                <div class="mb-2 col-md-6">
-                  <label class="form-label" for="addUser">User</label>
-                  <select class="form-control" id="addUser" name="users" <%= users.length <= 0 ? "disabled" : "" %>>
-                    <% if(users.length > 0) { %>
-                    <option disabled selected hidden>Select User</option>
-                    <% users.map((user) => { %>
-                    <option value="<%= user.id %>" <%- formSection === "delete" && form.users === user.id ? "selected" : "" %>><%= user.name %></option>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="deleteNotification">Notification</label>
+                  <select class="form-control" id="deleteNotification" name="notification" <%= notifications.length <= 0 ? "disabled" : "" %>>
+                    <% if(notifications.length > 0) { %>
+                    <option disabled selected hidden>Select Notification</option>
+                    <% notifications.map((notification) => { %>
+                    <option value="<%= notification.id %>" <%- formSection === "delete" && form.notification === notification.id ? "selected" : "" %>><%= notification.title %></option>
                     <% }) %>
                     <% } else { %>
-                    <option disabled selected hidden>No Users found</option>
+                    <option disabled selected hidden>No Notifications found</option>
                     <% } %>
                   </select>
-                </div>
-                <div class="mb-3 col-md-6">
-                  <label class="form-label" for="title">Title</label>
-                  <input type="text" class="form-control" id="title" placeholder="Title" name="title" value="<%= form.title %>">
-                </div>
-                <div class="mb-3 col-md-12">
-                  <label class="form-label" for="message">Message</label>
-                  <textarea class="form-control" id="message" name="message"><%= form.message %></textarea>
                 </div>
               </div>
 
               <!-- Submit Button -->
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="submit" class="btn btn-danger">Delete Notification</button>
             </form>
-
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Notifications Listing -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Sent Notifications</h5>
+          </div>
+          <div class="card-body">
+            <% if(notifications.length > 0) { %>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Message</th>
+                  <th>Audience</th>
+                  <th>Date Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% const audienceLabels = { 'all-students': 'All Students', 'all-aspirants': 'All Aspirants', 'all-teachers': 'All Teachers', 'specific-students': 'Specific Students', 'specific-aspirants': 'Specific Aspirants', 'specific-teachers': 'Specific Teachers' }; %>
+                <% notifications.map((notification) => { %>
+                <tr>
+                  <td><%= notification.title %></td>
+                  <td><%= notification.message.length > 100 ? notification.message.substring(0, 100) + "..." : notification.message %></td>
+                  <td><span class="badge bg-info"><%= audienceLabels[notification.targetAudience] || 'Legacy' %></span></td>
+                  <td><%= new Date(notification.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <% } else { %>
+            <p class="text-muted">No notifications have been sent yet.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </main>
 
 <script>
-  const form = JSON.parse('<%- JSON.stringify(form) %>');
+  const userTypeSelect = document.getElementById("userType");
+  const studentWrapper = document.getElementById("studentSelectWrapper");
+  const aspirantWrapper = document.getElementById("aspirantSelectWrapper");
+  const teacherWrapper = document.getElementById("teacherSelectWrapper");
+
+  // Toggle visibility based on recipient type
+  userTypeSelect.addEventListener("change", function () {
+    const value = this.value;
+    studentWrapper.style.display = "none";
+    aspirantWrapper.style.display = "none";
+    teacherWrapper.style.display = "none";
+    // Uncheck all when switching types
+    document.querySelectorAll(".student-checkbox, .aspirant-checkbox, .teacher-checkbox").forEach(cb => cb.checked = false);
+    updateCount("student");
+    updateCount("aspirant");
+    updateCount("teacher");
+
+    if (value === "specific-students") {
+      studentWrapper.style.display = "block";
+    } else if (value === "specific-aspirants") {
+      aspirantWrapper.style.display = "block";
+    } else if (value === "specific-teachers") {
+      teacherWrapper.style.display = "block";
+    }
+  });
+
+  // Searchable list filtering
+  function setupSearch(inputId, listId, noResultsId) {
+    const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    const noResults = document.getElementById(noResultsId);
+    if (!input || !list) return;
+
+    input.addEventListener("input", function () {
+      const query = this.value.toLowerCase().trim();
+      const items = list.querySelectorAll(".searchable-item");
+      let visibleCount = 0;
+      items.forEach(item => {
+        const match = item.dataset.search.includes(query);
+        item.style.display = match ? "" : "none";
+        if (match) visibleCount++;
+      });
+      if (noResults) noResults.style.display = visibleCount === 0 ? "" : "none";
+    });
+  }
+
+  setupSearch("studentSearch", "studentList", "studentNoResults");
+  setupSearch("aspirantSearch", "aspirantList", "aspirantNoResults");
+  setupSearch("teacherSearch", "teacherList", "teacherNoResults");
+
+  // Selection counter
+  function updateCount(type) {
+    const count = document.querySelectorAll("." + type + "-checkbox:checked").length;
+    const el = document.getElementById(type + "SelectedCount");
+    if (el) el.textContent = count;
+  }
+
+  document.querySelectorAll(".student-checkbox").forEach(cb => cb.addEventListener("change", () => updateCount("student")));
+  document.querySelectorAll(".aspirant-checkbox").forEach(cb => cb.addEventListener("change", () => updateCount("aspirant")));
+  document.querySelectorAll(".teacher-checkbox").forEach(cb => cb.addEventListener("change", () => updateCount("teacher")));
+
+  // Select All / Deselect All (only visible items)
+  function setupSelectAll(selectAllId, deselectAllId, checkboxClass, type) {
+    const selectAll = document.getElementById(selectAllId);
+    const deselectAll = document.getElementById(deselectAllId);
+    if (selectAll) {
+      selectAll.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.querySelectorAll("." + checkboxClass).forEach(cb => {
+          if (cb.closest(".searchable-item").style.display !== "none") cb.checked = true;
+        });
+        updateCount(type);
+      });
+    }
+    if (deselectAll) {
+      deselectAll.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.querySelectorAll("." + checkboxClass).forEach(cb => cb.checked = false);
+        updateCount(type);
+      });
+    }
+  }
+
+  setupSelectAll("studentSelectAll", "studentDeselectAll", "student-checkbox", "student");
+  setupSelectAll("aspirantSelectAll", "aspirantDeselectAll", "aspirant-checkbox", "aspirant");
+  setupSelectAll("teacherSelectAll", "teacherDeselectAll", "teacher-checkbox", "teacher");
+
+  // Hover effect for items
+  document.querySelectorAll(".searchable-item").forEach(item => {
+    item.addEventListener("mouseenter", () => item.style.backgroundColor = "#f8f9fa");
+    item.addEventListener("mouseleave", () => item.style.backgroundColor = "");
+  });
+
+  // Restore state on page load if form was repopulated
+  (function () {
+    const formData = JSON.parse('<%- JSON.stringify(form || "") %>');
+    if (formData && formData.userType) {
+      userTypeSelect.value = formData.userType;
+      userTypeSelect.dispatchEvent(new Event("change"));
+      // Re-check previously selected users
+      if (formData.userIds) {
+        const ids = Array.isArray(formData.userIds) ? formData.userIds : [formData.userIds];
+        ids.forEach(id => {
+          const cb = document.getElementById("student-" + id) || document.getElementById("aspirant-" + id) || document.getElementById("teacher-" + id);
+          if (cb) cb.checked = true;
+        });
+        updateCount("student");
+        updateCount("aspirant");
+        updateCount("teacher");
+      }
+    }
+  })();
 </script>
-<script src="/js/custom.js"></script>
 
 <%- include("../../partials/footer") %>
