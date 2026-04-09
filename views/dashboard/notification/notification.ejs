@@ -204,26 +204,95 @@
           </div>
           <div class="card-body">
             <% if(notifications.length > 0) { %>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Message</th>
-                  <th>Audience</th>
-                  <th>Date Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% notifications.map((notification) => { %>
-                <tr>
-                  <td><%= notification.title %></td>
-                  <td><%= notification.message.length > 100 ? notification.message.substring(0, 100) + "..." : notification.message %></td>
-                  <td><span class="badge bg-info"><%= audienceLabels[notification.targetAudience] || 'Legacy' %></span></td>
-                  <td><%= new Date(notification.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
-                </tr>
-                <% }) %>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Audience</th>
+                    <th>Recipients</th>
+                    <th>Date Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% notifications.map((notification) => { 
+                    const isSpecific = notification.targetAudience && notification.targetAudience.startsWith('specific-');
+                    const students = notification.Students || [];
+                    const aspirants = notification.Aspirants || [];
+                    const teachers = notification.Teachers || [];
+                    const recipientCount = students.length + aspirants.length + teachers.length;
+                  %>
+                  <tr>
+                    <td><%= notification.title %></td>
+                    <td><%= notification.message.length > 100 ? notification.message.substring(0, 100) + "..." : notification.message %></td>
+                    <td><span class="badge bg-info"><%= audienceLabels[notification.targetAudience] || 'Legacy' %></span></td>
+                    <td>
+                      <% if(isSpecific) { %>
+                        <% if(recipientCount > 0) { %>
+                          <button class="btn btn-sm btn-outline-secondary recipient-toggle" type="button" data-bs-target="#recipients-<%= notification.id %>" aria-expanded="false">
+                            <%= recipientCount %> recipient<%= recipientCount > 1 ? 's' : '' %> <i class="fas fa-chevron-down ms-1"></i>
+                          </button>
+                        <% } else { %>
+                          <span class="text-muted">No specific recipients</span>
+                        <% } %>
+                      <% } else { %>
+                        <span class="text-muted">All users in audience</span>
+                      <% } %>
+                    </td>
+                    <td><%= new Date(notification.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                  </tr>
+                  <% if(isSpecific && recipientCount > 0) { %>
+                  <tr id="recipients-<%= notification.id %>" style="display:none;">
+                    <td colspan="5" class="p-0">
+                      <div class="p-3 bg-light">
+                        <% if(students.length > 0) { %>
+                          <div class="mb-2">
+                            <strong class="text-primary"><i class="fas fa-user-graduate me-1"></i> Students (<%= students.length %>):</strong>
+                            <div class="ms-3 mt-1">
+                              <% students.forEach((student, idx) => { %>
+                                <span class="badge bg-primary bg-opacity-10 text-primary me-1 mb-1">
+                                  <%= student.firstName %> <%= student.middleName ? student.middleName + ' ' : '' %><%= student.lastName %>
+                                  <% if(student.Class) { %><span class="text-muted ms-1">(<%= student.Class.name %>)</span><% } %>
+                                </span>
+                              <% }); %>
+                            </div>
+                          </div>
+                        <% } %>
+                        <% if(aspirants.length > 0) { %>
+                          <div class="mb-2">
+                            <strong class="text-success"><i class="fas fa-user-plus me-1"></i> Aspirants (<%= aspirants.length %>):</strong>
+                            <div class="ms-3 mt-1">
+                              <% aspirants.forEach((aspirant, idx) => { %>
+                                <span class="badge bg-success bg-opacity-10 text-success me-1 mb-1">
+                                  <%= aspirant.firstName %> <%= aspirant.middleName ? aspirant.middleName + ' ' : '' %><%= aspirant.lastName %>
+                                  <% if(aspirant.Class) { %><span class="text-muted ms-1">(<%= aspirant.Class.name %>)</span><% } %>
+                                </span>
+                              <% }); %>
+                            </div>
+                          </div>
+                        <% } %>
+                        <% if(teachers.length > 0) { %>
+                          <div class="mb-0">
+                            <strong class="text-warning"><i class="fas fa-chalkboard-teacher me-1"></i> Teachers (<%= teachers.length %>):</strong>
+                            <div class="ms-3 mt-1">
+                              <% teachers.forEach((teacher, idx) => { %>
+                                <span class="badge bg-warning bg-opacity-10 text-dark me-1 mb-1">
+                                  <%= teacher.firstName %> <%= teacher.lastName %>
+                                  <span class="text-muted ms-1">(<%= teacher.email %>)</span>
+                                </span>
+                              <% }); %>
+                            </div>
+                          </div>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                  <% } %>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
             <% } else { %>
             <p class="text-muted">No notifications have been sent yet.</p>
             <% } %>
@@ -418,6 +487,26 @@
       updateDeleteCount();
     }
   })();
+
+  // Recipient toggle functionality
+  document.querySelectorAll(".recipient-toggle").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const targetId = this.getAttribute("data-bs-target");
+      const targetRow = document.querySelector(targetId);
+      if (!targetRow) return;
+      
+      const isExpanded = this.getAttribute("aria-expanded") === "true";
+      if (isExpanded) {
+        targetRow.style.display = "none";
+        this.setAttribute("aria-expanded", "false");
+        this.classList.remove("active");
+      } else {
+        targetRow.style.display = "table-row";
+        this.setAttribute("aria-expanded", "true");
+        this.classList.add("active");
+      }
+    });
+  });
 </script>
 
 <%- include("../../partials/footer") %>
