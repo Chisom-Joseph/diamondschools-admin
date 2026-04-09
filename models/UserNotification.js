@@ -9,24 +9,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
-      references: { model: "Students", key: "id" },
+      // FK defined by association in models/index.js
     },
     AspirantId: {
       type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
-      references: { model: "Aspirants", key: "id" },
+      // FK defined by association in models/index.js
     },
     TeacherId: {
       type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
-      references: { model: "Teachers", key: "id" },
+      // FK defined by association in models/index.js
     },
     NotificationId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: { model: "Notifications", key: "id" },
+      // FK defined by association in models/index.js
     },
     seen: {
       type: DataTypes.BOOLEAN,

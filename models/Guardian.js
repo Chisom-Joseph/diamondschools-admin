@@ -5,16 +5,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       primaryKey: true,
-      validate: {
-        notEmpty: true,
-      },
     },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      validate: { notEmpty: true },
     },
     middleName: {
       type: DataTypes.STRING,
@@ -23,53 +18,49 @@ module.exports = (sequelize, DataTypes) => {
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      validate: { notEmpty: true },
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
       validate: {
         notEmpty: true,
         isEmail: true,
       },
+      // ← Remove "unique: true" from here
     },
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      validate: { notEmpty: true },
     },
     relationshipToStudent: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      validate: { notEmpty: true },
     },
     address: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      validate: { notEmpty: true },
     },
     occupation: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     deleted: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,        // Changed from STRING to BOOLEAN (recommended)
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
       defaultValue: false,
     },
+  }, {
+    indexes: [
+      {
+        unique: true,
+        name: 'unique_guardian_email',
+        fields: ['email']
+      }
+    ]
   });
-
   return Guardian;
 };

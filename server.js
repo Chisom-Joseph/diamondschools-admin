@@ -51,22 +51,26 @@ app.use((err, req, res, next) => {
 });
 
 console.log("Waiting for database connection...");
+
 db.sequelize
-  .sync({
-    force: false,
-    alter: process.env.ALTER === "true",
-    benchmark: true,
+  .authenticate()
+  .then(async () => {
+    console.log(`Database connection successful!`);
+    
+    return db.sequelize.sync({
+      force: false,
+      alter: false,
+    });
   })
-  .then(({ options, config }) => {
-    console.log(`Database connection sucessfull!`);
+  .then(async () => {
+    const config = db.sequelize.config;
     console.table({
-      dialect: options.dialect,
+      dialect: config.dialect,
       database: config.database,
       database_user: config.username,
       database_host: config.host,
-      database_protocol: config.protocol,
-      database_port: config.port,
     });
+
     if (isProduction) {
       sessionStore
         .sync()

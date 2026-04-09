@@ -43,28 +43,46 @@ module.exports = async (req, res) => {
     // For specific types, create individual UserNotification rows.
     if (userType === "specific-students") {
       for (let studentId of userIds) {
-        await UserNotification.findOrCreate({
+        const existing = await UserNotification.findOne({
           where: { StudentId: studentId, NotificationId: notification.id },
-          defaults: { seen: false },
         });
+        if (!existing) {
+          await UserNotification.create({
+            StudentId: studentId,
+            NotificationId: notification.id,
+            seen: false,
+          });
+        }
       }
     }
 
     if (userType === "specific-aspirants") {
       for (let aspirantId of userIds) {
-        await UserNotification.findOrCreate({
+        const existing = await UserNotification.findOne({
           where: { AspirantId: aspirantId, NotificationId: notification.id },
-          defaults: { seen: false },
         });
+        if (!existing) {
+          await UserNotification.create({
+            AspirantId: aspirantId,
+            NotificationId: notification.id,
+            seen: false,
+          });
+        }
       }
     }
 
     if (userType === "specific-teachers") {
       for (let teacherId of userIds) {
-        await UserNotification.findOrCreate({
+        const existing = await UserNotification.findOne({
           where: { TeacherId: teacherId, NotificationId: notification.id },
-          defaults: { seen: false },
         });
+        if (!existing) {
+          await UserNotification.create({
+            TeacherId: teacherId,
+            NotificationId: notification.id,
+            seen: false,
+          });
+        }
       }
     }
 

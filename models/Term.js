@@ -1,4 +1,3 @@
-// models/Term.js
 module.exports = (sequelize, DataTypes) => {
   const Term = sequelize.define("Term", {
     id: {
@@ -6,16 +5,10 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       primaryKey: true,
-      validate: {
-        notEmpty: true,
-      },
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     startDate: {
       type: DataTypes.DATE,
@@ -29,6 +22,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    // Explicitly define the foreign key field
+    AcademicYearId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "AcademicYears",
+        key: "id"
+      }
+    }
   });
   return Term;
 };

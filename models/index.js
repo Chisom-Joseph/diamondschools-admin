@@ -91,7 +91,13 @@ db.Guardian.hasMany(db.Aspirant, { onDelete: "SET NULL" });
 db.Aspirant.belongsTo(db.Class, { onDelete: "SET NULL" });
 db.Class.hasMany(db.Aspirant, { onDelete: "SET NULL" });
 
-db.Timetable.belongsTo(db.Class, { onDelete: "SET NULL" });
+db.Timetable.belongsTo(db.Class, { 
+  foreignKey: 'ClassId',
+  onDelete: "SET NULL",
+  constraints: true,
+  // Add this to give it a stable name
+  name: 'fk_timetables_class'   // or use constraintName if supported in your Sequelize version
+});
 db.Class.hasMany(db.Timetable, { onDelete: "SET NULL" });
 
 db.Subject.belongsToMany(db.Class, {
@@ -178,8 +184,19 @@ db.Notification.belongsToMany(db.Teacher, {
 db.Notification.hasMany(db.UserNotification, { foreignKey: "NotificationId" });
 db.UserNotification.belongsTo(db.Notification, { foreignKey: "NotificationId" });
 
-db.Term.belongsTo(db.AcademicYear, { onDelete: "CASCADE" });
-db.AcademicYear.hasMany(db.Term, { onDelete: "CASCADE" });
+db.Term.belongsTo(db.AcademicYear, {
+  foreignKey: 'AcademicYearId',
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  constraints: true,
+  // This prevents Sequelize from using auto-generated names
+  name: 'fk_terms_academicyear'   // or use constraintName in newer Sequelize
+});
+db.AcademicYear.hasMany(db.Term, {
+  foreignKey: 'AcademicYearId',
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
 
 db.Student.belongsTo(db.AcademicYear, { onDelete: "SET NULL" });
 db.AcademicYear.hasMany(db.Student, { onDelete: "SET NULL" });

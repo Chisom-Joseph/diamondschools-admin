@@ -1,4 +1,5 @@
 <%- include("../../partials/header") %>
+<% const audienceLabels = { 'all-students': 'All Students', 'all-aspirants': 'All Aspirants', 'all-teachers': 'All Teachers', 'specific-students': 'Specific Students', 'specific-aspirants': 'Specific Aspirants', 'specific-teachers': 'Specific Teachers' }; %>
 <main class="content">
   <div class="container-fluid p-0">
 
@@ -140,7 +141,7 @@
             <h5 class="card-title">Delete Notification</h5>
           </div>
           <div class="card-body pt-0">
-            <form method="POST" action="?action=delete">
+            <form method="POST" action="?action=delete" id="deleteNotificationForm">
               <% if(alert.status === "error" && alert.section === "delete") { %>
               <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -157,24 +158,37 @@
                 </div>
               </div>
               <% } %>
-              <div class="row">
-                <div class="mb-3 col-md-12">
-                  <label class="form-label" for="deleteNotification">Notification</label>
-                  <select class="form-control" id="deleteNotification" name="notification" <%= notifications.length <= 0 ? "disabled" : "" %>>
-                    <% if(notifications.length > 0) { %>
-                    <option disabled selected hidden>Select Notification</option>
-                    <% notifications.map((notification) => { %>
-                    <option value="<%= notification.id %>" <%- formSection === "delete" && form.notification === notification.id ? "selected" : "" %>><%= notification.title %></option>
-                    <% }) %>
-                    <% } else { %>
-                    <option disabled selected hidden>No Notifications found</option>
-                    <% } %>
-                  </select>
+
+              <% if(notifications.length > 0) { %>
+              <!-- Search and Select Controls -->
+              <div class="mb-3">
+                <input type="text" class="form-control mb-2" id="deleteNotificationSearch" placeholder="Search notifications...">
+                <div class="d-flex align-items-center gap-3">
+                  <small class="text-muted"><span id="selectedDeleteCount">0</span> selected</small>
+                  <a href="#" id="selectAllDelete" class="small">Select All</a>
+                  <a href="#" id="deselectAllDelete" class="small">Deselect All</a>
                 </div>
               </div>
 
+              <!-- Notification Checkboxes -->
+              <div class="border rounded p-2 mb-3" style="max-height:250px;overflow-y:auto;" id="deleteNotificationList">
+                <% notifications.forEach((notification) => { %>
+                <div class="delete-notification-item form-check py-1 px-2 rounded" data-search="<%= notification.title.toLowerCase() %>">
+                  <input class="form-check-input delete-notification-checkbox" type="checkbox" name="notifications" value="<%= notification.id %>" id="delete-notif-<%= notification.id %>">
+                  <label class="form-check-label w-100" for="delete-notif-<%= notification.id %>" style="cursor:pointer;">
+                    <strong><%= notification.title %></strong>
+                    <span class="badge bg-info ms-1" style="font-size:0.7em;"><%= audienceLabels[notification.targetAudience] || 'Legacy' %></span>
+                  </label>
+                </div>
+                <% }) %>
+                <div id="deleteNoResults" class="text-muted text-center py-2" style="display:none;">No notifications found</div>
+              </div>
+              <% } else { %>
+              <p class="text-muted">No notifications available to delete.</p>
+              <% } %>
+
               <!-- Submit Button -->
-              <button type="submit" class="btn btn-danger">Delete Notification</button>
+              <button type="submit" class="btn btn-danger" <%= notifications.length <= 0 ? "disabled" : "" %>>Delete Selected</button>
             </form>
           </div>
         </div>
@@ -200,7 +214,6 @@
                 </tr>
               </thead>
               <tbody>
-                <% const audienceLabels = { 'all-students': 'All Students', 'all-aspirants': 'All Aspirants', 'all-teachers': 'All Teachers', 'specific-students': 'Specific Students', 'specific-aspirants': 'Specific Aspirants', 'specific-teachers': 'Specific Teachers' }; %>
                 <% notifications.map((notification) => { %>
                 <tr>
                   <td><%= notification.title %></td>
@@ -333,6 +346,76 @@
         updateCount("aspirant");
         updateCount("teacher");
       }
+    }
+  })();
+
+  // Delete Notification Section - Search functionality
+  const deleteSearchInput = document.getElementById("deleteNotificationSearch");
+  const deleteNotificationList = document.getElementById("deleteNotificationList");
+  const deleteNoResults = document.getElementById("deleteNoResults");
+  const selectedDeleteCount = document.getElementById("selectedDeleteCount");
+  const selectAllDelete = document.getElementById("selectAllDelete");
+  const deselectAllDelete = document.getElementById("deselectAllDelete");
+  const deleteCheckboxes = document.querySelectorAll(".delete-notification-checkbox");
+
+  // Search filter for delete notifications
+  if (deleteSearchInput && deleteNotificationList) {
+    deleteSearchInput.addEventListener("input", function () {
+      const query = this.value.toLowerCase().trim();
+      const items = deleteNotificationList.querySelectorAll(".delete-notification-item");
+      let visibleCount = 0;
+      items.forEach(item => {
+        const match = item.dataset.search.includes(query);
+        item.style.display = match ? "" : "none";
+        if (match) visibleCount++;
+      });
+      if (deleteNoResults) deleteNoResults.style.display = visibleCount === 0 ? "" : "none";
+    });
+  }
+
+  // Update selected count for delete section
+  function updateDeleteCount() {
+    const count = document.querySelectorAll(".delete-notification-checkbox:checked").length;
+    if (selectedDeleteCount) selectedDeleteCount.textContent = count;
+  }
+
+  deleteCheckboxes.forEach(cb => cb.addEventListener("change", updateDeleteCount));
+
+  // Select All / Deselect All for delete section
+  if (selectAllDelete) {
+    selectAllDelete.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll(".delete-notification-checkbox").forEach(cb => {
+        if (cb.closest(".delete-notification-item").style.display !== "none") cb.checked = true;
+      });
+      updateDeleteCount();
+    });
+  }
+
+  if (deselectAllDelete) {
+    deselectAllDelete.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelectorAll(".delete-notification-checkbox").forEach(cb => cb.checked = false);
+      updateDeleteCount();
+    });
+  }
+
+  // Hover effect for delete notification items
+  document.querySelectorAll(".delete-notification-item").forEach(item => {
+    item.addEventListener("mouseenter", () => item.style.backgroundColor = "#f8f9fa");
+    item.addEventListener("mouseleave", () => item.style.backgroundColor = "");
+  });
+
+  // Restore delete checkboxes on page load if form was repopulated
+  (function () {
+    const formData = JSON.parse('<%- JSON.stringify(form || "") %>');
+    if (formData && formData.notifications) {
+      const ids = Array.isArray(formData.notifications) ? formData.notifications : [formData.notifications];
+      ids.forEach(id => {
+        const cb = document.getElementById("delete-notif-" + id);
+        if (cb) cb.checked = true;
+      });
+      updateDeleteCount();
     }
   })();
 </script>
