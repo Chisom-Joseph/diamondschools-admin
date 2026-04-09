@@ -47,19 +47,19 @@ module.exports = async (req, res) => {
         {
           model: Student,
           attributes: ["id", "firstName", "middleName", "lastName", "registrationNumber"],
-          through: { attributes: [] },
+          through: { attributes: ["seen"] },
           include: [{ model: Class, attributes: ["name"] }],
         },
         {
           model: Aspirant,
           attributes: ["id", "firstName", "middleName", "lastName", "examinationNumber"],
-          through: { attributes: [] },
+          through: { attributes: ["seen"] },
           include: [{ model: Class, attributes: ["name"] }],
         },
         {
           model: Teacher,
           attributes: ["id", "firstName", "lastName", "email"],
-          through: { attributes: [] },
+          through: { attributes: ["seen"] },
         },
       ],
     });
@@ -71,6 +71,12 @@ module.exports = async (req, res) => {
       const teachers = notification.Teachers || [];
       const recipientCount = students.length + aspirants.length + teachers.length;
       const isSpecific = notification.targetAudience && notification.targetAudience.startsWith('specific-');
+      
+      // Calculate view statistics
+      const viewedStudents = students.filter(s => s.UserNotification?.seen === true);
+      const viewedAspirants = aspirants.filter(a => a.UserNotification?.seen === true);
+      const viewedTeachers = teachers.filter(t => t.UserNotification?.seen === true);
+      const viewedCount = viewedStudents.length + viewedAspirants.length + viewedTeachers.length;
 
       return {
         id: notification.id,
@@ -80,22 +86,26 @@ module.exports = async (req, res) => {
         audienceLabel: audienceLabels[notification.targetAudience] || 'Legacy',
         isSpecific,
         recipientCount,
+        viewedCount,
         students: students.map(s => ({
           firstName: s.firstName,
           middleName: s.middleName,
           lastName: s.lastName,
-          className: s.Class?.name
+          className: s.Class?.name,
+          seen: s.UserNotification?.seen || false
         })),
         aspirants: aspirants.map(a => ({
           firstName: a.firstName,
           middleName: a.middleName,
           lastName: a.lastName,
-          className: a.Class?.name
+          className: a.Class?.name,
+          seen: a.UserNotification?.seen || false
         })),
         teachers: teachers.map(t => ({
           firstName: t.firstName,
           lastName: t.lastName,
-          email: t.email
+          email: t.email,
+          seen: t.UserNotification?.seen || false
         })),
         createdAt: notification.createdAt,
       };
