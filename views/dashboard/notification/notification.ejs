@@ -159,7 +159,7 @@
               </div>
               <% } %>
 
-              <% if(notifications.length > 0) { %>
+              <% if(allNotifications.length > 0) { %>
               <!-- Search and Select Controls -->
               <div class="mb-3">
                 <input type="text" class="form-control mb-2" id="deleteNotificationSearch" placeholder="Search notifications...">
@@ -172,7 +172,7 @@
 
               <!-- Notification Checkboxes -->
               <div class="border rounded p-2 mb-3" style="max-height:250px;overflow-y:auto;" id="deleteNotificationList">
-                <% notifications.forEach((notification) => { %>
+                <% allNotifications.forEach((notification) => { %>
                 <div class="delete-notification-item form-check py-1 px-2 rounded" data-search="<%= notification.title.toLowerCase() %>">
                   <input class="form-check-input delete-notification-checkbox" type="checkbox" name="notifications" value="<%= notification.id %>" id="delete-notif-<%= notification.id %>">
                   <label class="form-check-label w-100" for="delete-notif-<%= notification.id %>" style="cursor:pointer;">
@@ -188,7 +188,7 @@
               <% } %>
 
               <!-- Submit Button -->
-              <button type="submit" class="btn btn-danger" <%= notifications.length <= 0 ? "disabled" : "" %>>Delete Selected</button>
+              <button type="submit" class="btn btn-danger" <%= allNotifications.length <= 0 ? "disabled" : "" %>>Delete Selected</button>
             </form>
           </div>
         </div>
@@ -293,6 +293,64 @@
                 </tbody>
               </table>
             </div>
+            <% if(pagination.totalPages > 1) { %>
+            <!-- Pagination Controls -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <div class="text-muted">
+                Showing <%= ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1 %> to 
+                <%= Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems) %> 
+                of <%= pagination.totalItems %> notifications
+              </div>
+              <nav aria-label="Notifications pagination">
+                <ul class="pagination mb-0">
+                  <!-- Previous Button -->
+                  <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
+                    <a class="page-link" href="/dashboard/notification?page=<%= pagination.currentPage - 1 %>" tabindex="-1">Previous</a>
+                  </li>
+                  
+                  <!-- Page Numbers -->
+                  <%
+                    const maxVisiblePages = 5;
+                    let startPage = Math.max(1, pagination.currentPage - Math.floor(maxVisiblePages / 2));
+                    let endPage = Math.min(pagination.totalPages, startPage + maxVisiblePages - 1);
+                    
+                    if (endPage - startPage + 1 < maxVisiblePages) {
+                      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                    }
+                  %>
+                  
+                  <% if (startPage > 1) { %>
+                    <li class="page-item">
+                      <a class="page-link" href="/dashboard/notification?page=1">1</a>
+                    </li>
+                    <% if (startPage > 2) { %>
+                      <li class="page-item disabled"><span class="page-link">...</span></li>
+                    <% } %>
+                  <% } %>
+                  
+                  <% for (let i = startPage; i <= endPage; i++) { %>
+                    <li class="page-item <%= i === pagination.currentPage ? 'active' : '' %>">
+                      <a class="page-link" href="/dashboard/notification?page=<%= i %>"><%= i %></a>
+                    </li>
+                  <% } %>
+                  
+                  <% if (endPage < pagination.totalPages) { %>
+                    <% if (endPage < pagination.totalPages - 1) { %>
+                      <li class="page-item disabled"><span class="page-link">...</span></li>
+                    <% } %>
+                    <li class="page-item">
+                      <a class="page-link" href="/dashboard/notification?page=<%= pagination.totalPages %>"><%= pagination.totalPages %></a>
+                    </li>
+                  <% } %>
+                  
+                  <!-- Next Button -->
+                  <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
+                    <a class="page-link" href="/dashboard/notification?page=<%= pagination.currentPage + 1 %>">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <% } %>
             <% } else { %>
             <p class="text-muted">No notifications have been sent yet.</p>
             <% } %>
