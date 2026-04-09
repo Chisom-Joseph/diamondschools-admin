@@ -1,9 +1,17 @@
 const deleteNotificationSchema = require("../../../validation/notification/delete");
 const { Notification } = require("../../../models");
+const { Op } = require("sequelize");
 
 module.exports = async (req, res) => {
   try {
-    // Validate notification
+    // Normalize notifications to array
+    let notificationIds = req.body.notifications;
+    if (notificationIds && !Array.isArray(notificationIds)) {
+      notificationIds = [notificationIds];
+    }
+    req.body.notifications = notificationIds;
+
+    // Validate notifications
     const notificationValid = deleteNotificationSchema.validate(req.body);
     if (notificationValid.error) {
       req.flash("alert", {
@@ -17,15 +25,16 @@ module.exports = async (req, res) => {
       return res.redirect("/dashboard/notification");
     }
 
-    // Check if notification exists
-    const notificationExists = await Notification.findOne({
-      where: { id: req.body.notification },
+    // Check how many notifications exist
+    const existingNotifications = await Notification.findAll({
+      where: { id: { [Op.in]: notificationIds } },
     });
-    if (!notificationExists) {
+
+    if (existingNotifications.length === 0) {
       req.flash("alert", {
         status: "error",
         section: "delete",
-        message: "Notification does not exist.",
+        message: "Selected notification(s) do not exist.",
       });
       req.flash("form", req.body);
       req.flash("formSection", "delete");
@@ -33,15 +42,23 @@ module.exports = async (req, res) => {
       return res.redirect("/dashboard/notification");
     }
 
-    // Delete notification (CASCADE handles UserNotification cleanup)
+    const existingIds = existingNotifications.map((n) => n.id);
+    const deletedCount = existingIds.length;
+
+    // Delete notifications (CASCADE handles UserNotification cleanup)
     await Notification.destroy({
-      where: { id: req.body.notification },
+      where: { id: { [Op.in]: existingIds } },
     });
+
+    const message =
+      deletedCount === 1
+        ? "Notification deleted successfully."
+        : `${deletedCount} notifications deleted successfully.`;
 
     req.flash("alert", {
       status: "success",
       section: "delete",
-      message: "Notification deleted successfully.",
+      message: message,
     });
     req.flash("form", "");
     req.flash("formSection", "");
@@ -52,7 +69,7 @@ module.exports = async (req, res) => {
     req.flash("alert", {
       status: "error",
       section: "delete",
-      message: "There was an error deleting the notification.",
+      message: "There was an error deleting the notification(s).",
     });
     req.flash("form", req.body);
     req.flash("formSection", "delete");
