@@ -10,6 +10,7 @@ const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
 const seedFeatures = require("./utils/seedFeatures");
 const seedSiteSettings = require("./utils/seedSiteSettings");
+const cleanupFKConstraints = require("./utils/cleanupFKConstraints");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -51,22 +52,29 @@ app.use((err, req, res, next) => {
 });
 
 console.log("Waiting for database connection...");
+
+// Use migrations for schema changes, not alter sync
+// Run migrations with: npx sequelize-cli db:migrate
 db.sequelize
-  .sync({
-    force: false,
-    alter: process.env.ALTER === "true",
-    benchmark: true,
+  .authenticate()
+  .then(async () => {
+    console.log(`Database connection successful!`);
+    
+    // Sync without alter - use migrations for schema changes
+    return db.sequelize.sync({
+      force: false,
+      alter: false,
+    });
   })
-  .then(({ options, config }) => {
-    console.log(`Database connection sucessfull!`);
+  .then(async () => {
+    const config = db.sequelize.config;
     console.table({
-      dialect: options.dialect,
+      dialect: config.dialect,
       database: config.database,
       database_user: config.username,
       database_host: config.host,
-      database_protocol: config.protocol,
-      database_port: config.port,
     });
+
     if (isProduction) {
       sessionStore
         .sync()

@@ -7,39 +7,29 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
-        validate: {
-          notEmpty: true,
-        },
       },
       day: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
       },
       time: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
       },
       subject: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          notEmpty: true,
-        },
       },
+      // ClassId is defined by the association in models/index.js
+      // Do NOT define it here to avoid duplicate FK constraint errors
     },
     {
       indexes: [
         {
           unique: true,
           fields: ["day", "time"],
-        },
-      ],
+        }
+      ]
     }
   );
   return Timetable;
