@@ -1,12 +1,28 @@
 module.exports = async () => {
   return [
     {
-      id: "student",
-      name: "Student",
+      id: "all-students",
+      name: "All Students",
     },
     {
-      id: "aspirant",
-      name: "Aspirant",
+      id: "all-aspirants",
+      name: "All Aspirants",
+    },
+    {
+      id: "all-teachers",
+      name: "All Teachers",
+    },
+    {
+      id: "specific-students",
+      name: "Specific Students",
+    },
+    {
+      id: "specific-aspirants",
+      name: "Specific Aspirants",
+    },
+    {
+      id: "specific-teachers",
+      name: "Specific Teachers",
     },
   ];
 };

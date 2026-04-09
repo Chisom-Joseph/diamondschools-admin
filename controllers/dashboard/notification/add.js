@@ -2,13 +2,21 @@ const addNotificationSchema = require("../../../validation/notification/add");
 const {
   Notification,
   UserNotification,
-  Student,
-  Aspirant,
 } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
-    const { title, message, users } = req.body;
+    const { title, message, userType } = req.body;
+    let userIds = req.body.userIds;
+
+    // Normalize userIds to array when present and deduplicate
+    if (userIds && !Array.isArray(userIds)) {
+      userIds = [userIds];
+    }
+    if (Array.isArray(userIds)) {
+      userIds = [...new Set(userIds)];
+    }
+    req.body.userIds = userIds;
 
     // Validate notification
     const notificationValid = addNotificationSchema.validate(req.body);
@@ -24,45 +32,39 @@ module.exports = async (req, res) => {
       return res.redirect("/dashboard/notification");
     }
 
-    // Create notification
-    const notification = await Notification.create({ title, message });
+    // Create notification with targetAudience
+    const notification = await Notification.create({
+      title,
+      message,
+      targetAudience: userType,
+    });
 
-    // Fetch students and aspirants if they are selected
-    if (users.includes("student")) {
-      const students = await Student.findAll();
-      for (let student of students) {
-        const existingEntry = await UserNotification.findOne({
-          where: {
-            StudentId: student.id,
-            NotificationId: notification.id,
-          },
+    // For broadcast types (all-*), no UserNotification rows needed.
+    // For specific types, create individual UserNotification rows.
+    if (userType === "specific-students") {
+      for (let studentId of userIds) {
+        await UserNotification.findOrCreate({
+          where: { StudentId: studentId, NotificationId: notification.id },
+          defaults: { seen: false },
         });
-
-        if (!existingEntry) {
-          await UserNotification.create({
-            StudentId: student.id,
-            NotificationId: notification.id,
-          });
-        }
       }
     }
 
-    if (users.includes("aspirant")) {
-      const aspirants = await Aspirant.findAll();
-      for (let aspirant of aspirants) {
-        const existingEntry = await UserNotification.findOne({
-          where: {
-            AspirantId: aspirant.id,
-            NotificationId: notification.id,
-          },
+    if (userType === "specific-aspirants") {
+      for (let aspirantId of userIds) {
+        await UserNotification.findOrCreate({
+          where: { AspirantId: aspirantId, NotificationId: notification.id },
+          defaults: { seen: false },
         });
+      }
+    }
 
-        if (!existingEntry) {
-          await UserNotification.create({
-            AspirantId: aspirant.id,
-            NotificationId: notification.id,
-          });
-        }
+    if (userType === "specific-teachers") {
+      for (let teacherId of userIds) {
+        await UserNotification.findOrCreate({
+          where: { TeacherId: teacherId, NotificationId: notification.id },
+          defaults: { seen: false },
+        });
       }
     }
 

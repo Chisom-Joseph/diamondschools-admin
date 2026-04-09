@@ -1,10 +1,11 @@
 const Joi = require("joi");
 
 const schema = Joi.object({
-  religion: Joi.string().min(1).max(36).required().messages({
-    "string.empty": "Input a religion name to continue.",
-    "string.min": "Religion must be at least 1 characters long.",
-    "string.max": "Religion cannot exceed 30 characters.",
+  notification: Joi.string().min(1).max(36).required().messages({
+    "string.empty": "Select a notification to delete.",
+    "string.min": "Notification ID is invalid.",
+    "string.max": "Notification ID cannot exceed 36 characters.",
+    "any.required": "Notification is required.",
   }),
 });
 

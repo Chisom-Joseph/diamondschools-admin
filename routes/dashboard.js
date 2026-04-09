@@ -525,13 +525,27 @@ router.get("/cbt-result", async (req, res) => {
 // Notification
 router.get("/notification", async (req, res) => {
   try {
+    const { Student, Aspirant, Teacher, Class } = require("../models");
     const status = req.flash("status")[0] || 200;
-    console.log(await require("../utils/getUsers")());
     res.status(status).render("dashboard/notification/notification.ejs", {
       alert: req.flash("alert")[0] || "",
       form: req.flash("form")[0] || "",
       users: await require("../utils/getUsers")(),
       formSection: req.flash("formSection")[0] || "",
+      notifications: await require("../utils/getNotifications")(),
+      students: await Student.findAll({
+        attributes: ["id", "firstName", "middleName", "lastName", "registrationNumber", "gender"],
+        include: [{ model: Class, attributes: ["name"] }],
+        where: { deleted: false },
+      }),
+      aspirants: await Aspirant.findAll({
+        attributes: ["id", "firstName", "middleName", "lastName", "examinationNumber", "gender"],
+        include: [{ model: Class, attributes: ["name"] }],
+        where: { deleted: false },
+      }),
+      teachers: await Teacher.findAll({
+        attributes: ["id", "firstName", "lastName", "email"],
+      }),
     });
   } catch (error) {
     console.error("ERROR RENDERING NOTIFICATION PAGE");
