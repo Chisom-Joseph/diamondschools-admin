@@ -34,4 +34,7 @@ router.get("/get-term/:id", require(`../controllers/api/getTerm`));
 router.get("/get-cbt-results", require(`../controllers/api/getCbtResults`));
 router.delete("/delete-cbt-result", require(`../controllers/api/deleteCbtResult`));
 
+// Notifications
+router.get("/get-notifications", require("../controllers/api/getNotifications"));
+
 module.exports = router;

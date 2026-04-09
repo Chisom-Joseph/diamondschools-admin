@@ -527,10 +527,7 @@ router.get("/notification", async (req, res) => {
   try {
     const { Student, Aspirant, Teacher, Class } = require("../models");
     const status = req.flash("status")[0] || 200;
-    const page = parseInt(req.query.page) || 1;
-    const limit = 10;
 
-    const { notifications, pagination } = await require("../utils/getNotifications")(page, limit);
     const allNotifications = await require("../utils/getAllNotificationsBasic")();
 
     res.status(status).render("dashboard/notification/notification.ejs", {
@@ -538,8 +535,6 @@ router.get("/notification", async (req, res) => {
       form: req.flash("form")[0] || "",
       users: await require("../utils/getUsers")(),
       formSection: req.flash("formSection")[0] || "",
-      notifications,
-      pagination,
       allNotifications,
       students: await Student.findAll({
         attributes: ["id", "firstName", "middleName", "lastName", "registrationNumber", "gender"],
