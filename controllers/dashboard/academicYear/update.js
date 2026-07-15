@@ -21,8 +21,8 @@ module.exports = async (req, res) => {
     const updatedAcademicYear = await AcademicYear.update(
       {
         year: req.body.year,
-        startDate: req.body.startDAte,
-        endDate: req.body.endDAte,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
       },
       { where: { id: req.body.academicYears } }
     );
