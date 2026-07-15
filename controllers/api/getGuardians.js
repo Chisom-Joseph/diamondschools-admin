@@ -38,7 +38,6 @@ module.exports = async (req, res) => {
         "phoneNumber",
         "relationshipToStudent",
         "occupation",
-        "address",
         "deleted",
       ];
 
