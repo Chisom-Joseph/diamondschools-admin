@@ -55,8 +55,10 @@ module.exports = async (req, res) => {
       favicon,
       logo,
       logoLight,
-      uniqueKey: 1,
     });
+
+    // Clear the in-memory cache to ensure updates are reflected immediately
+    require("../../../utils/getSiteSettings").clearCache();
 
     req.flash("alert", {
       status: "success",
