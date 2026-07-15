@@ -6,10 +6,10 @@ module.exports = async (addBreak = true) => {
       include: [
         {
           model: Class,
-          attibutes: ["id", "name"],
+          attributes: ["id", "name"],
         },
       ],
-      attibutes: ["id", "name"],
+      attributes: ["id", "name"],
     });
 
     const subjects = Promise.all(

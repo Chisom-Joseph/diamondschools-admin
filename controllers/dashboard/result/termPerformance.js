@@ -93,6 +93,7 @@ module.exports = async (req, res) => {
       raw: true,
     });
 
+    const resultPromises = [];
     for (const { SubjectId } of studentSubjects) {
       const classStps = await StudentTermPerformance.findAll({
         where: { TermId: termId, ClassId: classId },
@@ -119,12 +120,15 @@ module.exports = async (req, res) => {
         }
         lastScore = classResults[i].totalScore;
 
-        await Result.update(
-          { position: lastPosition },
-          { where: { id: classResults[i].id } }
+        resultPromises.push(
+          Result.update(
+            { position: lastPosition },
+            { where: { id: classResults[i].id } }
+          )
         );
       }
     }
+    await Promise.all(resultPromises);
 
     const stps = await StudentTermPerformance.findAll({
       where: { TermId: termId, ClassId: classId },
@@ -136,6 +140,7 @@ module.exports = async (req, res) => {
     let lastPosition = 0;
     let sameRankCount = 0;
 
+    const stpPromises = [];
     for (let i = 0; i < stps.length; i++) {
       if (stps[i].totalScore !== lastScore) {
         lastPosition += sameRankCount + 1;
@@ -145,11 +150,14 @@ module.exports = async (req, res) => {
       }
       lastScore = stps[i].totalScore;
 
-      await StudentTermPerformance.update(
-        { position: lastPosition },
-        { where: { id: stps[i].id } }
+      stpPromises.push(
+        StudentTermPerformance.update(
+          { position: lastPosition },
+          { where: { id: stps[i].id } }
+        )
       );
     }
+    await Promise.all(stpPromises);
 
     req.flash("alert", {
       status: "success",

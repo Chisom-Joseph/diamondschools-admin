@@ -66,7 +66,7 @@
       columns: [{
           data: 'fullName',
           render: (data, type, row) => {
-            return data ? `<a href="/dashboard/${row.userType.toLowerCase()}/${row.id}">${data}</a>` : 'No Name';
+            return data ? `<a href="/dashboard/${row.userType.toLowerCase()}/${row.userId}">${data}</a>` : 'No Name';
           }
         },
         {
@@ -89,7 +89,12 @@
           data: 'totalQuestions'
         },
         {
-          data: 'scorePercentage'
+          data: 'scorePercentage',
+          render: (data, type, row) => {
+            if (data === null || data === undefined) return '0.0';
+            const score = parseFloat(data);
+            return isNaN(score) ? data : score.toFixed(1);
+          }
         },
         {
           data: null,

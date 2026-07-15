@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
 
       const academicYearFromDb = await AcademicYear.findByPk(
         req.body.academicYear,
-        { attibutes: ["year"] }
+        { attributes: ["year"] }
       );
       if (!academicYearFromDb) {
         req.flash("alert", {

@@ -8,10 +8,10 @@ module.exports = async (id) => {
       include: [
         {
           model: Class,
-          attibutes: ["id", "name"],
+          attributes: ["id", "name"],
         },
       ],
-      attibutes: ["id", "name"],
+      attributes: ["id", "name", "shortName"],
       where: { id },
     });
 

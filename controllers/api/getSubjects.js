@@ -15,16 +15,16 @@ module.exports = async (req, res) => {
       const where = searchValue
         ? {
             [Op.or]: [
-              { Name: { [Op.like]: `%${searchValue}%` } },
+              { name: { [Op.like]: `%${searchValue}%` } },
               { shortName: { [Op.like]: `%${searchValue}%` } },
             ],
           }
         : {};
 
-      const columns = ["id", "Name", "shortName", "ClassId", "deleted"];
+      const columns = ["name", "shortName"];
 
       const orderBy = order?.[0]
-        ? [[columns[parseInt(order[0].column)], order[0].dir || "asc"]]
+        ? [[columns[parseInt(order[0].column)] || "name", order[0].dir || "asc"]]
         : [["id", "asc"]];
 
       // Fetch data with Sequelize
@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
         order: orderBy,
         limit,
         offset,
-        attibutes: [...columns, "ClassId"],
+        attributes: ["id", "name", "shortName"],
       });
 
       // Respond with data in DataTables format

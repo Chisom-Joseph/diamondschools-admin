@@ -1,4 +1,4 @@
-const { Aspirant } = require("../../models"); // Replace with your model
+const { Aspirant, Class, Guardian } = require("../../models"); // Replace with your model
 const { Op } = require("sequelize");
 
 module.exports = async (req, res) => {
@@ -46,39 +46,40 @@ module.exports = async (req, res) => {
         "lastAccess",
       ];
 
+      const sortColumns = ["profileImageUrl", "firstName", "id", "examinationNumber", "gender", "id"];
+
       const orderBy = order?.[0]
-        ? [[columns[parseInt(order[0].column)], order[0].dir || "asc"]]
+        ? [[sortColumns[parseInt(order[0].column)] || "examinationNumber", order[0].dir || "asc"]]
         : [["examinationNumber", "asc"]];
 
-      // Fetch data with Sequelize
+      // Fetch data with Sequelize using JOINs
       const { count, rows } = await Aspirant.findAndCountAll({
         where,
         order: orderBy,
         limit,
         offset,
-        attibutes: [...columns, "ClassId", "GuardianId"],
+        attributes: [...columns, "ClassId", "GuardianId"],
+        include: [
+          { model: Class, attributes: ["id", "name"] },
+          { model: Guardian, attributes: ["id", "firstName", "middleName", "lastName", "email"] },
+        ],
       });
 
-      const allRows = await Promise.all(
-        rows.map(async (row) => {
-          const currentRow = row.dataValues;
-          currentRow.class =
-            (await require("../../utils/getClass")(currentRow.ClassId)) || {};
-
-          currentRow.guardian =
-            (await require("../../utils/getGuardian")(currentRow.GuardianId)) ||
-            {};
-
-          return { ...currentRow };
-        })
-      );
+      const allRows = rows.map((row) => {
+        const aspirantObj = row.toJSON();
+        aspirantObj.class = aspirantObj.Class || {};
+        aspirantObj.guardian = aspirantObj.Guardian || {};
+        delete aspirantObj.Class;
+        delete aspirantObj.Guardian;
+        return aspirantObj;
+      });
 
       // Respond with data in DataTables format
       res.json({
         draw: parseInt(draw) || 0,
         recordsTotal: count,
         recordsFiltered: count,
-        data: await allRows,
+        data: allRows,
       });
     } catch (error) {
       console.error(error);
