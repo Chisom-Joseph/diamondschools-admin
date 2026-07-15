@@ -168,6 +168,22 @@
       </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal modal-sm fade" id="deleteNotificationModal" tabindex="-1" style="display: none;" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body m-3">
+            <p class="mb-0 text-center" id="deleteModalMessage">Are you sure you want to delete this notification?</p>
+            <p class="mb-0 text-center text-danger"><strong>This action cannot be undone.</strong></p>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -434,14 +450,20 @@
       selectAllCheckbox.checked = selectedCheckboxes.length > 0 && selectedCheckboxes.length === allCheckboxes.length;
     }
 
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteNotificationModal'));
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    let deleteCallback = null;
+
     // Single delete button handler
     $('#notificationsTable tbody').on('click', '.delete-single-notif-btn', function(e) {
       e.preventDefault();
       const notifId = this.dataset.id;
-      if (confirm("Are you sure you want to delete this notification? This action cannot be undone.")) {
+      document.getElementById('deleteModalMessage').textContent = "Are you sure you want to delete this notification?";
+      deleteCallback = () => {
         hiddenDeleteInputs.innerHTML = `<input type="hidden" name="notifications" value="${notifId}">`;
         hiddenDeleteForm.submit();
-      }
+      };
+      deleteModal.show();
     });
 
     // Bulk delete button handler
@@ -449,14 +471,24 @@
       e.preventDefault();
       const selectedCheckboxes = document.querySelectorAll(".notification-select-checkbox:checked");
       if (selectedCheckboxes.length > 0) {
-        if (confirm(`Are you sure you want to delete the ${selectedCheckboxes.length} selected notifications? This action cannot be undone.`)) {
+        const count = selectedCheckboxes.length;
+        document.getElementById('deleteModalMessage').textContent = `Are you sure you want to delete the ${count} selected notifications?`;
+        deleteCallback = () => {
           let inputsHtml = "";
           selectedCheckboxes.forEach(cb => {
             inputsHtml += `<input type="hidden" name="notifications" value="${cb.value}">`;
           });
           hiddenDeleteInputs.innerHTML = inputsHtml;
           hiddenDeleteForm.submit();
-        }
+        };
+        deleteModal.show();
+      }
+    });
+
+    // Confirm button click
+    confirmDeleteBtn.addEventListener('click', function() {
+      if (deleteCallback) {
+        deleteCallback();
       }
     });
 
