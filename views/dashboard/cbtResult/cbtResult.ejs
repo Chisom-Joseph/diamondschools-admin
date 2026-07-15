@@ -89,7 +89,12 @@
           data: 'totalQuestions'
         },
         {
-          data: 'scorePercentage'
+          data: 'scorePercentage',
+          render: (data, type, row) => {
+            if (data === null || data === undefined) return '0.0';
+            const score = parseFloat(data);
+            return isNaN(score) ? data : score.toFixed(1);
+          }
         },
         {
           data: null,
