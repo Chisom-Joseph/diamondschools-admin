@@ -9,7 +9,7 @@
 
     <div class="row">
       <!-- Create Notification -->
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div class="card">
           <div class="card-header">
             <h5 class="card-title">Create Notification</h5>
@@ -133,86 +133,32 @@
           </div>
         </div>
       </div>
-
-      <!-- Delete Notification -->
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title">Delete Notification</h5>
-          </div>
-          <div class="card-body pt-0">
-            <form method="POST" action="?action=delete" id="deleteNotificationForm">
-              <% if(alert.status === "error" && alert.section === "delete") { %>
-              <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <div class="alert-message">
-                  <strong>Error!</strong> <%- alert.message %>
-                </div>
-              </div>
-              <% } %>
-              <% if(alert.status === "success" && alert.section === "delete") { %>
-              <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <div class="alert-message pr-5">
-                  <strong>Success!</strong> <%- alert.message %>
-                </div>
-              </div>
-              <% } %>
-
-              <% if(allNotifications.length > 0) { %>
-              <!-- Search and Select Controls -->
-              <div class="mb-3">
-                <input type="text" class="form-control mb-2" id="deleteNotificationSearch" placeholder="Search notifications...">
-                <div class="d-flex align-items-center gap-3">
-                  <small class="text-muted"><span id="selectedDeleteCount">0</span> selected</small>
-                  <a href="#" id="selectAllDelete" class="small">Select All</a>
-                  <a href="#" id="deselectAllDelete" class="small">Deselect All</a>
-                </div>
-              </div>
-
-              <!-- Notification Checkboxes -->
-              <div class="border rounded p-2 mb-3" style="max-height:250px;overflow-y:auto;" id="deleteNotificationList">
-                <% allNotifications.forEach((notification) => { %>
-                <div class="delete-notification-item form-check py-1 px-2 rounded" data-search="<%= notification.title.toLowerCase() %>">
-                  <input class="form-check-input delete-notification-checkbox" type="checkbox" name="notifications" value="<%= notification.id %>" id="delete-notif-<%= notification.id %>">
-                  <label class="form-check-label w-100" for="delete-notif-<%= notification.id %>" style="cursor:pointer;">
-                    <strong><%= notification.title %></strong>
-                    <span class="badge bg-info ms-1" style="font-size:0.7em;"><%= audienceLabels[notification.targetAudience] || 'Legacy' %></span>
-                  </label>
-                </div>
-                <% }) %>
-                <div id="deleteNoResults" class="text-muted text-center py-2" style="display:none;">No notifications found</div>
-              </div>
-              <% } else { %>
-              <p class="text-muted">No notifications available to delete.</p>
-              <% } %>
-
-              <!-- Submit Button -->
-              <button type="submit" class="btn btn-danger" <%= allNotifications.length <= 0 ? "disabled" : "" %>>Delete Selected</button>
-            </form>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Notifications Listing -->
     <div class="row">
       <div class="col-md-12">
         <div class="card">
-          <div class="card-header">
-            <h5 class="card-title">Sent Notifications</h5>
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Sent Notifications</h5>
+            <button id="bulkDeleteBtn" class="btn btn-danger btn-sm d-none"><i class="fas fa-trash me-1"></i> Delete Selected</button>
           </div>
+          <form id="hiddenDeleteForm" method="POST" action="/dashboard/notification?action=delete" style="display:none;">
+            <div id="hiddenDeleteInputs"></div>
+          </form>
           <div class="card-body">
             <div class="table-responsive">
-              <table id="notificationsTable" class="datatable table table-striped table-bordered" style="width:100%">
+              <table id="notificationsTable" class="datatable table table-striped table-bordered align-middle" style="width:100%">
                 <thead>
                   <tr>
+                    <th style="width: 40px; text-align: center;"><input class="form-check-input" type="checkbox" id="selectAllNotifications"></th>
                     <th>Title</th>
                     <th>Message</th>
                     <th>Audience</th>
                     <th>Recipients</th>
                     <th>Views</th>
                     <th>Date Created</th>
+                    <th style="width: 80px; text-align: center;">Actions</th>
                   </tr>
                 </thead>
               </table>
@@ -339,75 +285,6 @@
     }
   })();
 
-  // Delete Notification Section - Search functionality
-  const deleteSearchInput = document.getElementById("deleteNotificationSearch");
-  const deleteNotificationList = document.getElementById("deleteNotificationList");
-  const deleteNoResults = document.getElementById("deleteNoResults");
-  const selectedDeleteCount = document.getElementById("selectedDeleteCount");
-  const selectAllDelete = document.getElementById("selectAllDelete");
-  const deselectAllDelete = document.getElementById("deselectAllDelete");
-  const deleteCheckboxes = document.querySelectorAll(".delete-notification-checkbox");
-
-  // Search filter for delete notifications
-  if (deleteSearchInput && deleteNotificationList) {
-    deleteSearchInput.addEventListener("input", function () {
-      const query = this.value.toLowerCase().trim();
-      const items = deleteNotificationList.querySelectorAll(".delete-notification-item");
-      let visibleCount = 0;
-      items.forEach(item => {
-        const match = item.dataset.search.includes(query);
-        item.style.display = match ? "" : "none";
-        if (match) visibleCount++;
-      });
-      if (deleteNoResults) deleteNoResults.style.display = visibleCount === 0 ? "" : "none";
-    });
-  }
-
-  // Update selected count for delete section
-  function updateDeleteCount() {
-    const count = document.querySelectorAll(".delete-notification-checkbox:checked").length;
-    if (selectedDeleteCount) selectedDeleteCount.textContent = count;
-  }
-
-  deleteCheckboxes.forEach(cb => cb.addEventListener("change", updateDeleteCount));
-
-  // Select All / Deselect All for delete section
-  if (selectAllDelete) {
-    selectAllDelete.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelectorAll(".delete-notification-checkbox").forEach(cb => {
-        if (cb.closest(".delete-notification-item").style.display !== "none") cb.checked = true;
-      });
-      updateDeleteCount();
-    });
-  }
-
-  if (deselectAllDelete) {
-    deselectAllDelete.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelectorAll(".delete-notification-checkbox").forEach(cb => cb.checked = false);
-      updateDeleteCount();
-    });
-  }
-
-  // Hover effect for delete notification items
-  document.querySelectorAll(".delete-notification-item").forEach(item => {
-    item.addEventListener("mouseenter", () => item.style.backgroundColor = "#f8f9fa");
-    item.addEventListener("mouseleave", () => item.style.backgroundColor = "");
-  });
-
-  // Restore delete checkboxes on page load if form was repopulated
-  (function () {
-    const formData = JSON.parse('<%- JSON.stringify(form || "") %>');
-    if (formData && formData.notifications) {
-      const ids = Array.isArray(formData.notifications) ? formData.notifications : [formData.notifications];
-      ids.forEach(id => {
-        const cb = document.getElementById("delete-notif-" + id);
-        if (cb) cb.checked = true;
-      });
-      updateDeleteCount();
-    }
-  })();
 </script>
 
 <link rel="stylesheet" href="/DataTables/datatables.min.css">
@@ -427,9 +304,18 @@
       ajax: '/api/get-notifications',
       stateSave: true,
       order: [
-        [4, 'desc']
+        [6, 'desc']
       ],
       columns: [
+        {
+          data: null,
+          orderable: false,
+          searchable: false,
+          className: 'text-center',
+          render: (data, type, row) => {
+            return `<input class="form-check-input row-select-checkbox notification-select-checkbox" type="checkbox" value="${row.id}">`;
+          }
+        },
         {
           data: 'title',
         },
@@ -497,11 +383,87 @@
             return data;
           },
         },
+        {
+          data: null,
+          orderable: false,
+          searchable: false,
+          className: 'text-center',
+          render: (data, type, row) => {
+            return `
+              <button class="btn btn-sm btn-outline-danger delete-single-notif-btn" data-id="${row.id}">
+                <i class="fas fa-trash-alt me-1"></i> Delete
+              </button>
+            `;
+          }
+        }
       ],
       createdRow: function(row, data, dataIndex) {
         // Store row data in the row element for easy access
         row.dataset.rowData = JSON.stringify(data);
       }
+    });
+    
+    // Bulk select and delete handling
+    const selectAllCheckbox = document.getElementById("selectAllNotifications");
+    const bulkDeleteBtn = document.getElementById("bulkDeleteBtn");
+    const hiddenDeleteForm = document.getElementById("hiddenDeleteForm");
+    const hiddenDeleteInputs = document.getElementById("hiddenDeleteInputs");
+
+    selectAllCheckbox.addEventListener("change", function() {
+      const isChecked = this.checked;
+      document.querySelectorAll(".notification-select-checkbox").forEach(cb => {
+        cb.checked = isChecked;
+      });
+      updateBulkDeleteButtonState();
+    });
+
+    $('#notificationsTable tbody').on('change', '.notification-select-checkbox', function() {
+      updateBulkDeleteButtonState();
+    });
+
+    function updateBulkDeleteButtonState() {
+      const allCheckboxes = document.querySelectorAll(".notification-select-checkbox");
+      const selectedCheckboxes = document.querySelectorAll(".notification-select-checkbox:checked");
+      
+      if (selectedCheckboxes.length > 0) {
+        bulkDeleteBtn.classList.remove("d-none");
+      } else {
+        bulkDeleteBtn.classList.add("d-none");
+      }
+      
+      selectAllCheckbox.checked = selectedCheckboxes.length > 0 && selectedCheckboxes.length === allCheckboxes.length;
+    }
+
+    // Single delete button handler
+    $('#notificationsTable tbody').on('click', '.delete-single-notif-btn', function(e) {
+      e.preventDefault();
+      const notifId = this.dataset.id;
+      if (confirm("Are you sure you want to delete this notification? This action cannot be undone.")) {
+        hiddenDeleteInputs.innerHTML = `<input type="hidden" name="notifications" value="${notifId}">`;
+        hiddenDeleteForm.submit();
+      }
+    });
+
+    // Bulk delete button handler
+    bulkDeleteBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const selectedCheckboxes = document.querySelectorAll(".notification-select-checkbox:checked");
+      if (selectedCheckboxes.length > 0) {
+        if (confirm(`Are you sure you want to delete the ${selectedCheckboxes.length} selected notifications? This action cannot be undone.`)) {
+          let inputsHtml = "";
+          selectedCheckboxes.forEach(cb => {
+            inputsHtml += `<input type="hidden" name="notifications" value="${cb.value}">`;
+          });
+          hiddenDeleteInputs.innerHTML = inputsHtml;
+          hiddenDeleteForm.submit();
+        }
+      }
+    });
+
+    // Reset selection and button state on draw
+    table.on('draw', function() {
+      selectAllCheckbox.checked = false;
+      updateBulkDeleteButtonState();
     });
     
     // Use jQuery event delegation for recipient toggle buttons
@@ -580,7 +542,7 @@
         // Insert details row after current row
         const detailsRow = document.createElement('tr');
         detailsRow.className = 'recipient-details-row';
-        detailsRow.innerHTML = `<td colspan="5" class="p-0">${recipientHtml}</td>`;
+        detailsRow.innerHTML = `<td colspan="8" class="p-0">${recipientHtml}</td>`;
         tr.parentNode.insertBefore(detailsRow, tr.nextSibling);
       }
     });
@@ -730,7 +692,7 @@
         // Insert details row after current row
         const detailsRow = document.createElement('tr');
         detailsRow.className = 'views-details-row';
-        detailsRow.innerHTML = `<td colspan="6" class="p-0">${viewsHtml}</td>`;
+        detailsRow.innerHTML = `<td colspan="8" class="p-0">${viewsHtml}</td>`;
         tr.parentNode.insertBefore(detailsRow, tr.nextSibling);
       }
     });
