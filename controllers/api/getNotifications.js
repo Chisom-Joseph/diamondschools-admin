@@ -30,10 +30,10 @@ module.exports = async (req, res) => {
       : {};
 
     // Columns for sorting
-    const columns = ["id", "title", "message", "targetAudience", "createdAt"];
+    const columns = ["id", "title", "message", "targetAudience", "id", "id", "createdAt", "id"];
 
     const orderBy = order?.[0]
-      ? [[columns[parseInt(order[0].column)], order[0].dir || "desc"]]
+      ? [[columns[parseInt(order[0].column)] || "createdAt", order[0].dir || "desc"]]
       : [["createdAt", "desc"]];
 
     // Fetch data with Sequelize
