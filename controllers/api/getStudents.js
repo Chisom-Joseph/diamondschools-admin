@@ -47,8 +47,10 @@ module.exports = async (req, res) => {
         "AcademicYearId",
       ];
 
+      const sortColumns = ["profileImageUrl", "firstName", "id", "registrationNumber", "gender", "id"];
+
       const orderBy = order?.[0]
-        ? [[columns[parseInt(order[0].column)], order[0].dir || "asc"]]
+        ? [[sortColumns[parseInt(order[0].column)] || "registrationNumber", order[0].dir || "asc"]]
         : [["registrationNumber", "asc"]];
 
       // Fetch data with Sequelize using JOINs

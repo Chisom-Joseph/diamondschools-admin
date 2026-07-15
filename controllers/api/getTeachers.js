@@ -25,23 +25,10 @@ module.exports = async (req, res) => {
           }
         : {};
 
-      const columns = [
-        "id",
-        "firstName",
-        "middleName",
-        "lastName",
-        "country",
-        "stateOfOrigin",
-        "address",
-        "religion",
-        "gender",
-        "blocked",
-        "deleted",
-        "lastAccess",
-      ];
+      const columns = ["profileImageUrl", "firstName", "email", "gender"];
 
       const orderBy = order?.[0]
-        ? [[columns[parseInt(order[0].column)], order[0].dir || "asc"]]
+        ? [[columns[parseInt(order[0].column)] || "firstName", order[0].dir || "asc"]]
         : [["id", "asc"]];
 
       // Fetch data with Sequelize
@@ -50,7 +37,7 @@ module.exports = async (req, res) => {
         order: orderBy,
         limit,
         offset,
-        attributes: [...columns],
+        attributes: ["id", "firstName", "middleName", "lastName", "profileImageUrl", "email", "gender", "deleted"],
       });
 
       // Respond with data in DataTables format
