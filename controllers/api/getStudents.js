@@ -1,4 +1,4 @@
-const { Student } = require("../../models"); // Replace with your model
+const { Student, Class, Guardian } = require("../../models"); // Replace with your model
 const { Op } = require("sequelize");
 
 module.exports = async (req, res) => {
@@ -51,35 +51,34 @@ module.exports = async (req, res) => {
         ? [[columns[parseInt(order[0].column)], order[0].dir || "asc"]]
         : [["registrationNumber", "asc"]];
 
-      // Fetch data with Sequelize
+      // Fetch data with Sequelize using JOINs
       const { count, rows } = await Student.findAndCountAll({
         where,
         order: orderBy,
         limit,
         offset,
-        attibutes: [...columns, "ClassId", "GuardianId"],
+        attributes: [...columns, "ClassId", "GuardianId"],
+        include: [
+          { model: Class, attributes: ["id", "name"] },
+          { model: Guardian, attributes: ["id", "firstName", "middleName", "lastName", "email"] },
+        ],
       });
 
-      const allRows = await Promise.all(
-        rows.map(async (row) => {
-          const currentRow = row.dataValues;
-          currentRow.class =
-            (await require("../../utils/getClass")(currentRow.ClassId)) || {};
-
-          currentRow.guardian =
-            (await require("../../utils/getGuardian")(currentRow.GuardianId)) ||
-            {};
-
-          return { ...currentRow, asdf: "asdf" };
-        })
-      );
+      const allRows = rows.map((row) => {
+        const studentObj = row.toJSON();
+        studentObj.class = studentObj.Class || {};
+        studentObj.guardian = studentObj.Guardian || {};
+        delete studentObj.Class;
+        delete studentObj.Guardian;
+        return { ...studentObj, asdf: "asdf" };
+      });
 
       // Respond with data in DataTables format
       res.json({
         draw: parseInt(draw) || 0,
         recordsTotal: count,
         recordsFiltered: count,
-        data: await allRows,
+        data: allRows,
       });
     } catch (error) {
       console.error(error);

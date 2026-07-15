@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
         order: orderBy,
         limit,
         offset,
-        attibutes: [...columns, "ClassId"],
+        attributes: [...columns, "ClassId"],
       });
 
       // Respond with data in DataTables format

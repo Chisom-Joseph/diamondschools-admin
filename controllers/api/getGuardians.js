@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
         order: orderBy,
         limit,
         offset,
-        attibutes: [...columns],
+        attributes: [...columns],
       });
 
       // Respond with data in DataTables format

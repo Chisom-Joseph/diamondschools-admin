@@ -155,11 +155,8 @@ module.exports = async (req, res) => {
       order: [["totalScore", "DESC"]],
     });
 
-    // Assign positions correctly
-    let lastScore = null;
-    let lastPosition = 0;
-    let sameRankCount = 0;
-
+    // Assign positions correctly in parallel
+    const resultPromises = [];
     for (let i = 0; i < results.length; i++) {
       if (results[i].totalScore !== lastScore) {
         lastPosition += sameRankCount + 1;
@@ -169,11 +166,14 @@ module.exports = async (req, res) => {
       }
       lastScore = results[i].totalScore;
 
-      await Result.update(
-        { position: lastPosition },
-        { where: { id: results[i].id } }
+      resultPromises.push(
+        Result.update(
+          { position: lastPosition },
+          { where: { id: results[i].id } }
+        )
       );
     }
+    await Promise.all(resultPromises);
 
     // Ensure StudentTermPerformance exists
     let studentTermPerformance = await StudentTermPerformance.findOne({
@@ -219,11 +219,8 @@ module.exports = async (req, res) => {
 
     console.log(studentTermPerformances);
 
-    // Assign term positions correctly
-    lastScore = null;
-    lastPosition = 0;
-    sameRankCount = 0;
-
+    // Assign term positions correctly in parallel
+    const stpPromises = [];
     for (let i = 0; i < studentTermPerformances.length; i++) {
       if (studentTermPerformances[i].totalScore !== lastScore) {
         lastPosition += sameRankCount + 1;
@@ -234,12 +231,15 @@ module.exports = async (req, res) => {
 
       lastScore = studentTermPerformances[i].totalScore;
 
-      // Update the student's position
-      await StudentTermPerformance.update(
-        { position: lastPosition },
-        { where: { id: studentTermPerformances[i].id } }
+      // Update the student's position in parallel
+      stpPromises.push(
+        StudentTermPerformance.update(
+          { position: lastPosition },
+          { where: { id: studentTermPerformances[i].id } }
+        )
       );
     }
+    await Promise.all(stpPromises);
 
     req.flash("alert", {
       status: "success",

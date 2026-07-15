@@ -1,4 +1,4 @@
-const { Result, Subject, Student, ClassStats, StudentTermPerformance } = require("../models");
+const { Result, Subject, Student, ClassStats, StudentTermPerformance, Sequelize } = require("../models");
 
 module.exports = async (termId, studentId) => {
   try {
@@ -26,15 +26,27 @@ module.exports = async (termId, studentId) => {
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
 
-    for (const result of results) {
-      const classStats = await ClassStats.findOne({
+    // Fetch ClassStats for all subjects in the results in a single query
+    const subjectIds = results.map(r => r.SubjectId);
+    let classStatsList = [];
+    if (subjectIds.length > 0) {
+      classStatsList = await ClassStats.findAll({
         where: {
           ClassId: effectiveClassId,
-          SubjectId: result.SubjectId,
           TermId: termId,
+          SubjectId: { [Sequelize.Op.in]: subjectIds }
         },
-        attributes: ["classLowest", "classHighest", "classAverage"],
+        attributes: ["SubjectId", "classLowest", "classHighest", "classAverage"],
       });
+    }
+
+    const classStatsMap = {};
+    for (const cs of classStatsList) {
+      classStatsMap[cs.SubjectId] = cs;
+    }
+
+    for (const result of results) {
+      const classStats = classStatsMap[result.SubjectId];
 
       result.dataValues.classStats = classStats || {
         classLowest: null,

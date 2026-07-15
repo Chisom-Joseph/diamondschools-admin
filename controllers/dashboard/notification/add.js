@@ -41,49 +41,33 @@ module.exports = async (req, res) => {
 
     // For broadcast types (all-*), no UserNotification rows needed.
     // For specific types, create individual UserNotification rows.
-    if (userType === "specific-students") {
-      for (let studentId of userIds) {
-        const existing = await UserNotification.findOne({
-          where: { StudentId: studentId, NotificationId: notification.id },
-        });
-        if (!existing) {
-          await UserNotification.create({
-            StudentId: studentId,
-            NotificationId: notification.id,
-            seen: false,
-          });
-        }
-      }
+    // For broadcast types (all-*), no UserNotification rows needed.
+    // For specific types, create individual UserNotification rows.
+    if (userType === "specific-students" && userIds.length > 0) {
+      const entries = userIds.map((studentId) => ({
+        StudentId: studentId,
+        NotificationId: notification.id,
+        seen: false,
+      }));
+      await UserNotification.bulkCreate(entries);
     }
 
-    if (userType === "specific-aspirants") {
-      for (let aspirantId of userIds) {
-        const existing = await UserNotification.findOne({
-          where: { AspirantId: aspirantId, NotificationId: notification.id },
-        });
-        if (!existing) {
-          await UserNotification.create({
-            AspirantId: aspirantId,
-            NotificationId: notification.id,
-            seen: false,
-          });
-        }
-      }
+    if (userType === "specific-aspirants" && userIds.length > 0) {
+      const entries = userIds.map((aspirantId) => ({
+        AspirantId: aspirantId,
+        NotificationId: notification.id,
+        seen: false,
+      }));
+      await UserNotification.bulkCreate(entries);
     }
 
-    if (userType === "specific-teachers") {
-      for (let teacherId of userIds) {
-        const existing = await UserNotification.findOne({
-          where: { TeacherId: teacherId, NotificationId: notification.id },
-        });
-        if (!existing) {
-          await UserNotification.create({
-            TeacherId: teacherId,
-            NotificationId: notification.id,
-            seen: false,
-          });
-        }
-      }
+    if (userType === "specific-teachers" && userIds.length > 0) {
+      const entries = userIds.map((teacherId) => ({
+        TeacherId: teacherId,
+        NotificationId: notification.id,
+        seen: false,
+      }));
+      await UserNotification.bulkCreate(entries);
     }
 
     req.flash("alert", {
