@@ -11,7 +11,7 @@ module.exports = async (id) => {
           attributes: ["id", "name"],
         },
       ],
-      attributes: ["id", "name"],
+      attributes: ["id", "name", "shortName"],
       where: { id },
     });
 

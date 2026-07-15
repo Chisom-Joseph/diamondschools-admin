@@ -92,6 +92,7 @@ module.exports = async (req, res) => {
       const user = row.Student || row.Aspirant || {}; // Pick Student if available, else Aspirant
       return {
         id: row.id,
+        userId: user.id,
         userType: row.Student ? "Student" : "Aspirant",
         fullName: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
         registrationNumber:
