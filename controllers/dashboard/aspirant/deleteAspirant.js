@@ -16,22 +16,43 @@ module.exports = async (req, res) => {
       return res.redirect(req.baseUrl + req.path);
     }
 
-    // Delete aspirant provile image
-    const FormData = require("form-data");
-    const formData = new FormData();
-    formData.append("profilePhoto", aspirant.dataValues.profileImageUrl);
+    // Delete aspirant profile image directly from server storage
+    const fs = require("fs");
+    const path = require("path");
+    const os = require("os");
 
-    const response = await axios.post(
-      `${process.env.MAIN_WEBSITE_URL}/api/deleteStudentPhoto`,
-      formData,
-      {
-        headers: {
-          ...formData.getHeaders(),
-          Authorization: `bearer ${process.env.MAIN_WEBSITE_ACCESS_TOKEN}`,
-        },
+    if (aspirant.profileImageUrl) {
+      const filename = path.basename(aspirant.profileImageUrl);
+      const filePath = os.platform() === "win32"
+        ? path.join(__dirname, "../../../public/assets/img/studentPhotos", filename)
+        : path.join("/data/diamondschools_storage/student_photos", filename);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+          console.log(`Deleted aspirant profile image: ${filePath}`);
+        } catch (err) {
+          console.error("Failed to delete profile image:", err);
+        }
       }
-    );
-    console.log(response.data);
+    }
+
+    // Delete aspirant payment proof directly from server storage
+    if (aspirant.paymentProofUrl) {
+      const filename = path.basename(aspirant.paymentProofUrl);
+      const filePath = os.platform() === "win32"
+        ? path.join(__dirname, "../../../public/assets/img/paymentProofs", filename)
+        : path.join("/data/diamondschools_storage/payment_proofs", filename);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+          console.log(`Deleted aspirant payment proof: ${filePath}`);
+        } catch (err) {
+          console.error("Failed to delete payment proof:", err);
+        }
+      }
+    }
 
     // Delete aspirant
     await Aspirant.destroy({ where: { id: aspirantId } });

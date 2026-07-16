@@ -16,22 +16,25 @@ module.exports = async (req, res) => {
       return res.redirect(req.baseUrl + req.path);
     }
 
-    // Delete student provile image
-    const FormData = require("form-data");
-    const formData = new FormData();
-    formData.append("profilePhoto", student.dataValues.profileImageUrl);
+    // Delete student profile image directly from server storage
+    if (student.profileImageUrl) {
+      const fs = require("fs");
+      const path = require("path");
+      const os = require("os");
+      const filename = path.basename(student.profileImageUrl);
+      const filePath = os.platform() === "win32"
+        ? path.join(__dirname, "../../../public/assets/img/studentPhotos", filename)
+        : path.join("/data/diamondschools_storage/student_photos", filename);
 
-    const response = await axios.post(
-      `${process.env.MAIN_WEBSITE_URL}/api/deleteStudentPhoto`,
-      formData,
-      {
-        headers: {
-          ...formData.getHeaders(),
-          Authorization: `bearer ${process.env.MAIN_WEBSITE_ACCESS_TOKEN}`,
-        },
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+          console.log(`Deleted profile image: ${filePath}`);
+        } catch (err) {
+          console.error("Failed to delete profile image:", err);
+        }
       }
-    );
-    console.log(response.data);
+    }
 
     // Delete student
     await Student.destroy({ where: { id: studentId } });
