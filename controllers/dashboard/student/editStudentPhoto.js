@@ -37,6 +37,16 @@ module.exports = async (req, res) => {
         req.flash("status", 400);
         return res.redirect(req.baseUrl + req.path);
       }
+      const fs = require("fs");
+      const cleanupFile = () => {
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+          try {
+            fs.unlinkSync(req.file.path);
+          } catch (unlinkErr) {
+            console.error("Failed to delete temp file:", unlinkErr);
+          }
+        }
+      };
 
       const studentId = req.params.id || req.body.studentId;
 
@@ -44,6 +54,7 @@ module.exports = async (req, res) => {
       const student = await Student.findByPk(studentId);
 
       if (!student) {
+        cleanupFile();
         req.flash("alert", {
           status: "error",
           section: "block",
@@ -53,29 +64,25 @@ module.exports = async (req, res) => {
         return res.redirect(req.baseUrl + req.path);
       }
 
-      const fileBuffer = req.file.buffer;
-      const fileName = req.file.originalname;
+      const profileImageUrl = `https://files.diamondschools.com.ng/student_photos/${req.file.filename}`;
 
-      const FormData = require("form-data");
-      const formData = new FormData();
-      formData.append("file", fileBuffer, fileName);
-      formData.append("previousProfilePhoto", student.profileImageUrl);
-
-      // Upload image
-      let profileImageUrl;
       try {
-        const response = await axios.post(
-          `${process.env.MAIN_WEBSITE_URL}/api/addStudentPhoto`,
-          formData,
-          {
-            headers: {
-              ...formData.getHeaders(),
-              Authorization: `bearer ${process.env.MAIN_WEBSITE_ACCESS_TOKEN}`,
-            },
+        // Delete previous profile photo if it exists
+        if (student.profileImageUrl) {
+          const oldFilename = path.basename(student.profileImageUrl);
+          const os = require("os");
+          const oldPath = os.platform() === "win32"
+            ? path.join(__dirname, "../../../public/assets/img/studentPhotos", oldFilename)
+            : path.join("/data/diamondschools_storage/student_photos", oldFilename);
+          if (fs.existsSync(oldPath)) {
+            try {
+              fs.unlinkSync(oldPath);
+              console.log(`Deleted old file: ${oldPath}`);
+            } catch (err) {
+              console.error("Failed to delete old file:", err);
+            }
           }
-        );
-        profileImageUrl = response.data.file.profileImageUrl;
-        console.log(response.data);
+        }
 
         // Update student
         const editedStudent = await Student.update(
@@ -97,15 +104,9 @@ module.exports = async (req, res) => {
         req.flash("form", "");
         req.flash("status", 200);
         return res.redirect(req.baseUrl + req.path);
-      } catch (error) {
-        // Handle Axios errors
-        req.flash("alert", {
-          status: "error",
-          message: "Error uploading profile image",
-        });
-        req.flash("form", req.body);
-        req.flash("status", 400);
-        return res.redirect(req.baseUrl + req.path);
+      } catch (dbError) {
+        cleanupFile();
+        throw dbError;
       }
     });
   } catch (error) {

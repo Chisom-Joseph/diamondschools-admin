@@ -1,4 +1,4 @@
-const axios = require("axios");
+const fs = require("fs");
 const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const { Country } = require("country-state-city");
@@ -14,48 +14,16 @@ const {
 module.exports = async (req, res) => {
   try {
     sutdentProfileImageUpload(req, res, async (err) => {
-      // Validate student
-      const studentValid = addStudentSchema.validate(req.body);
-      if (studentValid.error) {
-        req.flash("alert", {
-          status: "error",
-          section: "add",
-          message: studentValid.error.message,
-        });
-        req.flash("form", req.body);
-        req.flash("status", 400);
-        return res.redirect("/dashboard/add-student");
-      }
-
-      // Check if guardian's email is already in use
-      const guardianExists = await Guardian.findOne({
-        where: { email: req.body.guardianEmail },
-      });
-      if (guardianExists) {
-        req.flash("alert", {
-          status: "error",
-          section: "add",
-          message: "Guardian email already in use.",
-        });
-        req.flash("form", req.body);
-        req.flash("status", 400);
-        return res.redirect("/dashboard/add-student");
-      }
-
-      const academicYearFromDb = await AcademicYear.findByPk(
-        req.body.academicYear,
-        { attributes: ["year"] }
-      );
-      if (!academicYearFromDb) {
-        req.flash("alert", {
-          status: "error",
-          section: "add",
-          message: "Invalid academic year.",
-        });
-        req.flash("form", req.body);
-        req.flash("status", 400);
-        return res.redirect("/dashboard/add-student");
-      }
+      // Helper function to clean up uploaded file
+      const cleanupFile = () => {
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+          try {
+            fs.unlinkSync(req.file.path);
+          } catch (unlinkErr) {
+            console.error("Failed to delete temp file:", unlinkErr);
+          }
+        }
+      };
 
       // Handle profile image errors
       if (err instanceof multer.MulterError) {
@@ -89,43 +57,59 @@ module.exports = async (req, res) => {
         return res.redirect("/dashboard/add-student");
       }
 
-      const fileBuffer = req.file.buffer;
-      const fileName = req.file.originalname;
-
-      const FormData = require("form-data");
-      const formData = new FormData();
-      formData.append("file", fileBuffer, fileName);
-
-      // Upload image
-      let profileImageUrl;
-      try {
-        const response = await axios.post(
-          `${process.env.MAIN_WEBSITE_URL}/api/addStudentPhoto`,
-          formData,
-          {
-            headers: {
-              ...formData.getHeaders(),
-              Authorization: `bearer ${process.env.MAIN_WEBSITE_ACCESS_TOKEN}`,
-            },
-          }
-        );
-        profileImageUrl = response.data.file.profileImageUrl;
-        console.log(response.data);
-      } catch (error) {
-        // Handle Axios errors
+      // Validate student
+      const studentValid = addStudentSchema.validate(req.body);
+      if (studentValid.error) {
+        cleanupFile();
         req.flash("alert", {
           status: "error",
-          message: "Error uploading profile image",
+          section: "add",
+          message: studentValid.error.message,
         });
         req.flash("form", req.body);
         req.flash("status", 400);
         return res.redirect("/dashboard/add-student");
       }
 
+      // Check if guardian's email is already in use
+      const guardianExists = await Guardian.findOne({
+        where: { email: req.body.guardianEmail },
+      });
+      if (guardianExists) {
+        cleanupFile();
+        req.flash("alert", {
+          status: "error",
+          section: "add",
+          message: "Guardian email already in use.",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-student");
+      }
+
+      const academicYearFromDb = await AcademicYear.findByPk(
+        req.body.academicYear,
+        { attributes: ["year"] }
+      );
+      if (!academicYearFromDb) {
+        cleanupFile();
+        req.flash("alert", {
+          status: "error",
+          section: "add",
+          message: "Invalid academic year.",
+        });
+        req.flash("form", req.body);
+        req.flash("status", 400);
+        return res.redirect("/dashboard/add-student");
+      }
+
+      const profileImageUrl = `https://files.diamondschools.com.ng/student_photos/${req.file.filename}`;
+
       const registrationNumber = await require("../../../utils/genRegNumber")(
         academicYearFromDb.year
       );
       if (!registrationNumber) {
+        cleanupFile();
         req.flash("alert", {
           status: "error",
           message: "Error generating registration number",
@@ -143,61 +127,65 @@ module.exports = async (req, res) => {
 
       const transaction = await sequelize.transaction();
 
-      // Create Guardian
-      const newGuardian = await Guardian.create(
-        {
-          firstName: req.body.guardianFirstName,
-          middleName: req.body.guardianMiddleName,
-          lastName: req.body.guardianLastName,
-          email: req.body.guardianEmail,
-          phoneNumber: req.body.guardianPhoneNumber,
-          relationshipToStudent: req.body.relationshipToStudent,
-          address: req.body.guardianAddress,
-          occupation: req.body.guardianOccupation,
-        },
-        { transaction }
-      );
+      try {
+        // Create Guardian
+        const newGuardian = await Guardian.create(
+          {
+            firstName: req.body.guardianFirstName,
+            middleName: req.body.guardianMiddleName,
+            lastName: req.body.guardianLastName,
+            email: req.body.guardianEmail,
+            phoneNumber: req.body.guardianPhoneNumber,
+            relationshipToStudent: req.body.relationshipToStudent,
+            address: req.body.guardianAddress,
+            occupation: req.body.guardianOccupation,
+          },
+          { transaction }
+        );
 
-      // Create student
-      const newStudent = await Student.create(
-        {
-          firstName: req.body.firstName,
-          middleName: req.body.middleName,
-          lastName: req.body.lastName,
-          address: req.body.address,
-          country: Country.getCountryByCode(req.body.country).name,
-          stateOfOrigin: req.body.stateOfOrigin,
-          religion: req.body.religion,
-          AcademicYearId: req.body.academicYear,
-          registrationNumber,
-          password: hashedPassword,
-          gender: req.body.gender,
-          dateOfBirth: req.body.dateOfBirth,
-          profileImageUrl,
-          ClassId: req.body.class,
-          GuardianId: newGuardian.dataValues.id,
-        },
-        { transaction }
-      );
-      console.log(newStudent);
+        // Create student
+        const newStudent = await Student.create(
+          {
+            firstName: req.body.firstName,
+            middleName: req.body.middleName,
+            lastName: req.body.lastName,
+            address: req.body.address,
+            country: Country.getCountryByCode(req.body.country).name,
+            stateOfOrigin: req.body.stateOfOrigin,
+            religion: req.body.religion,
+            AcademicYearId: req.body.academicYear,
+            registrationNumber,
+            password: hashedPassword,
+            gender: req.body.gender,
+            dateOfBirth: req.body.dateOfBirth,
+            profileImageUrl,
+            ClassId: req.body.class,
+            GuardianId: newGuardian.dataValues.id,
+          },
+          { transaction }
+        );
+        console.log(newStudent);
 
-      await transaction.commit();
+        await transaction.commit();
 
-      // Send email
-
-      req.flash("alert", {
-        status: "success",
-        section: "add",
-        message: `Student created successfully`,
-      });
-      req.flash("form", "");
-      req.flash("newStudentId", newStudent.dataValues.id);
-      req.flash(
-        "newStudent",
-        `REG NUMBER: ${registrationNumber} <br> PASSWORD: ${password}`
-      );
-      req.flash("status", 200);
-      res.redirect("/dashboard/add-student");
+        req.flash("alert", {
+          status: "success",
+          section: "add",
+          message: `Student created successfully`,
+        });
+        req.flash("form", "");
+        req.flash("newStudentId", newStudent.dataValues.id);
+        req.flash(
+          "newStudent",
+          `REG NUMBER: ${registrationNumber} <br> PASSWORD: ${password}`
+        );
+        req.flash("status", 200);
+        res.redirect("/dashboard/add-student");
+      } catch (transError) {
+        await transaction.rollback();
+        cleanupFile();
+        throw transError;
+      }
     });
   } catch (error) {
     console.error(error);

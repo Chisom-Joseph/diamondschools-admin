@@ -1,8 +1,21 @@
 const multer = require("multer");
 const path = require("path");
+const os = require("os");
+const fs = require("fs");
+
+const uploadDir = os.platform() === "win32"
+  ? path.join(__dirname, "../public/assets/img/teacherPhotos")
+  : "/data/diamondschools_storage/teacher_photos";
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Set storage engine
-const storage = multer.memoryStorage({
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
   filename: function (req, file, cb) {
     cb(
       null,
