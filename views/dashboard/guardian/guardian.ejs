@@ -106,7 +106,7 @@
                     <% guardian.aspirants.forEach(aspirant => { %>
                     <tr>
                       <th>First Name</th>
-                      <td><img src="<%= aspirant.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" alt="<%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %>"></td>
+                      <td><img src="<%= aspirant.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" style="object-fit: cover;" alt="<%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %>"></td>
                       <td><a href="/dashboard/aspirant/<%= aspirant.id %>"><%= aspirant.firstName %> <%= aspirant.middleName %> <%= aspirant.lastName %></a></td>
                     </tr>
                     <% }) %>
@@ -120,7 +120,7 @@
                     <% guardian.students.forEach(student => { %>
                     <tr>
                       <th>First Name</th>
-                      <td><img src="<%= student.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" alt="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>"></td>
+                      <td><img src="<%= student.profileImageUrl %>" width="32" height="32" class="rounded-circle my-n1" style="object-fit: cover;" alt="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>"></td>
                       <td><a href="/dashboard/student/<%= student.id %>"><%= student.firstName %> <%= student.middleName %> <%= student.lastName %></a></td>
                     </tr>
                     <% }) %>

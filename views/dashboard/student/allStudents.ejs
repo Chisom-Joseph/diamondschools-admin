@@ -324,8 +324,8 @@
           data: 'profileImageUrl',
           render: (data, type, row) => {
             return type === 'display' && data ?
-              `<img src="${data}" width="32" height="32" class="rounded-circle my-n1" />` :
-              `<img src="/img/profileImage/default.png" width="32" height="32" class="rounded-circle my-n1" />`;
+              `<img src="${data}" width="32" height="32" class="rounded-circle my-n1" style="object-fit: cover;" />` :
+              `<img src="/img/profileImage/default.png" width="32" height="32" class="rounded-circle my-n1" style="object-fit: cover;" />`;
           },
         },
         {
