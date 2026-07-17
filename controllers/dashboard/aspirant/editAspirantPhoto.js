@@ -1,4 +1,5 @@
-const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 const multer = require("multer");
 const sutdentProfileImageUpload = require("../../../middlewares/aspirantProfileImageUpload");
 const { Aspirant } = require("../../../models");
@@ -37,7 +38,6 @@ module.exports = async (req, res) => {
         req.flash("status", 400);
         return res.redirect(req.baseUrl + req.path);
       }
-      const fs = require("fs");
       const cleanupFile = () => {
         if (req.file && req.file.path && fs.existsSync(req.file.path)) {
           try {
