@@ -72,4 +72,15 @@ const updateStateSelect = () => {
 
 if (form !== "" && states !== "") updateStateSelect();
 if (userState !== "" && states !== "") updateStateSelect();
-countrySelect.addEventListener("change", updateStateSelect);
+if (countrySelect) countrySelect.addEventListener("change", updateStateSelect);
+
+// Global client-side file size validation to prevent 413 Request Entity Too Large and Multer limits
+document.addEventListener("change", function(event) {
+  if (event.target && event.target.type === "file") {
+    const file = event.target.files[0];
+    if (file && file.size > 2000000) { // 2MB limit
+      alert("File size exceeds the 2MB limit. Please upload a smaller image.");
+      event.target.value = ""; // Clear file input
+    }
+  }
+});

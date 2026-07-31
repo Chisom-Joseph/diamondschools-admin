@@ -506,6 +506,11 @@
   document.getElementById('profilePhoto').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
+      if (file.size > 2000000) {
+        alert("File size exceeds the 2MB limit. Please upload a smaller image.");
+        event.target.value = ""; // Clear the file input
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function(e) {
         const preview = document.getElementById('previewImage');
