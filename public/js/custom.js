@@ -74,6 +74,15 @@ if (form !== "" && states !== "") updateStateSelect();
 if (userState !== "" && states !== "") updateStateSelect();
 if (countrySelect) countrySelect.addEventListener("change", updateStateSelect);
 
+// Helper function to format file size in human-readable format (e.g., KB, MB)
+function formatFileSize(bytes) {
+  if (!bytes || bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
 // Reusable helper function to display Bootstrap file size error modal
 function showFileSizeError(message) {
   const msgEl = document.getElementById("fileSizeModalMessage");
@@ -107,7 +116,8 @@ document.addEventListener("change", function(event) {
   if (event.target && event.target.type === "file") {
     const file = event.target.files[0];
     if (file && file.size > 2000000) { // 2MB limit
-      showFileSizeError("File size exceeds the 2MB limit. Please upload a smaller image.");
+      const formattedSize = formatFileSize(file.size);
+      showFileSizeError(`Selected file size (${formattedSize}) exceeds the 2MB limit. Please upload a smaller image.`);
       event.target.value = ""; // Clear file input
     }
   }

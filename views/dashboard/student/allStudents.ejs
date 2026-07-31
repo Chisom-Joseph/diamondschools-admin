@@ -519,7 +519,9 @@
     if (file) {
       if (file.size > 2000000) {
         if (typeof showFileSizeError === "function") {
-          showFileSizeError("File size exceeds the 2MB limit. Please upload a smaller image.");
+          const formattedSize = typeof formatFileSize === "function" ? formatFileSize(file.size) : "";
+          const msg = formattedSize ? `Selected file size (${formattedSize}) exceeds the 2MB limit. Please upload a smaller image.` : "File size exceeds the 2MB limit. Please upload a smaller image.";
+          showFileSizeError(msg);
         }
         event.target.value = ""; // Clear the file input
         return;
