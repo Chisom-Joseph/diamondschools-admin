@@ -417,7 +417,7 @@
   document.getElementById('profilePhoto').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
-      if (file.size > 2000000) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit (2,097,152 bytes)
         if (typeof showFileSizeError === "function") {
           const formattedSize = typeof formatFileSize === "function" ? formatFileSize(file.size) : "";
           const msg = formattedSize ? `Selected file size (${formattedSize}) exceeds the 2MB limit. Please upload a smaller image.` : "File size exceeds the 2MB limit. Please upload a smaller image.";

@@ -112,10 +112,12 @@ function showFileSizeError(message) {
 }
 
 // Global client-side file size validation to prevent 413 Request Entity Too Large and Multer limits
+const MAX_ALLOWED_FILE_SIZE = 2 * 1024 * 1024; // 2MB in binary bytes (2,097,152 bytes)
+
 document.addEventListener("change", function(event) {
   if (event.target && event.target.type === "file") {
     const file = event.target.files[0];
-    if (file && file.size > 2000000) { // 2MB limit
+    if (file && file.size > MAX_ALLOWED_FILE_SIZE) {
       const formattedSize = formatFileSize(file.size);
       showFileSizeError(`Selected file size (${formattedSize}) exceeds the 2MB limit. Please upload a smaller image.`);
       event.target.value = ""; // Clear file input
