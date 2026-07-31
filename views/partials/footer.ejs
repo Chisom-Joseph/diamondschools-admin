@@ -50,18 +50,23 @@
       </div>
 
       <!-- File Size Warning Modal -->
-      <div class="modal modal-sm fade" id="fileSizeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+      <div class="modal modal-sm fade" id="fileSizeModal" tabindex="-1" style="display: none; z-index: 1070;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-danger">File Size Limit Exceeded</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-content shadow-lg border-0 rounded-3">
+            <div class="modal-header bg-danger text-white py-2 px-3">
+              <h5 class="modal-title text-white fw-bold fs-6">File Size Exceeded</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body m-3 text-center">
-              <p id="fileSizeModalMessage" class="mb-0">File size exceeds the 2MB limit. Please upload a smaller image.</p>
+            <div class="modal-body p-4 text-center bg-white">
+              <div class="mb-3 text-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+              </div>
+              <p id="fileSizeModalMessage" class="mb-0 text-dark fw-medium fs-6">File size exceeds the 2MB limit. Please upload a smaller image.</p>
             </div>
-            <div class="modal-footer d-flex justify-content-center">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            <div class="modal-footer d-flex justify-content-center border-0 bg-light py-2">
+              <button type="button" class="btn btn-danger px-4 fw-semibold" data-bs-dismiss="modal">OK</button>
             </div>
           </div>
         </div>

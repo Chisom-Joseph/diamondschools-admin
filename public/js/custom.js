@@ -81,13 +81,24 @@ function showFileSizeError(message) {
     msgEl.textContent = message;
   }
   const modalEl = document.getElementById("fileSizeModal");
-  if (modalEl && window.bootstrap) {
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modal.show();
-  } else if (modalEl && typeof $ !== "undefined" && $.fn.modal) {
-    $(modalEl).modal("show");
-  } else {
-    console.warn("fileSizeModal element or Bootstrap library not available.");
+  if (modalEl) {
+    modalEl.style.zIndex = "1070";
+    if (window.bootstrap) {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    } else if (typeof $ !== "undefined" && $.fn.modal) {
+      $(modalEl).modal("show");
+    } else {
+      console.warn("fileSizeModal element or Bootstrap library not available.");
+      return;
+    }
+
+    setTimeout(() => {
+      const backdrops = document.querySelectorAll(".modal-backdrop");
+      if (backdrops.length > 1) {
+        backdrops[backdrops.length - 1].style.zIndex = "1065";
+      }
+    }, 50);
   }
 }
 
