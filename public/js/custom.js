@@ -74,12 +74,29 @@ if (form !== "" && states !== "") updateStateSelect();
 if (userState !== "" && states !== "") updateStateSelect();
 if (countrySelect) countrySelect.addEventListener("change", updateStateSelect);
 
+// Reusable helper function to display Bootstrap file size error modal
+function showFileSizeError(message) {
+  const msgEl = document.getElementById("fileSizeModalMessage");
+  if (msgEl && message) {
+    msgEl.textContent = message;
+  }
+  const modalEl = document.getElementById("fileSizeModal");
+  if (modalEl && window.bootstrap) {
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  } else if (modalEl && typeof $ !== "undefined" && $.fn.modal) {
+    $(modalEl).modal("show");
+  } else {
+    console.warn("fileSizeModal element or Bootstrap library not available.");
+  }
+}
+
 // Global client-side file size validation to prevent 413 Request Entity Too Large and Multer limits
 document.addEventListener("change", function(event) {
   if (event.target && event.target.type === "file") {
     const file = event.target.files[0];
     if (file && file.size > 2000000) { // 2MB limit
-      alert("File size exceeds the 2MB limit. Please upload a smaller image.");
+      showFileSizeError("File size exceeds the 2MB limit. Please upload a smaller image.");
       event.target.value = ""; // Clear file input
     }
   }

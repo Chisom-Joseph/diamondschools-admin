@@ -49,6 +49,24 @@
         </div>
       </div>
 
+      <!-- File Size Warning Modal -->
+      <div class="modal modal-sm fade" id="fileSizeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title text-danger">File Size Limit Exceeded</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body m-3 text-center">
+              <p id="fileSizeModalMessage" class="mb-0">File size exceeds the 2MB limit. Please upload a smaller image.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
