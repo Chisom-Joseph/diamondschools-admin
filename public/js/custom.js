@@ -72,4 +72,55 @@ const updateStateSelect = () => {
 
 if (form !== "" && states !== "") updateStateSelect();
 if (userState !== "" && states !== "") updateStateSelect();
-countrySelect.addEventListener("change", updateStateSelect);
+if (countrySelect) countrySelect.addEventListener("change", updateStateSelect);
+
+// Helper function to format file size in human-readable format (e.g., KB, MB)
+function formatFileSize(bytes) {
+  if (!bytes || bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Reusable helper function to display Bootstrap file size error modal
+function showFileSizeError(message) {
+  const msgEl = document.getElementById("fileSizeModalMessage");
+  if (msgEl && message) {
+    msgEl.textContent = message;
+  }
+  const modalEl = document.getElementById("fileSizeModal");
+  if (modalEl) {
+    modalEl.style.zIndex = "1070";
+    if (window.bootstrap) {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    } else if (typeof $ !== "undefined" && $.fn.modal) {
+      $(modalEl).modal("show");
+    } else {
+      console.warn("fileSizeModal element or Bootstrap library not available.");
+      return;
+    }
+
+    setTimeout(() => {
+      const backdrops = document.querySelectorAll(".modal-backdrop");
+      if (backdrops.length > 1) {
+        backdrops[backdrops.length - 1].style.zIndex = "1065";
+      }
+    }, 50);
+  }
+}
+
+// Global client-side file size validation to prevent 413 Request Entity Too Large and Multer limits
+const MAX_ALLOWED_FILE_SIZE = 2 * 1024 * 1024; // 2MB in binary bytes (2,097,152 bytes)
+
+document.addEventListener("change", function(event) {
+  if (event.target && event.target.type === "file") {
+    const file = event.target.files[0];
+    if (file && file.size > MAX_ALLOWED_FILE_SIZE) {
+      const formattedSize = formatFileSize(file.size);
+      showFileSizeError(`Selected file size (${formattedSize}) exceeds the 2MB limit. Please upload a smaller image.`);
+      event.target.value = ""; // Clear file input
+    }
+  }
+});
