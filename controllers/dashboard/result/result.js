@@ -7,7 +7,7 @@ const {
   Sequelize,
 } = require("../../../models");
 
-module.exports = async (req, res) => {
+module.exports = async (req, res, next) => {
   try {
     const {
       subject: subjectId,
@@ -266,8 +266,8 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error("ERROR UPDATING RESULT");
     console.error(error);
-    req.flash("alert", { status: "error", section: "", message: "An unexpected error occurred while updating the result." });
-    req.flash("status", 500);
-    return res.redirect(req.originalUrl);
+    // Forward to the global error handler in server.js — this sends a proper
+    // error response instead of leaving the request hanging (504 gateway timeout).
+    next(error);
   }
 };
