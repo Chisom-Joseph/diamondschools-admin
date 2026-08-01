@@ -23,6 +23,13 @@ module.exports = async (req, res) => {
     } = req.body;
     const { student: studentId, term: termId } = req.query;
 
+    // Guard against missing query params
+    if (!studentId || !termId) {
+      req.flash("alert", { status: "error", section: subjectId, message: "Missing student or term parameter." });
+      req.flash("status", 400);
+      return res.redirect(req.originalUrl);
+    }
+
     // Validate input
     const termValid = term.validate(req.body);
     if (termValid.error) {
@@ -156,6 +163,9 @@ module.exports = async (req, res) => {
     });
 
     // Assign positions correctly in parallel
+    let lastScore = undefined;
+    let lastPosition = 0;
+    let sameRankCount = 0;
     const resultPromises = [];
     for (let i = 0; i < results.length; i++) {
       if (results[i].totalScore !== lastScore) {
@@ -220,6 +230,9 @@ module.exports = async (req, res) => {
     console.log(studentTermPerformances);
 
     // Assign term positions correctly in parallel
+    lastScore = undefined;
+    lastPosition = 0;
+    sameRankCount = 0;
     const stpPromises = [];
     for (let i = 0; i < studentTermPerformances.length; i++) {
       if (studentTermPerformances[i].totalScore !== lastScore) {
@@ -253,5 +266,8 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error("ERROR UPDATING RESULT");
     console.error(error);
+    req.flash("alert", { status: "error", section: "", message: "An unexpected error occurred while updating the result." });
+    req.flash("status", 500);
+    return res.redirect(req.originalUrl);
   }
 };
