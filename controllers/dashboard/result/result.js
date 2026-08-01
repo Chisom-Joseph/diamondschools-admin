@@ -25,7 +25,11 @@ module.exports = async (req, res, next) => {
 
     // Guard against missing query params
     if (!studentId || !termId) {
-      req.flash("alert", { status: "error", section: subjectId, message: "Missing student or term parameter." });
+      req.flash("alert", {
+        status: "error",
+        section: subjectId,
+        message: "Missing student or term parameter.",
+      });
       req.flash("status", 400);
       return res.redirect(req.originalUrl);
     }
@@ -229,7 +233,7 @@ module.exports = async (req, res, next) => {
 
     console.log(studentTermPerformances);
 
-    // Assign term positions correctly in parallel
+    // Assign term positions correctly — reset counters for a fresh ranking pass
     lastScore = undefined;
     lastPosition = 0;
     sameRankCount = 0;
@@ -266,8 +270,13 @@ module.exports = async (req, res, next) => {
   } catch (error) {
     console.error("ERROR UPDATING RESULT");
     console.error(error);
-    // Forward to the global error handler in server.js — this sends a proper
-    // error response instead of leaving the request hanging (504 gateway timeout).
-    next(error);
+
+    req.flash("alert", {
+      status: "error",
+      section: "",
+      message: "An unexpected error occurred while updating the result."
+    });
+    req.flash("status", 500);
+    return res.redirect(req.originalUrl);
   }
 };
