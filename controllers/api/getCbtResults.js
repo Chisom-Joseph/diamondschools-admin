@@ -79,10 +79,12 @@ module.exports = async (req, res) => {
         {
           model: Subject,
           attributes: ["id", "name"],
+          required: false,
         },
         {
           model: Term,
           attributes: ["id", "name"],
+          required: false,
         },
       ],
     });
@@ -97,8 +99,8 @@ module.exports = async (req, res) => {
         fullName: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
         registrationNumber:
           user.registrationNumber || user.examinationNumber || "N/A",
-        subject: row.Subject.name,
-        term: row.Term.name,
+        subject: row.Subject?.name ?? 'N/A',
+        term: row.Term?.name ?? 'N/A',
         correctCount: row.correctCount,
         totalQuestions: row.totalQuestions,
         scorePercentage: row.scorePercentage,
