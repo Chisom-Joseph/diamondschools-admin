@@ -1,4 +1,11 @@
-const { Student, Subject, Result, Class } = require("../models");
+const {
+  Student,
+  Subject,
+  Result,
+  Class,
+  StudentTermPerformance,
+  Sequelize,
+} = require("../models");
 
 module.exports = async (studentId, termId) => {
   try {
@@ -10,29 +17,57 @@ module.exports = async (studentId, termId) => {
     if (!student) {
       return { subjects: [], resultsMap: {} };
     }
-    // Fetch all subjects the student is enrolled in
+
+    // Fetch existing StudentTermPerformance & results for this student & term
+    const stps = termId
+      ? await StudentTermPerformance.findAll({
+          where: { StudentId: studentId, TermId: termId },
+          include: [{ model: Result, attributes: ["id"] }],
+        })
+      : [];
+
+    const stp =
+      stps.find((s) => s.Results && s.Results.length > 0) ||
+      stps.find((s) => s.totalScore > 0) ||
+      stps[0] ||
+      null;
+
+    // Use the class the student belonged to in that term (falling back to current class)
+    const effectiveClassId = stp?.ClassId || student.ClassId;
+
+    // Fetch all subjects for the effective class
     const subjects = await Subject.findAll({
       include: {
         model: Class,
-        where: { id: student.ClassId },
+        where: { id: effectiveClassId },
         through: { attributes: [] },
       },
     });
 
-    // Fetch existing results for this student & term
-    const stp = await require("../models").StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
-    const results = stp
-      ? await Result.findAll({
-          where: { StudentTermPerformanceId: stp.id },
-          include: [{ model: Subject, attributes: ["id", "name"] }],
-        })
-      : [];
+    const results =
+      stps.length > 0
+        ? await Result.findAll({
+            where: {
+              StudentTermPerformanceId: {
+                [Sequelize.Op.in]: stps.map((s) => s.id),
+              },
+            },
+            include: [{ model: Subject, attributes: ["id", "name"] }],
+          })
+        : [];
 
-    // Map results to easily find scores for each subject
+    // Map results to easily find scores for each subject, and include any subject that already has a recorded result
     const resultsMap = {};
+    const subjectIdsInList = new Set(subjects.map((s) => s.id));
     if (results.length > 0) {
       results.forEach((result) => {
-        resultsMap[result.Subject.id] = result; // Store result by subject ID
+        if (result.Subject) {
+          resultsMap[result.Subject.id] = result; // Store result by subject ID
+          if (!subjectIdsInList.has(result.Subject.id)) {
+            subjects.push(result.Subject);
+            subjectIdsInList.add(result.Subject.id);
+          }
+        }
       });
     }
 

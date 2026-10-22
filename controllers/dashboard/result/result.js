@@ -54,10 +54,58 @@ module.exports = async (req, res, next) => {
       console.error("Student not found");
       return;
     }
-    const stpForClass = await StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
-    const classId = stpForClass?.ClassId || student.ClassId;
 
-    // Fetch all results for this subject and term scoped to the student's class
+    // Find existing StudentTermPerformance for this student & term (preferring one that already has results)
+    const stps = await StudentTermPerformance.findAll({
+      where: { StudentId: studentId, TermId: termId },
+      include: [{ model: Result, attributes: ["id"] }],
+    });
+
+    let stpForStudent =
+      stps.find((s) => s.Results && s.Results.length > 0) ||
+      stps.find((s) => s.totalScore > 0) ||
+      stps[0] ||
+      null;
+
+    // Clean up any empty duplicate StudentTermPerformance rows for this student & term
+    if (stpForStudent && stps.length > 1) {
+      const emptyDuplicates = stps.filter(
+        (s) =>
+          s.id !== stpForStudent.id && (!s.Results || s.Results.length === 0)
+      );
+      for (const dup of emptyDuplicates) {
+        const remarkUpdates = {};
+        if (!stpForStudent.overallRemark && dup.overallRemark) {
+          remarkUpdates.overallRemark = dup.overallRemark;
+        }
+        if (!stpForStudent.teachersRemark && dup.teachersRemark) {
+          remarkUpdates.teachersRemark = dup.teachersRemark;
+        }
+        if (Object.keys(remarkUpdates).length > 0) {
+          await stpForStudent.update(remarkUpdates);
+        }
+      }
+      const duplicateIds = emptyDuplicates.map((s) => s.id);
+      if (duplicateIds.length > 0) {
+        await StudentTermPerformance.destroy({ where: { id: duplicateIds } });
+      }
+    }
+
+    const classId = stpForStudent?.ClassId || student.ClassId;
+
+    // Ensure StudentTermPerformance exists before creating/updating Result and querying classStps
+    if (!stpForStudent) {
+      stpForStudent = await StudentTermPerformance.create({
+        StudentId: studentId,
+        TermId: termId,
+        ClassId: classId,
+        totalScore: 0,
+        averageScore: 0,
+        position: 0,
+      });
+    }
+
+    // Fetch all results for this subject and term scoped to the student's term class
     const classStps = await StudentTermPerformance.findAll({
       where: { TermId: termId, ClassId: classId },
       attributes: ["id"],
@@ -73,32 +121,34 @@ module.exports = async (req, res, next) => {
       order: [["totalScore", "DESC"]],
     });
 
-    let scores = existingResults.map((r) => r.totalScore);
+    let scores = existingResults.map((r) => Number(r.totalScore));
 
     // Find the student's existing result (if any)
-    const stpForStudent = await StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
-    let existingResult = stpForStudent
-      ? await Result.findOne({
-          where: { StudentTermPerformanceId: stpForStudent.id, SubjectId: subjectId },
-        })
-      : null;
+    let existingResult = await Result.findOne({
+      where: {
+        StudentTermPerformanceId: stpForStudent.id,
+        SubjectId: subjectId,
+      },
+    });
 
     if (existingResult) {
       // Remove old score from the ranking list
-      const oldScoreIndex = scores.indexOf(existingResult.totalScore);
+      const oldScoreIndex = scores.indexOf(Number(existingResult.totalScore));
       if (oldScoreIndex !== -1) {
         scores.splice(oldScoreIndex, 1);
       }
     }
 
     // Add the new score and recalculate stats
-    scores.push(totalScore);
-    const validScores = scores.filter(
-      (s) => s !== null && s !== undefined && !Number.isNaN(Number(s))
-    );
+    const numericTotalScore = Number(totalScore);
+    scores.push(numericTotalScore);
+    const validScores = scores
+      .filter((s) => s !== null && s !== undefined && !Number.isNaN(Number(s)))
+      .map((s) => Number(s));
     const classAverage =
       validScores.length > 0
-        ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length
+        ? validScores.reduce((sum, score) => sum + score, 0) /
+          validScores.length
         : 0;
     console.log(`classAverage: ${classAverage}`);
     const classLowest = validScores.length > 0 ? Math.min(...validScores) : 0;
@@ -125,7 +175,7 @@ module.exports = async (req, res, next) => {
     // Save or update the student's result
     if (existingResult) {
       await existingResult.update({
-        totalScore,
+        totalScore: numericTotalScore,
         grade,
         remark,
         firstTest,
@@ -137,23 +187,21 @@ module.exports = async (req, res, next) => {
         date: new Date().toISOString(),
       });
     } else {
-      if (stpForStudent) {
-        existingResult = await Result.create({
-          StudentTermPerformanceId: stpForStudent.id,
-          SubjectId: subjectId,
-          totalScore,
-          grade,
-          remark,
-          firstTest,
-          presentation,
-          midTermTest,
-          project,
-          note,
-          examScore,
-          position: 0, // Temporary position
-          date: new Date().toISOString(),
-        });
-      }
+      existingResult = await Result.create({
+        StudentTermPerformanceId: stpForStudent.id,
+        SubjectId: subjectId,
+        totalScore: numericTotalScore,
+        grade,
+        remark,
+        firstTest,
+        presentation,
+        midTermTest,
+        project,
+        note,
+        examScore,
+        position: 0, // Temporary position
+        date: new Date().toISOString(),
+      });
     }
 
     // Fetch updated class results for this subject using StudentTermPerformance IDs
@@ -189,40 +237,25 @@ module.exports = async (req, res, next) => {
     }
     await Promise.all(resultPromises);
 
-    // Ensure StudentTermPerformance exists
-    let studentTermPerformance = await StudentTermPerformance.findOne({
-      where: { StudentId: studentId, TermId: termId, ClassId: classId },
+    // Calculate student average score and total score
+    const studentResults = await Result.findAll({
+      where: { StudentTermPerformanceId: stpForStudent.id },
+      attributes: [
+        [Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"],
+      ],
+      raw: true,
     });
+    const averageScore = studentResults[0]?.averageScore || 0;
 
-    // Calculate student average score
-    const studentResults = stpForStudent
-      ? await Result.findAll({
-          where: { StudentTermPerformanceId: stpForStudent.id },
-          attributes: [[Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"]],
-          raw: true,
-        })
-      : [{ averageScore: 0 }];
-    const averageScore = studentResults[0].averageScore || 0;
+    const totalScoreSum =
+      (await Result.sum("totalScore", {
+        where: { StudentTermPerformanceId: stpForStudent.id },
+      })) || 0;
 
-    const totalScoreSum = stpForStudent
-      ? await Result.sum("totalScore", { where: { StudentTermPerformanceId: stpForStudent.id } })
-      : 0;
-
-    if (!studentTermPerformance) {
-      studentTermPerformance = await StudentTermPerformance.create({
-        StudentId: studentId,
-        TermId: termId,
-        ClassId: classId,
-        totalScore: totalScoreSum,
-        averageScore,
-        position: 0, // Temporary position
-      });
-    } else {
-      await studentTermPerformance.update({
-        totalScore: totalScoreSum,
-        averageScore,
-      });
-    }
+    await stpForStudent.update({
+      totalScore: totalScoreSum,
+      averageScore,
+    });
 
     // Fetch all student term performances for ranking
     const studentTermPerformances = await StudentTermPerformance.findAll({
@@ -274,7 +307,7 @@ module.exports = async (req, res, next) => {
     req.flash("alert", {
       status: "error",
       section: "",
-      message: "An unexpected error occurred while updating the result."
+      message: "An unexpected error occurred while updating the result.",
     });
     req.flash("status", 500);
     return res.redirect(req.originalUrl);

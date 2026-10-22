@@ -1,4 +1,10 @@
-const { Student, StudentTermPerformance, Class, Result, Sequelize } = require("../../../models");
+const {
+  Student,
+  StudentTermPerformance,
+  Class,
+  Result,
+  Sequelize,
+} = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -14,7 +20,9 @@ module.exports = async (req, res) => {
       });
       req.flash("status", 400);
       req.flash("formSection", "remarks");
-      return res.redirect(`/dashboard/result?student=${studentId || ''}&term=${termId || ''}`);
+      return res.redirect(
+        `/dashboard/result?student=${studentId || ""}&term=${termId || ""}`
+      );
     }
 
     if (!classId) {
@@ -26,7 +34,9 @@ module.exports = async (req, res) => {
       req.flash("form", req.body);
       req.flash("status", 400);
       req.flash("formSection", "remarks");
-      return res.redirect(`/dashboard/result?student=${studentId || ''}&term=${termId || ''}`);
+      return res.redirect(
+        `/dashboard/result?student=${studentId || ""}&term=${termId || ""}`
+      );
     }
 
     const targetClass = await Class.findByPk(classId);
@@ -39,7 +49,9 @@ module.exports = async (req, res) => {
       req.flash("form", req.body);
       req.flash("status", 400);
       req.flash("formSection", "remarks");
-      return res.redirect(`/dashboard/result?student=${studentId || ''}&term=${termId || ''}`);
+      return res.redirect(
+        `/dashboard/result?student=${studentId || ""}&term=${termId || ""}`
+      );
     }
 
     const student = await Student.findByPk(studentId);
@@ -54,9 +66,28 @@ module.exports = async (req, res) => {
       return res.redirect(req.originalUrl);
     }
 
-    let stp = await StudentTermPerformance.findOne({
+    const existingStps = await StudentTermPerformance.findAll({
       where: { StudentId: studentId, TermId: termId },
+      include: [{ model: Result, attributes: ["id"] }],
     });
+
+    let stp =
+      existingStps.find((s) => s.Results && s.Results.length > 0) ||
+      existingStps.find((s) => s.totalScore > 0) ||
+      existingStps[0] ||
+      null;
+
+    // Clean up any empty duplicate StudentTermPerformance rows for this student & term
+    if (stp && existingStps.length > 1) {
+      const duplicateIds = existingStps
+        .filter(
+          (s) => s.id !== stp.id && (!s.Results || s.Results.length === 0)
+        )
+        .map((s) => s.id);
+      if (duplicateIds.length > 0) {
+        await StudentTermPerformance.destroy({ where: { id: duplicateIds } });
+      }
+    }
 
     let totalScoreSum = 0;
     let averageScore = 0;
@@ -79,7 +110,9 @@ module.exports = async (req, res) => {
     });
     const studentResults = await Result.findAll({
       where: { StudentTermPerformanceId: stp.id },
-      attributes: [[Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"]],
+      attributes: [
+        [Sequelize.fn("AVG", Sequelize.col("totalScore")), "averageScore"],
+      ],
       raw: true,
     });
     averageScore = studentResults[0]?.averageScore || 0;
@@ -102,7 +135,10 @@ module.exports = async (req, res) => {
       });
       const stpIds = classStps.map((r) => r.id);
       const classResults = await Result.findAll({
-        where: { SubjectId, StudentTermPerformanceId: { [Sequelize.Op.in]: stpIds } },
+        where: {
+          SubjectId,
+          StudentTermPerformanceId: { [Sequelize.Op.in]: stpIds },
+        },
         attributes: ["id", "totalScore", "StudentTermPerformanceId"],
         order: [["totalScore", "DESC"]],
       });
@@ -167,7 +203,9 @@ module.exports = async (req, res) => {
     req.flash("form", req.body);
     req.flash("status", 200);
     req.flash("formSection", "remarks");
-    return res.redirect(`/dashboard/result?student=${studentId || ''}&term=${termId || ''}`);
+    return res.redirect(
+      `/dashboard/result?student=${studentId || ""}&term=${termId || ""}`
+    );
   } catch (error) {
     console.error("ERROR UPDATING TERM PERFORMANCE CLASS");
     console.error(error);
