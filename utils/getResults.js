@@ -1,42 +1,69 @@
-const { Result, Subject, Student, ClassStats, StudentTermPerformance, Sequelize } = require("../models");
+const {
+  Result,
+  Subject,
+  Student,
+  ClassStats,
+  StudentTermPerformance,
+  Sequelize,
+} = require("../models");
 
 module.exports = async (termId, studentId) => {
   try {
     if (!termId || !studentId) return [];
 
-    const stp = await StudentTermPerformance.findOne({ where: { StudentId: studentId, TermId: termId } });
-    if (!stp) return [];
+    const stps = await StudentTermPerformance.findAll({
+      where: { StudentId: studentId, TermId: termId },
+    });
+    if (stps.length === 0) return [];
+
     const results = await Result.findAll({
-      where: { StudentTermPerformanceId: stp.id },
-      include: [{
-        model: Subject,
-        attributes: ["id", "name"],
-      }],
+      where: {
+        StudentTermPerformanceId: {
+          [Sequelize.Op.in]: stps.map((s) => s.id),
+        },
+      },
+      include: [
+        {
+          model: Subject,
+          attributes: ["id", "name"],
+        },
+      ],
       order: [[Subject, "name", "ASC"]],
     });
 
     if (results.length <= 0) return [];
 
+    const matchedStp =
+      stps.find((s) => s.id === results[0].StudentTermPerformanceId) ||
+      stps.find((s) => s.totalScore > 0) ||
+      stps[0];
+
     const student = await Student.findByPk(studentId);
     const fallbackClassId = student ? student.ClassId : null;
-    const effectiveClassId = stp?.ClassId || fallbackClassId;
+    const effectiveClassId = matchedStp?.ClassId || fallbackClassId;
 
     const toOrdinal = (n) => {
-      const s = ["th", "st", "nd", "rd"], v = n % 100;
+      const s = ["th", "st", "nd", "rd"],
+        v = n % 100;
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
 
     // Fetch ClassStats for all subjects in the results in a single query
-    const subjectIds = results.map(r => r.SubjectId);
+    const subjectIds = results.map((r) => r.SubjectId);
     let classStatsList = [];
     if (subjectIds.length > 0) {
       classStatsList = await ClassStats.findAll({
         where: {
           ClassId: effectiveClassId,
           TermId: termId,
-          SubjectId: { [Sequelize.Op.in]: subjectIds }
+          SubjectId: { [Sequelize.Op.in]: subjectIds },
         },
-        attributes: ["SubjectId", "classLowest", "classHighest", "classAverage"],
+        attributes: [
+          "SubjectId",
+          "classLowest",
+          "classHighest",
+          "classAverage",
+        ],
       });
     }
 

@@ -1,23 +1,26 @@
-const { StudentTermPerformance, Student } = require("../models")
+const { StudentTermPerformance, Result } = require("../models");
 
 module.exports = async ({ studentId, classId, termId }) => {
   try {
-    let resolvedClassId = classId;
-    if (!resolvedClassId && studentId) {
-      const student = await Student.findByPk(studentId, { attributes: ["ClassId"] });
-      resolvedClassId = student ? student.ClassId : null;
-    }
+    if (!studentId || !termId) return {};
 
-    const where = resolvedClassId
-      ? { StudentId: studentId, TermId: termId, }
-      : { StudentId: studentId, TermId: termId };
+    const stps = await StudentTermPerformance.findAll({
+      where: { StudentId: studentId, TermId: termId },
+      include: [{ model: Result, attributes: ["id"] }],
+    });
 
-    const studentTermPerformance = await StudentTermPerformance.findOne({ where });
-    if (!studentTermPerformance) return {};
-    return studentTermPerformance;
+    if (stps.length === 0) return {};
+
+    const studentTermPerformance =
+      stps.find((s) => s.Results && s.Results.length > 0) ||
+      stps.find((s) => s.totalScore > 0) ||
+      (classId ? stps.find((s) => s.ClassId === classId) : null) ||
+      stps[0];
+
+    return studentTermPerformance || {};
   } catch (error) {
     console.error("ERROR GETTING STUDENT TERM PERFORMANCE");
     console.error(error);
     return {};
   }
-}
+};

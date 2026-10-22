@@ -1,5 +1,5 @@
 const term = require("../../../validation/result/remarks");
-const { Student, StudentTermPerformance } = require("../../../models");
+const { Student, StudentTermPerformance, Result } = require("../../../models");
 
 module.exports = async (req, res) => {
   try {
@@ -22,9 +22,16 @@ module.exports = async (req, res) => {
       attributes: ["ClassId"],
     });
 
-    const studentTermPerformance = await StudentTermPerformance.findOne({
-      where: { StudentId: studentId, TermId: termId, ClassId: student.ClassId },
+    const stps = await StudentTermPerformance.findAll({
+      where: { StudentId: studentId, TermId: termId },
+      include: [{ model: Result, attributes: ["id"] }],
     });
+
+    let studentTermPerformance =
+      stps.find((s) => s.Results && s.Results.length > 0) ||
+      stps.find((s) => s.totalScore > 0) ||
+      stps[0] ||
+      null;
 
     if (!studentTermPerformance) {
       await StudentTermPerformance.create({
@@ -35,10 +42,24 @@ module.exports = async (req, res) => {
         teachersRemark: req.body.teacherRemark,
       });
     } else {
-      studentTermPerformance.update({
+      await studentTermPerformance.update({
         overallRemark: req.body.generalRemark,
         teachersRemark: req.body.teacherRemark,
       });
+
+      // Clean up any empty duplicate StudentTermPerformance rows for this student & term
+      if (stps.length > 1) {
+        const duplicateIds = stps
+          .filter(
+            (s) =>
+              s.id !== studentTermPerformance.id &&
+              (!s.Results || s.Results.length === 0)
+          )
+          .map((s) => s.id);
+        if (duplicateIds.length > 0) {
+          await StudentTermPerformance.destroy({ where: { id: duplicateIds } });
+        }
+      }
     }
 
     req.flash("alert", {
